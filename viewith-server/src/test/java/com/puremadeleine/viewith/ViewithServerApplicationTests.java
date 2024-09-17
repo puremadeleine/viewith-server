@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.viewithserver;
+package com.puremadeleine.viewith;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

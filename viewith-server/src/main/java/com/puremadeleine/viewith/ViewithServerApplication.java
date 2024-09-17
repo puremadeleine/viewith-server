@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.viewithserver;
+package com.puremadeleine.viewith;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
