@@ -4,6 +4,7 @@ import com.puremadeleine.viewith.domain.review.Review;
 import com.puremadeleine.viewith.domain.venue.Seat;
 import com.puremadeleine.viewith.domain.venue.Venue;
 import com.puremadeleine.viewith.dto.review.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.CreateReviewResDto;
 import com.puremadeleine.viewith.repository.ReviewRepository;
 import com.puremadeleine.viewith.repository.SeatRepository;
 import com.puremadeleine.viewith.repository.VenueRepository;
@@ -21,12 +22,12 @@ public class ReviewService {
     private final SeatRepository seatRepository;
 
     @Transactional
-    public Long createReview(CreateReviewReqDto reqDto) {
+    public CreateReviewResDto createReview(CreateReviewReqDto reqDto) {
         Venue venue = getVenue(reqDto.getVenueId());
         Seat seat = getSeat(reqDto.getSeatId());
         Review review = Review.createReview(reqDto, venue, seat);
         Review savedReview = reviewRepository.save(review);
-        return savedReview.getId();
+        return CreateReviewResDto.builder().reviewId(savedReview.getId()).build();
     }
 
     private Venue getVenue(Long venueId) {

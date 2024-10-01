@@ -46,7 +46,6 @@ public class Review {
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
-
     LocalDateTime createTime;
     LocalDateTime updateTime;
 
