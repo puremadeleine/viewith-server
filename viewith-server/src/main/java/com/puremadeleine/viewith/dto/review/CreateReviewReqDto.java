@@ -10,7 +10,9 @@ import lombok.experimental.FieldDefaults;
 public class CreateReviewReqDto {
 
     Long venueId;
-    Long seatId;
+    String section;
+    Integer seatRow;
+    Integer seatColumn;
     Block block;
     String content;
     Float rating;

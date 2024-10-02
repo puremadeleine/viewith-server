@@ -27,7 +27,7 @@ public class ReviewService {
     @Transactional
     public CreateReviewResDto createReview(CreateReviewReqDto reqDto) {
         Venue venue = getVenue(reqDto.getVenueId());
-        Seat seat = getSeat(reqDto.getSeatId());
+        Seat seat = getSeat(reqDto.getSection(), reqDto.getSeatRow(), reqDto.getSeatColumn());
         Review review = Review.createReview(reqDto, venue, seat);
         Review savedReview = reviewRepository.save(review);
         return CreateReviewResDto.builder().reviewId(savedReview.getId()).build();
@@ -43,9 +43,13 @@ public class ReviewService {
                 .orElseThrow(() -> new EntityNotFoundException("Venue not found with ID: " + venueId));
     }
 
-    private Seat getSeat(Long seatId) {
-        return seatRepository.findById(seatId)
-                .orElseThrow(() -> new EntityNotFoundException("Seat not found with ID: " + seatId));
+    private Seat getSeat(String section, Integer seatRow, Integer seatColumn) {
+        return seatRepository.findBySectionAndSeatRowAndSeatColumn(section, seatRow, seatColumn)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Seat not found with section: %s, row: %s, column: %s",
+                                section, seatRow, seatColumn)
+                ));
+
     }
 
     private Review getReview(Long reviewId) {

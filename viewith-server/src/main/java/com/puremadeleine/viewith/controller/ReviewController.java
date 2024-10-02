@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/review")
+@RequestMapping("/v1/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 
