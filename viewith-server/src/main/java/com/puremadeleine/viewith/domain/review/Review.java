@@ -5,6 +5,7 @@ import com.puremadeleine.viewith.domain.venue.Performance;
 import com.puremadeleine.viewith.domain.venue.Seat;
 import com.puremadeleine.viewith.domain.venue.Venue;
 import com.puremadeleine.viewith.dto.review.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.UpdateReviewReqDto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +23,10 @@ public class Review extends BaseTimeEntity {
     @Column(name = "review_id")
     Long id;
 
+    @Setter(value = AccessLevel.PRIVATE)
     String content;
+
+    @Setter(value = AccessLevel.PRIVATE)
     Float rating;
 
     @Enumerated(EnumType.STRING)
@@ -59,5 +63,9 @@ public class Review extends BaseTimeEntity {
                 .build();
     }
 
-
+    public static Review updateReview(Review review, UpdateReviewReqDto reqDto) {
+        review.setContent(reqDto.getContent());
+        review.setRating(reqDto.getRating());
+        return review;
+    }
 }

@@ -6,6 +6,7 @@ import com.puremadeleine.viewith.domain.venue.Venue;
 import com.puremadeleine.viewith.dto.review.CreateReviewReqDto;
 import com.puremadeleine.viewith.dto.review.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.UpdateReviewReqDto;
 import com.puremadeleine.viewith.repository.ReviewRepository;
 import com.puremadeleine.viewith.repository.SeatRepository;
 import com.puremadeleine.viewith.repository.VenueRepository;
@@ -31,6 +32,13 @@ public class ReviewService {
         Review review = Review.createReview(reqDto, venue, seat);
         Review savedReview = reviewRepository.save(review);
         return CreateReviewResDto.builder().reviewId(savedReview.getId()).build();
+    }
+
+    @Transactional
+    public void updateReview(UpdateReviewReqDto reqDto) {
+        Review review = getReview(reqDto.getReviewId());
+        Review updateReview = Review.updateReview(review, reqDto);
+        reviewRepository.save(updateReview);
     }
 
     public ReviewInfoResDto getReviewInfo(Long reviewId) {

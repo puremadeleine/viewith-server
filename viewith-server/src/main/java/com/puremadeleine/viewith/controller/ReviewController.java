@@ -4,6 +4,7 @@ import com.puremadeleine.viewith.common.ApiResponse;
 import com.puremadeleine.viewith.dto.review.CreateReviewReqDto;
 import com.puremadeleine.viewith.dto.review.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.UpdateReviewReqDto;
 import com.puremadeleine.viewith.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,12 @@ public class ReviewController {
     public ApiResponse<ReviewInfoResDto> getReview(@PathVariable("review_id") Long reviewId) {
         ReviewInfoResDto reviewInfo = reviewService.getReviewInfo(reviewId);
         return ApiResponse.of(reviewInfo);
+    }
+
+    @PutMapping("")
+    public ApiResponse<Void> updateReview(@RequestBody UpdateReviewReqDto reqDto) {
+        reviewService.updateReview(reqDto);
+        return ApiResponse.of();
     }
 
 }
