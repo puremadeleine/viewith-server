@@ -28,9 +28,10 @@ public class ReviewController {
         return ApiResponse.of(reviewInfo);
     }
 
-    @PutMapping("")
-    public ApiResponse<Void> updateReview(@RequestBody UpdateReviewReqDto reqDto) {
-        reviewService.updateReview(reqDto);
+    @PutMapping("/{review_id}")
+    public ApiResponse<Void> updateReview(@PathVariable("review_id") Long reviewId,
+                                          @RequestBody UpdateReviewReqDto reqDto) {
+        reviewService.updateReview(reviewId, reqDto);
         return ApiResponse.of();
     }
 

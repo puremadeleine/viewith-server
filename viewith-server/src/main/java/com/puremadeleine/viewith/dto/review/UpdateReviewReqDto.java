@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateReviewReqDto {
 
-    Long reviewId;
     String content;
     Float rating;
 }

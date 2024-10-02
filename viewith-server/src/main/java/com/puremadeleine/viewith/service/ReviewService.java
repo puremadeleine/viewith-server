@@ -35,8 +35,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(UpdateReviewReqDto reqDto) {
-        Review review = getReview(reqDto.getReviewId());
+    public void updateReview(Long reviewId, UpdateReviewReqDto reqDto) {
+        Review review = getReview(reviewId);
         Review updateReview = Review.updateReview(review, reqDto);
         reviewRepository.save(updateReview);
     }
