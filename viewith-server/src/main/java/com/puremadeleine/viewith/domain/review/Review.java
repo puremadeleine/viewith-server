@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.domain.review;
 
+import com.puremadeleine.viewith.domain.BaseTimeEntity;
 import com.puremadeleine.viewith.domain.venue.Performance;
 import com.puremadeleine.viewith.domain.venue.Seat;
 import com.puremadeleine.viewith.domain.venue.Venue;
@@ -8,8 +9,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "tb_review")
 @Getter
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Review {
+public class Review extends BaseTimeEntity {
 
     @Id @GeneratedValue()
     @Column(name = "review_id")
@@ -46,9 +45,6 @@ public class Review {
     @JoinColumn(name = "performance_id")
     private Performance performance;
 
-    LocalDateTime createTime;
-    LocalDateTime updateTime;
-
     // todo : member info 추가
 
     public static Review createReview(CreateReviewReqDto reqDto, Venue venue, Seat seat) {
@@ -60,7 +56,6 @@ public class Review {
                 .venue(venue)
                 .seat(seat)
                 .block(reqDto.getBlock())
-                .createTime(LocalDateTime.now())
                 .build();
     }
 
