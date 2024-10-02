@@ -41,6 +41,13 @@ public class ReviewService {
         reviewRepository.save(updateReview);
     }
 
+    @Transactional
+    public void deleteReview(Long reviewId) {
+        Review review = getReview(reviewId);
+        Review deletedReview = Review.deleteReview(review);
+        reviewRepository.save(deletedReview);
+    }
+
     public ReviewInfoResDto getReviewInfo(Long reviewId) {
         Review review = getReview(reviewId);
         return toReviewInfoResDto(review);

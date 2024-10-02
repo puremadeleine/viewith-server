@@ -29,6 +29,7 @@ public class Review extends BaseTimeEntity {
     @Setter(value = AccessLevel.PRIVATE)
     Float rating;
 
+    @Setter(value = AccessLevel.PRIVATE)
     @Enumerated(EnumType.STRING)
     Status status;
 
@@ -66,6 +67,11 @@ public class Review extends BaseTimeEntity {
     public static Review updateReview(Review review, UpdateReviewReqDto reqDto) {
         review.setContent(reqDto.getContent());
         review.setRating(reqDto.getRating());
+        return review;
+    }
+
+    public static Review deleteReview(Review review) {
+        review.setStatus(Status.DELETED);
         return review;
     }
 }
