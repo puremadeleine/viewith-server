@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ViewithException.class)
-    protected ResponseEntity<ErrorResponse> handleBusinessException(ViewithException e) {
+    protected ResponseEntity<ErrorResponse> handleViewithException(ViewithException e) {
         ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
     }
