@@ -40,15 +40,13 @@ public class ReviewService {
     @Transactional
     public void updateReview(Long reviewId, UpdateReviewReqDto reqDto) {
         Review review = getNormalReview(reviewId);
-        Review updateReview = Review.updateReview(review, reqDto);
-        reviewRepository.save(updateReview);
+        review.updateReview(reqDto);
     }
 
     @Transactional
     public void deleteReview(Long reviewId) {
         Review review = getNormalReview(reviewId);
-        Review deletedReview = Review.deleteReview(review);
-        reviewRepository.save(deletedReview);
+        review.deleteReview();
     }
 
     public ReviewInfoResDto getReviewInfo(Long reviewId) {

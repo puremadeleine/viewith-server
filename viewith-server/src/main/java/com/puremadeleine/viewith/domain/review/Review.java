@@ -64,14 +64,12 @@ public class Review extends BaseTimeEntity {
                 .build();
     }
 
-    public static Review updateReview(Review review, UpdateReviewReqDto reqDto) {
-        review.setContent(reqDto.getContent());
-        review.setRating(reqDto.getRating());
-        return review;
+    public void updateReview(UpdateReviewReqDto reqDto) {
+        this.setContent(reqDto.getContent());
+        this.setRating(reqDto.getRating());
     }
 
-    public static Review deleteReview(Review review) {
-        review.setStatus(Status.DELETED);
-        return review;
+    public void deleteReview() {
+        this.setStatus(Status.DELETED);
     }
 }
