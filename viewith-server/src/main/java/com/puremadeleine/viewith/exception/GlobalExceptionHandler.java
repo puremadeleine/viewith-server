@@ -11,14 +11,14 @@ import org.springframework.http.HttpStatus;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ViewithException.class)
-    protected ResponseEntity<ErrorResponse> handleViewithException(ViewithException e) {
+    public ResponseEntity<ErrorResponse> handleViewithException(ViewithException e) {
         ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode(), e.getMessage());
         return ResponseEntity.status(e.getErrorCode().getHttpStatus()).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("Exception", e);
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        log.error("[Exception] : ", e);
         ErrorResponse errorResponse = ErrorResponse.of(ViewithErrorCode.UNKNOWN_EXCEPTION);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);

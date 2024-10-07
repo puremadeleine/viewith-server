@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Performance {
+public class PerformanceEntity {
 
     @Id
     @GeneratedValue()
@@ -27,7 +27,7 @@ public class Performance {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
-    private Venue venue;
+    private VenueEntity venue;
 
     String imageUrl;
 }

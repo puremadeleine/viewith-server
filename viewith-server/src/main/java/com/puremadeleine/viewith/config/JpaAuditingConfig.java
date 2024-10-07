@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.configuration;
+package com.puremadeleine.viewith.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

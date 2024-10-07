@@ -1,9 +1,9 @@
 package com.puremadeleine.viewith.domain.review;
 
 import com.puremadeleine.viewith.domain.BaseTimeEntity;
-import com.puremadeleine.viewith.domain.venue.Performance;
-import com.puremadeleine.viewith.domain.venue.Seat;
-import com.puremadeleine.viewith.domain.venue.Venue;
+import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
+import com.puremadeleine.viewith.domain.venue.SeatEntity;
+import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.review.CreateReviewReqDto;
 import com.puremadeleine.viewith.dto.review.UpdateReviewReqDto;
 import jakarta.persistence.*;
@@ -17,7 +17,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Review extends BaseTimeEntity {
+public class ReviewEntity extends BaseTimeEntity {
 
     @Id @GeneratedValue()
     @Column(name = "review_id")
@@ -37,23 +37,23 @@ public class Review extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
-    private Venue venue;
+    private VenueEntity venue;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id")
-    private Seat seat;
+    private SeatEntity seat;
 
     @Enumerated(EnumType.STRING)
     Block block;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
-    private Performance performance;
+    private PerformanceEntity performance;
 
     // todo : member info 추가
 
-    public static Review createReview(CreateReviewReqDto reqDto, Venue venue, Seat seat) {
-        return Review.builder()
+    public static ReviewEntity createReview(CreateReviewReqDto reqDto, VenueEntity venue, SeatEntity seat) {
+        return ReviewEntity.builder()
                 .content(reqDto.getContent())
                 .rating(reqDto.getRating())
                 .status(Status.NORMAL)
