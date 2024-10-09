@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.service;
+package com.puremadeleine.viewith.provider;
 
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.Status;

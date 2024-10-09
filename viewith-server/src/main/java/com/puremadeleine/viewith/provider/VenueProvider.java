@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.service;
+package com.puremadeleine.viewith.provider;
 
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.exception.ViewithException;
