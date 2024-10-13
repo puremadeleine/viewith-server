@@ -9,3 +9,12 @@ INSERT INTO tb_seat (seat_id, seat_column, seat_row, venue_id, section) VALUES
                                                                             (2, 2, 1, 1, 'A'),
                                                                             (3, 1, 2, 2, 'B'),
                                                                             (4, 2, 2, 2, 'B');
+
+
+-- tb_help
+INSERT INTO tb_help (help_id, title, content, create_time) VALUES
+                                                                (1, '도움말1', '도움말입니도', now()),
+                                                                (2, '도움말2', '도움말입니도', now()),
+                                                                (3, '도움말3', '도움말입니도', now());
+
+
