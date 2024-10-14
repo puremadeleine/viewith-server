@@ -7,6 +7,7 @@ import com.puremadeleine.viewith.dto.help.HelpListResDto;
 import org.springframework.data.domain.Page;
 
 import static com.puremadeleine.viewith.util.HtmlUtils.removeHtml;
+import static java.lang.Math.min;
 
 public class HelpServiceConverter {
 
@@ -31,15 +32,16 @@ public class HelpServiceConverter {
 
     public static HelpInfoSummaryResDto toHelpInfoSummaryResDto(Boolean isSummary, HelpEntity help) {
 
+        String pureContent = removeHtml(help.getContent());
         if (Boolean.TRUE.equals(isSummary)) {
             return HelpInfoSummaryResDto.builder()
                     .title(help.getTitle())
-                    .summary(removeHtml(help.getContent()).substring(0, 30))
+                    .summary(pureContent.substring(0, min(pureContent.length(), 30)))
                     .build();
         }
         return HelpInfoSummaryResDto.builder()
                 .title(help.getTitle())
-                .content(removeHtml(help.getContent()))
+                .content(pureContent)
                 .build();
     }
 }
