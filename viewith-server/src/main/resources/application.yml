@@ -8,6 +8,10 @@ spring:
     url: jdbc:h2:tcp://localhost/~/viewith-db
     username: sa
     password:
+  # test용 설정
+  sql:
+    init:
+      mode: always
 
   jpa:
     hibernate:
@@ -16,6 +20,11 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+    # test용 설정
+    defer-datasource-initialization: true
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 logging:
   level:
