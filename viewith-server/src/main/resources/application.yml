@@ -47,3 +47,5 @@ security:
     - /v1
     - /v1/members/login/KAKAO
     - /v1/members/login/APPLE
+    - /v1/members/test3
+    - /v1/members/test4

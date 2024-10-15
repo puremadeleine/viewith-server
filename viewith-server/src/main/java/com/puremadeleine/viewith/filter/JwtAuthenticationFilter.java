@@ -30,28 +30,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        boolean isExcludeUri = securityProperties.getExcludeUris().contains(request.getRequestURI());
+        String token = getJwtFromRequest(request);
 
-        //FIXME: 추후 삭제
-        if (securityProperties.getExcludeUris().contains(request.getRequestURI())) {
+        boolean skipCheck = isExcludeUri && (isNull(token) || token.isEmpty());
+        if (skipCheck) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = getJwtFromRequest(request);
         Authentication authentication = null;
 
-        // 2. 토큰의 유효성 검사
         if (token != null && jwtService.validateAccessToken(token)) {
             authentication = jwtService.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        if (token == null || isNull(authentication)) {
+        boolean validatedError = token == null || isNull(authentication);
+        if (validatedError && !isExcludeUri) {
             respondWithError(response, HttpServletResponse.SC_UNAUTHORIZED, ViewithErrorCode.INVALID_TOKEN);
             return;
         }
 
-        // 다음 필터로 넘김
         filterChain.doFilter(request, response);
     }
 
