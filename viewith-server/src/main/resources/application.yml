@@ -1,6 +1,8 @@
 spring:
   application:
     name: viewith-server
+  profiles:
+    include: private
 
   datasource:
 #    driver-class-name: com.mysql.jdbc.Driver
@@ -30,3 +32,10 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    feign: debug
+
+kakao:
+  oauth:
+    uri: https://kauth.kakao.com
+  api:
+    uri: https://kapi.kakao.com

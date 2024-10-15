@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ViewithErrorCode {
 
+    // common
+    INVALID_PARAM(HttpStatus.BAD_REQUEST, 00001, "invalid param"),
+
     // venue
     NO_VENUE(HttpStatus.NOT_FOUND, 30001, "no venue"),
     NO_SEAT(HttpStatus.NOT_FOUND, 30002, "no seat"),
