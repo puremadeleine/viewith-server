@@ -5,7 +5,7 @@ spring:
     include: private
 
   datasource:
-#    driver-class-name: com.mysql.jdbc.Driver
+    #    driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: org.h2.Driver
     url: jdbc:h2:tcp://localhost/~/viewith-db
     username: sa
@@ -32,6 +32,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    org.springframework.security: debug
     feign: debug
 
 kakao:
@@ -39,3 +40,10 @@ kakao:
     uri: https://kauth.kakao.com
   api:
     uri: https://kapi.kakao.com
+
+security:
+  exclude-uris:
+    - /
+    - /v1
+    - /v1/members/login/KAKAO
+    - /v1/members/login/APPLE

@@ -1,6 +1,6 @@
 package com.puremadeleine.viewith.service;
 
-import com.puremadeleine.viewith.config.KakaoOAuthConfig;
+import com.puremadeleine.viewith.config.KakaoOAuthProperties;
 import com.puremadeleine.viewith.dto.client.AccessTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.repository.client.KakaoApiRepository;
@@ -18,23 +18,23 @@ public class KakaoService {
     static String KAKAO_INFO = "[\"kakao_account.email\"]";
     static String TOKEN_PREFIX = "Bearer ";
 
-    KakaoOAuthConfig kakaoOAuthConfig;
+    KakaoOAuthProperties kakaoOAuthProperties;
     KakaoOAuthRepository kakaoOAuthRepository;
     KakaoApiRepository kakaoApiRepository;
 
-    public AccessTokenResDto getAccessToken(String code){
-        return kakaoOAuthRepository.getAccessToken(GRANT_TYPE, kakaoOAuthConfig.getClientId(), kakaoOAuthConfig.getRedirectUri(), code, kakaoOAuthConfig.getClientSecret());
+    public AccessTokenResDto getAccessToken(String code) {
+        return kakaoOAuthRepository.getAccessToken(GRANT_TYPE, kakaoOAuthProperties.getClientId(), kakaoOAuthProperties.getRedirectUri(), code, kakaoOAuthProperties.getClientSecret());
     }
 
-    public UserInfoResDto getKakaoUserInfo(String accessToken){
+    public UserInfoResDto getKakaoUserInfo(String accessToken) {
         return kakaoApiRepository.getUserInfo(TOKEN_PREFIX + accessToken, null, KAKAO_INFO);
     }
 
-    public void logout(String accessToken){
+    public void logout(String accessToken) {
 
     }
 
-    public void updateAccessToken(String accessToken){
+    public void updateAccessToken(String accessToken) {
 
     }
 }

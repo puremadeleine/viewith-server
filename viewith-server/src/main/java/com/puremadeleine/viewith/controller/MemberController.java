@@ -18,17 +18,17 @@ public class MemberController {
 
     @GetMapping(path = "/login/{auth_type}")
     public JoinResDto login(@PathVariable(name = "auth_type") OAuthType oAuthType,
-                           @RequestParam String code) {
+                            @RequestParam String code) {
         return memberService.login(oAuthType, code);
     }
 
     @PutMapping(path = "/refresh")
-    public Object refresh(@RequestParam(name="oauth_type") @Validated OAuthType oauthType) {
+    public Object refresh(@RequestParam(name = "oauth_type") @Validated OAuthType oauthType) {
         return new Object();
     }
 
     @DeleteMapping(path = "")
-    public Object withdraw(@RequestParam(name="oauth_type") @Validated OAuthType oauthType) {
+    public Object withdraw(@RequestParam(name = "oauth_type") @Validated OAuthType oauthType) {
         return new Object();
     }
 
@@ -44,7 +44,7 @@ public class MemberController {
     }
 
     @GetMapping(path = "/nicknames/duplicate")
-    public DuplicateNicknameResDto duplicateNickname(@RequestParam(name="name") String nickname) {
+    public DuplicateNicknameResDto duplicateNickname(@RequestParam(name = "name") String nickname) {
         return memberService.duplicateNickname(nickname);
     }
 

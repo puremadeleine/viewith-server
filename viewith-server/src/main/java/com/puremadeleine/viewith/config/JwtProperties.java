@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "kakao.oauth")
-public class KakaoOAuthConfig {
-    String redirectUri;
-    String clientId;
-    String clientSecret;
+@ConfigurationProperties(prefix = "jwt")
+public class JwtProperties {
+    String accessSecretKey;
+    String refreshSecretKey;
 }
