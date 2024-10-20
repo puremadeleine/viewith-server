@@ -10,8 +10,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import static com.puremadeleine.viewith.converter.review.help.HelpServiceConverter.toHelpInfoResDto;
-import static com.puremadeleine.viewith.converter.review.help.HelpServiceConverter.toHelpListResDto;
+import static com.puremadeleine.viewith.converter.help.HelpServiceConverter.toHelpInfoResDto;
+import static com.puremadeleine.viewith.converter.help.HelpServiceConverter.toHelpListResDto;
 
 @Service
 @RequiredArgsConstructor

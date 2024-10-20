@@ -19,14 +19,15 @@ public class HelpController {
     final HelpService helpService;
 
     @GetMapping("/{help_id}")
-    public HelpInfoResDto getReview(@PathVariable("help_id") Long helpId) {
+    public HelpInfoResDto getHelp(@PathVariable("help_id") Long helpId) {
         return helpService.getHelpInfo(helpId);
     }
 
     @GetMapping("/list")
-    public HelpListResDto getReview(@RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
-                                    @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(20) Integer size,
-                                    @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
+    public HelpListResDto getHelpList(
+            @RequestParam(value = "page", defaultValue = "1") @Min(1) Integer page,
+            @RequestParam(value = "size", defaultValue = "10") @Min(1) @Max(20) Integer size,
+            @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
         return helpService.getHelpList(page, size, isSummary);
     }
 
