@@ -18,8 +18,7 @@ public class HelpController {
 
     @GetMapping("/{help_id}")
     public HelpInfoResDto getReview(@PathVariable("help_id") Long helpId) {
-        HelpInfoResDto helpInfo = helpService.getHelpInfo(helpId);
-        return helpInfo;
+        return helpService.getHelpInfo(helpId);
     }
 
     @GetMapping("/list")
