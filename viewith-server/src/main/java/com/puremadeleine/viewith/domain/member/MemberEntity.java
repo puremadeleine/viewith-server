@@ -15,7 +15,11 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "tb_member")
+@Table(name = "tb_member",
+        uniqueConstraints = @UniqueConstraint(
+                name = "UN_OAUTH", columnNames = {"oauth_type", "oauth_user_id"}
+        )
+)
 public class MemberEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue()
