@@ -1,6 +1,6 @@
 package com.puremadeleine.viewith.service;
 
-import com.puremadeleine.viewith.SpringProxyAware;
+import com.puremadeleine.viewith.aware.SpringProxyAware;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.client.AccessTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;

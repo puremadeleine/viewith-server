@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith;
+package com.puremadeleine.viewith.aware;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
