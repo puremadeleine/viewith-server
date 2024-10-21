@@ -1,6 +1,6 @@
 package com.puremadeleine.viewith.service;
 
-import com.puremadeleine.viewith.config.JwtProperties;
+import com.puremadeleine.viewith.config.auth.JwtProperties;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.provider.MemberProvider;

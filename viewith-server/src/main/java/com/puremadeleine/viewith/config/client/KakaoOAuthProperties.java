@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.config;
+package com.puremadeleine.viewith.config.client;
 
 import lombok.Getter;
 import lombok.Setter;

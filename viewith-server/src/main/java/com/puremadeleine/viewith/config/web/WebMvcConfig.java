@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.config;
+package com.puremadeleine.viewith.config.web;
 
 import com.puremadeleine.viewith.resolver.MemberInfoArgumentResolver;
 import lombok.AccessLevel;

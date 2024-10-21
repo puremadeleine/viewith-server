@@ -1,7 +1,7 @@
 package com.puremadeleine.viewith.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.puremadeleine.viewith.config.SecurityProperties;
+import com.puremadeleine.viewith.config.auth.SecurityProperties;
 import com.puremadeleine.viewith.exception.ErrorResponse;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.service.JwtService;

@@ -1,6 +1,6 @@
 package com.puremadeleine.viewith.repository;
 
-import com.puremadeleine.viewith.config.JpaAuditingConfig;
+import com.puremadeleine.viewith.config.jpa.JpaAuditingConfig;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.member.OAuthType;
 import org.instancio.Instancio;

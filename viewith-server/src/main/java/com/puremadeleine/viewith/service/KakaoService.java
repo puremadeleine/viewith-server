@@ -1,6 +1,6 @@
 package com.puremadeleine.viewith.service;
 
-import com.puremadeleine.viewith.config.KakaoOAuthProperties;
+import com.puremadeleine.viewith.config.client.KakaoOAuthProperties;
 import com.puremadeleine.viewith.dto.client.AccessTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.repository.client.KakaoApiRepository;
