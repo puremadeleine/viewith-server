@@ -24,24 +24,24 @@ public class MemberEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue()
     @Column(name = "member_id")
-    private Long id;
+    Long id;
 
     @Setter(value = AccessLevel.PRIVATE)
     @Column(nullable = false, length = 50)
-    private String nickname;
+    String nickname;
 
     @Column(nullable = false, length = 20)
-    private OAuthType oauthType;
+    OAuthType oauthType;
 
     @Column(nullable = false, unique = true)
-    private Long oauthUserId;
+    Long oauthUserId;
 
     @Column(unique = true)
-    private String oauthEmail;
+    String oauthEmail;
 
     @Setter(value = AccessLevel.PRIVATE)
     @Column(name = "delete_yn", nullable = false)
-    private Boolean deleteYn;
+    Boolean deleteYn;
 
     public static MemberEntity createKakaoMember(UserInfoResDto kakaoUserInfo, String nickname) {
         return MemberEntity.builder()
