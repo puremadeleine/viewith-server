@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.SpringProxyAware;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.client.AccessTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
@@ -21,7 +22,7 @@ import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMe
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class MemberService {
+public class MemberService extends SpringProxyAware<MemberService> {
 
     static String[] NICKNAME_PREFIX = {"잘보이는", "잘난"};
     static String[] NICKNAME_POSTFIX = {"꿀벌", "도롱뇽", "물개"};
@@ -32,7 +33,7 @@ public class MemberService {
 
     public JoinResDto login(OAuthType authType, String code) {
         return switch (authType) {
-            case KAKAO -> loginByKakao(code);
+            case KAKAO -> getProxy().loginByKakao(code);
             case APPLE -> loginByApple(code);
             default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
         };
