@@ -13,6 +13,9 @@ public enum ViewithErrorCode {
     // review
     NO_NORMAL_REVIEW(HttpStatus.NOT_FOUND, 40001, "no normal review"),
 
+    // help
+    NO_HELP(HttpStatus.NOT_FOUND, 50001, "no help"),
+
 
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR , 99999, "unknown exception occured");
 
