@@ -19,6 +19,7 @@ public class ApiResponseHandler implements ResponseBodyAdvice {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response)
     {
+        if(MediaType.TEXT_HTML.equals(selectedContentType)) return body;
         return ApiResponse.of(body);
     }
 }

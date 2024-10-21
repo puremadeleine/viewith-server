@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/reviews")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ReviewController {
 
-    final ReviewService reviewService;
+    ReviewService reviewService;
 
     @PostMapping("")
     public CreateReviewResDto createReview(@RequestBody CreateReviewReqDto createReviewReqDto) {
