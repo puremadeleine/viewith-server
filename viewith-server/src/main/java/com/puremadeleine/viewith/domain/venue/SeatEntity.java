@@ -13,15 +13,15 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SeatEntity {
 
-    @Id
-    @GeneratedValue()
+    @Id @GeneratedValue
     @Column(name = "seat_id")
     Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
-    private VenueEntity venue;
+    VenueEntity venue;
 
+    String floor;
     String section;
     Integer seatRow;
     Integer seatColumn;
