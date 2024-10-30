@@ -3,6 +3,7 @@ package com.puremadeleine.viewith.service;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
+import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.review.*;
 import com.puremadeleine.viewith.provider.ReviewProvider;
 import com.puremadeleine.viewith.provider.SeatProvider;
@@ -53,8 +54,9 @@ public class ReviewService {
     }
 
     public ReviewListResDto getReviewList(ReviewListReqDto req, boolean isSummary) {
-        // todo : sort default로 조회할 때
-        Page<ReviewEntity> reviewList = reviewProvider.getReviewList(req);
+        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.getSortType()))
+                ? reviewProvider.getReviewListPrioritizingMedia(req)
+                : reviewProvider.getReviewList(req);
         return toReviewListResDto(isSummary, reviewList);
     }
 }

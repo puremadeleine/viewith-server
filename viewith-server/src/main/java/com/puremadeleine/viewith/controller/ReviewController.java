@@ -52,7 +52,7 @@ public class ReviewController {
             @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
         // todo : mapper
         ReviewListReqDto req = ReviewListReqDto.builder()
-                .page(page - 1)
+                .page(page)
                 .size(size)
                 .sortType(sortType)
                 .floor(floor)

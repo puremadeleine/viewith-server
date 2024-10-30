@@ -11,10 +11,17 @@ INSERT INTO tb_seat (seat_id, seat_column, seat_row, venue_id, section, floor) V
                                                                             (4, 2, 2, 2, 'B', 2);
 
 -- tb_review
-INSERT INTO tb_review (RATING, REPORT_COUNT, CREATE_TIME, PERFORMANCE_ID, REVIEW_ID, SEAT_ID, UPDATE_TIME, VENUE_ID, BLOCK, CONTENT, STATUS) VALUES
+INSERT INTO tb_review (rating, report_count, create_time, performance_id, review_id, seat_id, update_time, venue_id, block, content, status) VALUES
                         (5.0, 0, '2024-10-22 00:56:11.607361', NULL, 1, 2, '2024-10-22 00:56:11.607361', 1, NULL, '내용', 'NORMAL'),
                         (2.0, 0, '2024-10-22 00:56:13.811936', NULL, 2, 2, '2024-10-22 00:56:13.811936', 1, NULL, '내용', 'NORMAL'),
                         (2.0, 0, '2024-10-22 00:56:38.082731', NULL, 3, 4, '2024-10-22 00:56:38.082731', 1, NULL, '내용', 'NORMAL');
+
+-- tb_image
+INSERT INTO tb_image (image_id, image_url, source_id, source_type) VALUES
+                                                                       (1, 'https://example1.com/image1.jpg', 1, 'REVIEW'),
+                                                                       (2, 'https://example2.com/image2.jpg', 2, 'REVIEW'),
+                                                                       (3, 'https://example3.com/image3.jpg', 3, 'REVIEW');
+
 
 -- tb_help
 INSERT INTO tb_help (help_id, title, content, create_time) VALUES
