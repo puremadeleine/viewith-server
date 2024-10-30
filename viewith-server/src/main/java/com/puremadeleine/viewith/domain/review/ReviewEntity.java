@@ -72,4 +72,12 @@ public class ReviewEntity extends BaseTimeEntity {
     public void deleteReview() {
         this.setStatus(Status.DELETED);
     }
+
+    public void reportReview() {
+        // todo : report count final 변수로 수정
+        reportCount += 1;
+        if (reportCount >= 5) {
+            this.setStatus(Status.REPORTED);
+        }
+    }
 }

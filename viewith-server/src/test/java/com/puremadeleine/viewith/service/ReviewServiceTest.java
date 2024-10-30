@@ -8,6 +8,7 @@ import com.puremadeleine.viewith.dto.review.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.ReviewInfoResDto;
 import com.puremadeleine.viewith.dto.review.UpdateReviewReqDto;
 import com.puremadeleine.viewith.provider.ReviewProvider;
+import com.puremadeleine.viewith.provider.ReviewReportProvider;
 import com.puremadeleine.viewith.provider.SeatProvider;
 import com.puremadeleine.viewith.provider.VenueProvider;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +24,9 @@ class ReviewServiceTest {
     ReviewProvider reviewProvider = mock(ReviewProvider.class);
     VenueProvider venueProvider = mock(VenueProvider.class);
     SeatProvider seatProvider = mock(SeatProvider.class);
+    ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
 
-    ReviewService reviewService = new ReviewService(reviewProvider, venueProvider, seatProvider);
+    ReviewService reviewService = new ReviewService(reviewProvider, venueProvider, seatProvider, reviewReportProvider);
 
     @DisplayName("create review successfully")
     @Test

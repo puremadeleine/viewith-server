@@ -20,14 +20,12 @@ public class ReviewController {
 
     @PostMapping("")
     public CreateReviewResDto createReview(@RequestBody CreateReviewReqDto createReviewReqDto) {
-        CreateReviewResDto review = reviewService.createReview(createReviewReqDto);
-        return review;
+        return reviewService.createReview(createReviewReqDto);
     }
 
     @GetMapping("/{review_id}")
     public ReviewInfoResDto getReview(@PathVariable("review_id") Long reviewId) {
-        ReviewInfoResDto reviewInfo = reviewService.getReviewInfo(reviewId);
-        return reviewInfo;
+        return reviewService.getReviewInfo(reviewId);
     }
 
     @PutMapping("/{review_id}")
@@ -60,5 +58,11 @@ public class ReviewController {
                 .seatRow(seatRow)
                 .build();
         return reviewService.getReviewList(req, isSummary);
+    }
+
+    @PostMapping("/{review_id}/report")
+    public void reportReview(@PathVariable("review_id") Long reviewId,
+                             @RequestBody ReportReviewReqDto req) {
+        reviewService.reportReview(reviewId, req);
     }
 }
