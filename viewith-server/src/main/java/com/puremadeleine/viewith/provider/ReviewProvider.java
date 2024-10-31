@@ -38,12 +38,12 @@ public class ReviewProvider {
     public Page<ReviewEntity> getReviewList(ReviewListReqDto req) {
         List<ReviewEntity> reviewList = reviewCustomRepository.findReviewList(req);
         int total = reviewCustomRepository.countReviewTotal(req);
-        return new PageImpl<>(reviewList, PageRequest.of(req.getPage() - 1, req.getSize()), total);
+        return new PageImpl<>(reviewList, PageRequest.of(req.getPage(), req.getSize()), total);
     }
 
     public Page<ReviewEntity> getReviewListPrioritizingMedia(ReviewListReqDto req) {
         List<ReviewEntity> reviewList = reviewCustomRepository.findReviewListPrioritizingMedia(req);
         int total = reviewCustomRepository.countReviewTotal(req);
-        return new PageImpl<>(reviewList, PageRequest.of(req.getPage() - 1, req.getSize()), total);
+        return new PageImpl<>(reviewList, PageRequest.of(req.getPage(), req.getSize()), total);
     }
 }

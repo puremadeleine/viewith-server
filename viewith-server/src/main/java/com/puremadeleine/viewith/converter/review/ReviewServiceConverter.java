@@ -21,7 +21,7 @@ public class ReviewServiceConverter {
 
     public static ReviewListResDto toReviewListResDto(Boolean isSummary, Page<ReviewEntity> reviewList) {
         return ReviewListResDto.builder()
-                .page(reviewList.getPageable().getPageNumber() + 1)
+                .page(reviewList.getPageable().getPageNumber())
                 .size(reviewList.getSize())
                 .listSize(reviewList.getContent().size())
                 .total(reviewList.getTotalElements())
