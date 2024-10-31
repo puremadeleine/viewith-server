@@ -5,25 +5,23 @@ spring:
     include: private
 
   datasource:
-    #    driver-class-name: com.mysql.jdbc.Driver
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/viewith-db
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
     username: sa
     password:
-  # test용 설정
   sql:
     init:
       mode: always
 
   jpa:
+    database: h2
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-    # test용 설정
     defer-datasource-initialization: true
+    database-platform: org.hibernate.dialect.MySQLDialect
 
   jackson:
     property-naming-strategy: SNAKE_CASE
