@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ViewithErrorCode {
 
+    // common
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 00000, "invalid token"),
+    FORBIDDEN_TOKEN(HttpStatus.FORBIDDEN, 00001, "forbidden token"),
+    INVALID_PARAM(HttpStatus.BAD_REQUEST, 00002, "invalid param"),
+
     // venue
     NO_VENUE(HttpStatus.NOT_FOUND, 30001, "no venue"),
     NO_SEAT(HttpStatus.NOT_FOUND, 30002, "no seat"),
