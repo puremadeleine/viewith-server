@@ -39,7 +39,6 @@ public class MemberController {
 
     @PutMapping(path = "/nicknames")
     public void putNickname(MemberInfo memberInfo, UpdateNicknameReqDto nickname) {
-        // 204
         memberService.putNickname(memberInfo.getMemberId(), nickname.getNickname());
     }
 
