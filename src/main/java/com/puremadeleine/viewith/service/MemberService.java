@@ -58,8 +58,8 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .accessToken(oauthAccessToken)
                 .refreshToken(tokenInfo.getRefreshToken())
                 .build();
-        String accessToken = jwtService.makeAccessToken(memberInfo);
-        String refreshToken = jwtService.makeRefreshToken(memberInfo);
+        String accessToken = jwtService.makeAccessToken(memberInfo, tokenInfo.getExpiresIn());
+        String refreshToken = jwtService.makeRefreshToken(memberInfo, tokenInfo.getRefreshTokenExpiresIn());
 
         return JoinResDto.builder()
                 .accessToken(accessToken)
