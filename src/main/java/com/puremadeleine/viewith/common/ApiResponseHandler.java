@@ -28,8 +28,7 @@ public class ApiResponseHandler implements ResponseBodyAdvice {
             response.setStatusCode(HttpStatus.CREATED);
         } else if (method == HttpMethod.PUT && isNull(body)) {
             response.setStatusCode(HttpStatus.NO_CONTENT);
-            return null;
         }
-        return isNull(body) ? body : ApiResponse.of(body);
+        return body;
     }
 }
