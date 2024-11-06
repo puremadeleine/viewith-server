@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.config;
+package com.puremadeleine.viewith.config.jpa;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
