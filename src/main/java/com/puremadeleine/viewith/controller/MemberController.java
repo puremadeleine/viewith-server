@@ -42,7 +42,7 @@ public class MemberController {
         memberService.putNickname(memberInfo, nickname.getNickname());
     }
 
-    @GetMapping(path = "/nicknames/duplicate")
+    @GetMapping(path = "/nicknames/validate")
     public ValidateNicknameResDto validateNickname(@RequestParam(name = "name") String nickname) {
         return memberService.validateNickname(nickname);
     }
