@@ -12,8 +12,11 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import net.datafaker.Faker;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
 
@@ -24,8 +27,9 @@ import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMe
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MemberService extends SpringProxyAware<MemberService> {
 
-    static String[] NICKNAME_PREFIX = {"잘보이는", "잘난"};
-    static String[] NICKNAME_POSTFIX = {"꿀벌", "도롱뇽", "물개"};
+    static String NICKNAME_PATTERN = "^(?! )[a-zA-Z0-9가-힣\\s]{1,10}(?<! )$";
+    static String[] NICKNAME_PREFIXES = {"잘보이는", "시끄러운", "분노한", "기쁜", "행복한", "즐거운", "슬픈", "서글픈", "울고있는", "웃고있는", "경악하는", "소리치는", "박수치는", "낄낄"};
+    static String NICKNAME_MIDDLE = " ";
 
     MemberProvider memberProvider;
     KakaoService kakaoService;
@@ -76,12 +80,25 @@ public class MemberService extends SpringProxyAware<MemberService> {
         return ProfileResDto.builder().build();
     }
 
-    public void putNickname(Long memberId, String nickname) {
-
+    public void putNickname(MemberInfo member, String nickname) {
+        if (!StringUtils.equals(member.getNickname(), nickname)) {
+            validateNickname(nickname);
+            MemberEntity activeMember = memberProvider.getActiveMember(member.getMemberId());
+            activeMember.updateNickname(nickname);
+            memberProvider.saveMember(activeMember);
+        }
     }
 
-    public DuplicateNicknameResDto duplicateNickname(String nickname) {
-        return DuplicateNicknameResDto.builder().build();
+    public ValidateNicknameResDto validateNickname(String nickname) {
+        if (!nickname.matches(NICKNAME_PATTERN)) {
+            throw new ViewithException(ViewithErrorCode.INVALID_NICKNAME_FORMAT);
+        }
+
+        if (!memberProvider.isNicknameUnique(nickname)) {
+            throw new ViewithException(ViewithErrorCode.DUPLICATED_NICKNAME);
+        }
+
+        return ValidateNicknameResDto.builder().isValidated(true).build();
     }
 
     private MemberEntity handleExistingMember(MemberEntity existingMember) {
@@ -97,8 +114,20 @@ public class MemberService extends SpringProxyAware<MemberService> {
         return memberProvider.save(newMember);
     }
 
-    private static String makeRandomNickname() {
-        return NICKNAME_PREFIX[getRandomNumber(NICKNAME_PREFIX.length)] + NICKNAME_POSTFIX[getRandomNumber(NICKNAME_POSTFIX.length)];
+    private String makeRandomNickname() {
+        String nickname = makeNickname();
+        while (!memberProvider.isNicknameUnique(nickname)) {
+            nickname = makeNickname();
+        }
+        return nickname;
+    }
+
+    private static String makeNickname() {
+        Faker faker = new Faker(Locale.KOREA, new Random());
+        String nickname = NICKNAME_PREFIXES[getRandomNumber(NICKNAME_PREFIXES.length)] + NICKNAME_MIDDLE
+                + faker.address().cityName() + NICKNAME_MIDDLE + faker.name().firstName();
+        nickname = nickname.length() > 10 ? nickname.substring(0, 10) : nickname;
+        return nickname;
     }
 
     private static int getRandomNumber(int size) {

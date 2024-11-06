@@ -16,9 +16,14 @@ import java.util.Optional;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "tb_member",
-        uniqueConstraints = @UniqueConstraint(
-                name = "UN_OAUTH", columnNames = {"oauth_type", "oauth_user_id"}
-        )
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UN_OAUTH", columnNames = {"oauth_type", "oauth_user_id"}
+                ),
+                @UniqueConstraint(
+                        name = "UN_NICKNAME", columnNames = {"nickname"}
+                )
+        }
 )
 public class MemberEntity extends BaseTimeEntity {
     @Id
@@ -27,7 +32,7 @@ public class MemberEntity extends BaseTimeEntity {
     Long id;
 
     @Setter(value = AccessLevel.PRIVATE)
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 10)
     String nickname;
 
     @Column(nullable = false, length = 20)
