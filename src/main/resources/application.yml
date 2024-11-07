@@ -43,3 +43,4 @@ security:
     - /v1/members/login/APPLE
     - /v1/members/test3
     - /v1/members/test4
+    - /health
