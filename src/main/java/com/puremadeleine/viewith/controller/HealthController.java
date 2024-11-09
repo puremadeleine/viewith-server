@@ -9,7 +9,7 @@ import java.util.Map;
 public class HealthController {
 
     @GetMapping(value = {"health", "health-check", "healthcheck"})
-    public Map<String, String> healthCheck() {
-        return Map.of("health-check", "ok");
+    public String healthCheck() {
+        return "ok";
     }
 }
