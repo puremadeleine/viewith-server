@@ -13,11 +13,12 @@ import com.puremadeleine.viewith.provider.VenueProvider;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewInfoResDto;
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
 
 @Service
@@ -29,6 +30,7 @@ public class ReviewService {
     VenueProvider venueProvider;
     SeatProvider seatProvider;
     ReviewReportProvider reviewReportProvider;
+    ReviewServiceMapper mapper;
 
     @Transactional
     public CreateReviewResDto createReview(CreateReviewReqDto reqDto) {
@@ -53,7 +55,7 @@ public class ReviewService {
 
     public ReviewInfoResDto getReviewInfo(Long reviewId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
-        return toReviewInfoResDto(review);
+        return mapper.toReviewInfoResDto(review);
     }
 
     public ReviewListResDto getReviewList(ReviewListReqDto req, boolean isSummary) {
@@ -70,4 +72,12 @@ public class ReviewService {
                 ReviewReportEntity.createReviewReport(review, req.getReportReason(), req.getReportReasonDetail());
         reviewReportProvider.saveReviewReport(reviewReport);
     }
+
+    @Mapper(componentModel = "spring")
+    public interface ReviewServiceMapper {
+
+        @Mapping(source = "id", target = "reviewId")
+        ReviewInfoResDto toReviewInfoResDto(ReviewEntity review);
+    }
+
 }

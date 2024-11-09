@@ -30,7 +30,7 @@ public class ReviewReportEntity extends BaseTimeEntity {
     String reportReasonDetail;
 
     public static ReviewReportEntity createReviewReport(ReviewEntity review,
-                                                        ReportReason reportReason,String detail) {
+                                                        ReportReason reportReason, String detail) {
         return ReviewReportEntity.builder()
                 .review(review)
                 .reportReason(reportReason)

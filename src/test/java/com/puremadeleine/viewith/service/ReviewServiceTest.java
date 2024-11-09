@@ -13,6 +13,7 @@ import com.puremadeleine.viewith.provider.SeatProvider;
 import com.puremadeleine.viewith.provider.VenueProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,8 +31,10 @@ class ReviewServiceTest {
     VenueProvider venueProvider = mock(VenueProvider.class);
     SeatProvider seatProvider = mock(SeatProvider.class);
     ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
+    ReviewService.ReviewServiceMapper reviewServiceMapper = Mappers.getMapper(ReviewService.ReviewServiceMapper.class);
 
-    ReviewService reviewService = new ReviewService(reviewProvider, venueProvider, seatProvider, reviewReportProvider);
+    ReviewService reviewService = new ReviewService(
+            reviewProvider, venueProvider, seatProvider,reviewReportProvider, reviewServiceMapper);
 
     @DisplayName("create review successfully")
     @Test
