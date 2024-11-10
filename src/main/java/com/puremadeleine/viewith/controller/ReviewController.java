@@ -48,7 +48,6 @@ public class ReviewController {
             @RequestParam(value = "section", required = false) String section,
             @RequestParam(value = "seat_row", required = false) Integer seatRow,
             @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
-        // todo : mapper
         ReviewListReqDto req = ReviewListReqDto.builder()
                 .page(page)
                 .size(size)

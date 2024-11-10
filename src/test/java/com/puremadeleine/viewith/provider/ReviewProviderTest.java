@@ -98,7 +98,7 @@ class ReviewProviderTest {
         when(reviewCustomRepository.countReviewTotal(any(ReviewListReqDto.class))).thenReturn(total);
 
         ReviewListReqDto req = ReviewListReqDto.builder()
-                .page(page)
+                .page(page + 1)
                 .size(size)
                 .sortType(SortType.DEFAULT)
                 .floor("1")
@@ -134,7 +134,7 @@ class ReviewProviderTest {
                 .thenReturn(total);
 
         ReviewListReqDto req = ReviewListReqDto.builder()
-                .page(page)
+                .page(page + 1)
                 .size(size)
                 .sortType(SortType.DEFAULT)
                 .floor("1")
