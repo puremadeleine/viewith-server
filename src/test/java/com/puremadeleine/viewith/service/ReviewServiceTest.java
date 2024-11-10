@@ -251,7 +251,7 @@ class ReviewServiceTest {
 
     Page<ReviewEntity> getReviewList(Integer page, Integer size, Long total) {
         List<ReviewEntity> reviewList = List.of(getReview());
-        return new PageImpl<>(reviewList, PageRequest.of(page, size), total);
+        return new PageImpl<>(reviewList, PageRequest.of(page - 1, size), total);
     }
 
 }
