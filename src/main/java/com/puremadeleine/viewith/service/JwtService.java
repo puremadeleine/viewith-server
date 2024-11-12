@@ -5,6 +5,7 @@ import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.provider.MemberProvider;
 import com.puremadeleine.viewith.util.JwtUtil;
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -44,6 +45,7 @@ public class JwtService {
         return "";
     }
 
+    @Nullable
     public Authentication getAuthentication(String accessToken) {
         MemberInfo memberInfo = getMemberInfo(accessToken);
         Optional<MemberEntity> member = memberProvider.findActiveMember(memberInfo.getMemberId());

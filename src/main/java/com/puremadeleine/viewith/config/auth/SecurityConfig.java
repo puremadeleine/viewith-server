@@ -1,12 +1,14 @@
 package com.puremadeleine.viewith.config.auth;
 
-import com.puremadeleine.viewith.filter.JwtAuthenticationFilter;
+import com.puremadeleine.viewith.auth.JwtAuthenticationFilter;
+import com.puremadeleine.viewith.auth.JwtAuthenticationProvider;
 import com.puremadeleine.viewith.service.JwtService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -25,7 +27,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
 
-    JwtService jwtService;
+    JwtAuthenticationProvider jwtAuthenticationProvider;
     SecurityProperties securityProperties;
 
     @Bean
@@ -40,9 +42,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {
-            web.ignoring().requestMatchers(securityProperties.getExcludeUris().toArray(new String[0]));
-        };
+        return web -> web.ignoring().requestMatchers(securityProperties.getExcludeUris().toArray(new String[0]));
     }
 
     @Bean
@@ -58,8 +58,7 @@ public class SecurityConfig {
         return source;
     }
 
-    @Bean // default filter chain에 포함되도록 Bean으로 등록
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtService, securityProperties);
+        return new JwtAuthenticationFilter(jwtAuthenticationProvider);
     }
 }
