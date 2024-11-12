@@ -18,6 +18,14 @@ import java.util.Optional;
 public class MemberProvider {
     MemberRepository memberRepository;
 
+    public boolean isNicknameUnique(String nickname) {
+        return memberRepository.findByNickname(nickname).isEmpty();
+    }
+
+    public MemberEntity saveMember(MemberEntity member) {
+        return memberRepository.save(member);
+    }
+
     public Optional<MemberEntity> findActiveMember(Long memberId) {
         return memberRepository.findByIdAndDeleteYn(memberId, false);
     }

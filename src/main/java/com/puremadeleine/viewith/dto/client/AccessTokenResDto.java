@@ -16,7 +16,7 @@ public class AccessTokenResDto {
     String accessToken;
     @Nullable
     String idToken;
-    Integer expiresIn;
+    int expiresIn;
     String refreshToken;
     Integer refreshTokenExpiresIn;
     @Nullable

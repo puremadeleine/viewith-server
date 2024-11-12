@@ -12,6 +12,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DuplicateNicknameResDto {
-    Boolean isDuplicated;
+public class ValidateNicknameResDto {
+    Boolean isValidated;
 }
