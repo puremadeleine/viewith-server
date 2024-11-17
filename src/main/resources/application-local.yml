@@ -30,3 +30,23 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+kakao:
+  oauth:
+    uri: https://kauth.kakao.com
+  api:
+    uri: https://kapi.kakao.com
+
+security:
+  exclude-uris:
+    - /
+    - /v1
+    - /v1/members/login/KAKAO
+    - /v1/members/login/APPLE
+    - /v1/members/test3
+    - /v1/members/test4
+    - /health
+    - /v1/reviews/list
+    - /v1/reviews/1
+    - /v1/help/1
+    - /v1/help/list
