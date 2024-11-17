@@ -18,3 +18,11 @@ INSERT INTO tb_help (help_id, title, content, create_time) VALUES
                                                                 (3, '도움말3', '<p>도움말입니도<img src="https://example" alt="이미지"/>도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도도움말입니도</p>', now());
 
 
+
+-- tb_performance
+INSERT INTO tb_performance (performance_id, title, artist, start_date, end_date, venue_id) VALUES
+                                                               (1, '첫번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
+                                                               (2, '두번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
+                                                               (3, '스키즈 콘서트', '더보이즈', now(), now(), 1);
+
+
