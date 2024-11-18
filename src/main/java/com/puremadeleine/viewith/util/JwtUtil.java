@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
@@ -15,6 +16,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 @UtilityClass
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -42,7 +44,7 @@ public class JwtUtil {
 
     public static boolean validateToken(String token, String secretKey) {
         try {
-            getClaims(token, secretKey);
+            findClaims(token, secretKey);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
@@ -54,6 +56,11 @@ public class JwtUtil {
         return claims.getExpiration().before(new Date());
     }
 
+    private static Optional<Claims> findClaims(@Nullable String token, String secretKey) {
+        return Optional.ofNullable(token)
+                .map(tk -> getClaims(token, secretKey));
+    }
+
     private static Claims getClaims(String token, String secretKey) {
         return Jwts.parserBuilder()
                 .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
@@ -62,6 +69,7 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
 
     private static SecretKey makeKey(String secretKey) {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));

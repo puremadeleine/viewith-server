@@ -2,11 +2,14 @@ package com.puremadeleine.viewith.controller;
 
 import com.puremadeleine.viewith.dto.member.*;
 import com.puremadeleine.viewith.service.MemberService;
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/members")
@@ -48,7 +51,22 @@ public class MemberController {
     }
 
     @GetMapping(path = "/bookmarks")
-    public Object getBookmarks(MemberInfo memberInfo) {
-        return new Object();
+    public MemberInfo getBookmarks(MemberInfo memberInfo) {
+        return memberInfo;
+    }
+
+    @GetMapping(path = "/bookmarks_test")
+    public MemberInfo test(@Nullable MemberInfo memberInfo) {
+        return memberInfo;
+    }
+
+    @GetMapping(path = "/bookmarks_test2")
+    public MemberInfo test(Optional<MemberInfo> memberInfo) {
+        return memberInfo.orElse(MemberInfo.builder().build());
+    }
+
+    @GetMapping(path = "/test")
+    public MemberInfo test2() {
+        return MemberInfo.builder().build();
     }
 }

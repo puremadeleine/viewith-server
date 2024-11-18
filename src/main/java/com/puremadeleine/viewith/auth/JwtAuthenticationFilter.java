@@ -1,28 +1,16 @@
 package com.puremadeleine.viewith.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.puremadeleine.viewith.config.auth.SecurityProperties;
-import com.puremadeleine.viewith.exception.ErrorResponse;
-import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import jakarta.annotation.Nullable;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.Null;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,13 +21,15 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
 
     public JwtAuthenticationFilter(JwtAuthenticationProvider jwtAuthenticationProvider) {
-
         setAuthenticationManager(jwtAuthenticationProvider);
         setAuthenticationSuccessHandler(((request, response, authentication) -> {
-            if(log.isInfoEnabled()){
+            if (log.isInfoEnabled()) {
                 log.info("Found account {} from JWT Token: {}",
-                        authentication.getName(),
-                        Optional.ofNullable(authentication.getAuthorities())
+                        Optional.ofNullable(authentication)
+                                .map(Principal::getName)
+                                .orElse(null),
+                        Optional.ofNullable(authentication)
+                                .map(Authentication::getAuthorities)
                                 .orElse(List.of())
                                 .stream()
                                 .map(GrantedAuthority::getAuthority)

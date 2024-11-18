@@ -1,6 +1,5 @@
 package com.puremadeleine.viewith.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.MethodParameter;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,9 +17,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -42,33 +37,34 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         Optional<MemberInfo> memberInfoOptional = findMemberInfo();
 
-        if(isOptional(parameter)){
+        if (isOptional(parameter)) {
             return memberInfoOptional;
         }
 
-        if(hasNullableAnnotation(parameter)){
+        if (hasNullableAnnotation(parameter)) {
             return memberInfoOptional.orElse(null);
         }
 
         //TODO: throw new ViewithException(ViewithErrorCode.INVALID_TOKEN) 로 변환
-        return memberInfoOptional.orElseThrow(() -> new AuthenticationCredentialsNotFoundException("Not Foune MemberInfo"));
+        // new AuthenticationCredentialsNotFoundException("Not Foune MemberInfo"));
+        return memberInfoOptional.orElseThrow(() -> new ViewithException(ViewithErrorCode.INVALID_TOKEN));
     }
 
-    private Optional<MemberInfo> findMemberInfo(){
+    private Optional<MemberInfo> findMemberInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return Stream.of(authentication)
-                .map(auth -> (MemberInfo)auth.getDetails())
+        return Optional.ofNullable(authentication)
+                .map(auth -> (MemberInfo) auth.getDetails())
                 .map(memberInfo -> memberInfo.updateNickname(authentication.getName()))
-                .findAny();
+                .stream().findAny();
     }
 
-    private boolean isOptional(MethodParameter parameter){
+    private boolean isOptional(MethodParameter parameter) {
         return parameter.getParameterType() == Optional.class;
     }
 
-    private boolean hasNullableAnnotation(MethodParameter parameter){
+    private boolean hasNullableAnnotation(MethodParameter parameter) {
         Annotation[] annotations = parameter.getParameterAnnotations();
-        if(ArrayUtils.isEmpty(annotations)){
+        if (ArrayUtils.isEmpty(annotations)) {
             return false;
         }
 

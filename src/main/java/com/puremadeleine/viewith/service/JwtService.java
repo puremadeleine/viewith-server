@@ -5,10 +5,10 @@ import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.provider.MemberProvider;
 import com.puremadeleine.viewith.util.JwtUtil;
-import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -41,11 +41,6 @@ public class JwtService {
         return JwtUtil.createToken(jwtProperties.getRefreshSecretKey(), expiredMs, memberInfo);
     }
 
-    public String makeRefreshToken() {
-        return "";
-    }
-
-    @Nullable
     public Authentication getAuthentication(String accessToken) {
         MemberInfo memberInfo = getMemberInfo(accessToken);
         Optional<MemberEntity> member = memberProvider.findActiveMember(memberInfo.getMemberId());
@@ -55,9 +50,8 @@ public class JwtService {
                         .authorities(List.of())
                         .build())
                 .orElse(null);
-
         if (userDetails == null) {
-            return null;
+            throw new AuthenticationCredentialsNotFoundException("Invalid UserDetail");
         }
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, accessToken, userDetails.getAuthorities());
