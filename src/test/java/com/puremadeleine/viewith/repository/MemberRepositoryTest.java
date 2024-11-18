@@ -1,6 +1,6 @@
 package com.puremadeleine.viewith.repository;
 
-import com.puremadeleine.viewith.config.jpa.JpaAuditingConfig;
+import com.puremadeleine.viewith.config.jpa.JpaConfig;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.member.OAuthType;
 import org.instancio.Instancio;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
 
 @DataJpaTest
-@Import(JpaAuditingConfig.class)
+@Import(JpaConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MemberRepositoryTest {
     @Autowired

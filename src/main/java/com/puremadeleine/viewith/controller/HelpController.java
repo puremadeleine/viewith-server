@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/help")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class HelpController {
 
-    final HelpService helpService;
+    HelpService helpService;
 
     @GetMapping("/{help_id}")
     public HelpInfoResDto getHelp(@PathVariable("help_id") Long helpId) {

@@ -26,7 +26,7 @@ public class HelpProvider {
     }
 
     public Page<HelpEntity> getHelpList(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<HelpEntity> result = helpRepository.findAll(pageable);
         return result;
     }
