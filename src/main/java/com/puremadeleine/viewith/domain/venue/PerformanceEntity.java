@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PerformanceEntity {
 
-    @Id
-    @GeneratedValue()
+    @Id @GeneratedValue
     @Column(name = "review_id")
     Long id;
 
@@ -27,7 +26,7 @@ public class PerformanceEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
-    private VenueEntity venue;
+    VenueEntity venue;
 
     String imageUrl;
 }

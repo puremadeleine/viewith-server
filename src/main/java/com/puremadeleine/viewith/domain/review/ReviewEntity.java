@@ -19,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewEntity extends BaseTimeEntity {
 
-    @Id @GeneratedValue()
+    @Id @GeneratedValue
     @Column(name = "review_id")
     Long id;
 
@@ -37,18 +37,18 @@ public class ReviewEntity extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
-    private VenueEntity venue;
+    VenueEntity venue;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id")
-    private SeatEntity seat;
+    SeatEntity seat;
 
     @Enumerated(EnumType.STRING)
     Block block;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
-    private PerformanceEntity performance;
+    PerformanceEntity performance;
 
     // todo : member info 추가
 
@@ -71,5 +71,13 @@ public class ReviewEntity extends BaseTimeEntity {
 
     public void deleteReview() {
         this.setStatus(Status.DELETED);
+    }
+
+    public void reportReview() {
+        // todo : report count final 변수로 수정
+        reportCount += 1;
+        if (reportCount >= 5) {
+            this.setStatus(Status.REPORTED);
+        }
     }
 }

@@ -1,15 +1,17 @@
 spring:
   application:
     name: viewith-server
-  profiles:
-    include: private
 
   datasource:
-    #    driver-class-name: com.mysql.jdbc.Driver
+#    driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: org.h2.Driver
     url: jdbc:h2:tcp://localhost/~/viewith-db
     username: sa
     password:
+  # test용 설정
+  sql:
+    init:
+      mode: always
 
   jpa:
     hibernate:
@@ -18,6 +20,8 @@ spring:
       hibernate:
 #        show_sql: true
         format_sql: true
+    # test용 설정
+    defer-datasource-initialization: true
 
   jackson:
     property-naming-strategy: SNAKE_CASE
@@ -26,8 +30,6 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
-    org.springframework.security: debug
-    feign: debug
 
 kakao:
   oauth:
@@ -46,13 +48,5 @@ security:
     - /health
     - /v1/reviews/list
     - /v1/reviews/1
-    - /v1/reviews/2
-    - /v1/reviews/3
-    - /v1/reviews/4
-    - /v1/reviews/5
     - /v1/help/1
-    - /v1/help/2
-    - /v1/help/3
-    - /v1/help/4
-    - /v1/help/5
     - /v1/help/list
