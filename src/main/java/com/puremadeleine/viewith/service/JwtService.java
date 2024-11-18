@@ -17,23 +17,27 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtService {
-    static Long ACCESS_EXPIRED_TIME = Duration.ofMinutes(1).toMillis();
-    static Long REFRESH_EXPIRED_TIME = Duration.ofDays(1).toMillis();
+    static Long REFRESH_EXPIRED_TIME = Duration.ofDays(7).toMillis();
 
     JwtProperties jwtProperties;
     MemberProvider memberProvider;
 
-    public String makeAccessToken(MemberInfo memberInfo) {
-        return JwtUtil.createToken(jwtProperties.getAccessSecretKey(), ACCESS_EXPIRED_TIME, memberInfo);
+    public String makeAccessToken(MemberInfo memberInfo, int expiredSeconds) {
+        long expiredMs = TimeUnit.SECONDS.toMillis(expiredSeconds);
+        return JwtUtil.createToken(jwtProperties.getAccessSecretKey(), expiredMs, memberInfo);
     }
 
-    public String makeRefreshToken(MemberInfo memberInfo) {
-        return JwtUtil.createToken(jwtProperties.getRefreshSecretKey(), REFRESH_EXPIRED_TIME, memberInfo);
+    public String makeRefreshToken(MemberInfo memberInfo, Integer expiredSeconds) {
+        long expiredMs = isNull(expiredSeconds) ? REFRESH_EXPIRED_TIME : TimeUnit.SECONDS.toMillis(expiredSeconds);
+        return JwtUtil.createToken(jwtProperties.getRefreshSecretKey(), expiredMs, memberInfo);
     }
 
     public String makeRefreshToken() {

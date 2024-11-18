@@ -39,13 +39,12 @@ public class MemberController {
 
     @PutMapping(path = "/nicknames")
     public void putNickname(MemberInfo memberInfo, UpdateNicknameReqDto nickname) {
-        // 204
-        memberService.putNickname(memberInfo.getMemberId(), nickname.getNickname());
+        memberService.putNickname(memberInfo, nickname.getNickname());
     }
 
-    @GetMapping(path = "/nicknames/duplicate")
-    public DuplicateNicknameResDto duplicateNickname(@RequestParam(name = "name") String nickname) {
-        return memberService.duplicateNickname(nickname);
+    @GetMapping(path = "/nicknames/validate")
+    public ValidateNicknameResDto validateNickname(@RequestParam(name = "name") String nickname) {
+        return memberService.validateNickname(nickname);
     }
 
     @GetMapping(path = "/bookmarks")
