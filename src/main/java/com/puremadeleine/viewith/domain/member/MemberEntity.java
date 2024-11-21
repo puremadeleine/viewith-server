@@ -27,7 +27,7 @@ import java.util.Optional;
 )
 public class MemberEntity extends BaseTimeEntity {
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     Long id;
 
@@ -35,6 +35,7 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false, length = 10)
     String nickname;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     OAuthType oauthType;
 
