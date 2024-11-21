@@ -15,18 +15,18 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PerformanceEntity {
 
-    @Id @GeneratedValue
-    @Column(name = "review_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "performance_id")
     Long id;
 
     String title;
-    String article;
+    String artist;
     LocalDateTime startDate;
     LocalDateTime endDate;
+    String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "venue_id")
     VenueEntity venue;
-
-    String imageUrl;
 }
