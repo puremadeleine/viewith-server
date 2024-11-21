@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.exception;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Builder
@@ -22,6 +23,13 @@ public class ErrorResponse {
         return ErrorResponse.builder()
                 .code(errorCode.getCode())
                 .message(detailMessage != null ? detailMessage : errorCode.getMessage())
+                .build();
+    }
+
+    public static ErrorResponse of(HttpStatus httpStatus){
+        return ErrorResponse.builder()
+                .code(httpStatus.value())
+                .message(httpStatus.getReasonPhrase())
                 .build();
     }
 }

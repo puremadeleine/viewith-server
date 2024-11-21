@@ -37,6 +37,14 @@ VALUES (1, '도움말1',
         now());
 
 
+
+-- tb_performance
+INSERT INTO tb_performance (performance_id, title, artist, start_date, end_date, venue_id) VALUES
+                                                               (1, '첫번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
+                                                               (2, '두번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
+                                                               (3, '스키즈 콘서트', '더보이즈', now(), now(), 1);
+
+
 -- tb_member
 INSERT
 INTO tb_member (member_id, oauth_user_id, delete_yn, nickname, oauth_email, oauth_type)
