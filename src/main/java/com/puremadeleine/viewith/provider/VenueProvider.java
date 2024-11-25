@@ -8,17 +8,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.NO_VENUE;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VenueProvider {
 
-    final VenueRepository venueRepository;
+    VenueRepository venueRepository;
+
+    public List<VenueEntity> getVenues() {
+        return venueRepository.findAll();
+    }
 
     public VenueEntity getVenue(Long venueId) {
         return venueRepository.findById(venueId)
                 .orElseThrow(() -> new ViewithException(NO_VENUE, "The venue with ID " + venueId + " was not found."));
     }
+
+
 }
