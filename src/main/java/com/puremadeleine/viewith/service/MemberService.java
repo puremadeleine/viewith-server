@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.aware.SpringProxyAware;
+import com.puremadeleine.viewith.constants.NicknameConstants;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.client.AccessTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
@@ -12,11 +13,9 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import net.datafaker.Faker;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
 
@@ -26,10 +25,6 @@ import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMe
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MemberService extends SpringProxyAware<MemberService> {
-
-    static String NICKNAME_PATTERN = "^(?! )[a-zA-Z0-9가-힣\\s]{1,10}(?<! )$";
-    static String[] NICKNAME_PREFIXES = {"잘보이는", "시끄러운", "분노한", "기쁜", "행복한", "즐거운", "슬픈", "서글픈", "울고있는", "웃고있는", "경악하는", "소리치는", "박수치는", "낄낄"};
-    static String NICKNAME_MIDDLE = " ";
 
     MemberProvider memberProvider;
     KakaoService kakaoService;
@@ -90,7 +85,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
     }
 
     public ValidateNicknameResDto validateNickname(String nickname) {
-        if (!nickname.matches(NICKNAME_PATTERN)) {
+        if (!nickname.matches(NicknameConstants.PATTERN)) {
             throw new ViewithException(ViewithErrorCode.INVALID_NICKNAME_FORMAT);
         }
 
@@ -123,10 +118,13 @@ public class MemberService extends SpringProxyAware<MemberService> {
     }
 
     private static String makeNickname() {
-        Faker faker = new Faker(Locale.KOREA, new Random());
-        String nickname = NICKNAME_PREFIXES[getRandomNumber(NICKNAME_PREFIXES.length)] + NICKNAME_MIDDLE
-                + faker.address().cityName() + NICKNAME_MIDDLE + faker.name().firstName();
-        nickname = nickname.length() > 10 ? nickname.substring(0, 10) : nickname;
+        // 수식어(최대 4글자) + 띄어쓰기 + 동물(최대 5글자) + 랜덤 숫자
+        String nickname = NicknameConstants.PREFIXES[getRandomNumber(NicknameConstants.PREFIXES.length)]
+                + NicknameConstants.MIDDLE
+                + NicknameConstants.ANIMALS[getRandomNumber(NicknameConstants.ANIMALS.length)]
+                + getRandomNumber(9999);
+        int max = Integer.parseInt(NicknameConstants.MAX);
+        nickname = nickname.length() > max ? nickname.substring(0, max) : nickname;
         return nickname;
     }
 
