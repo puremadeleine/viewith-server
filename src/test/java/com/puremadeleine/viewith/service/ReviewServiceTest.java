@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReportReason;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.Status;
@@ -7,10 +8,7 @@ import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.review.*;
-import com.puremadeleine.viewith.provider.ReviewProvider;
-import com.puremadeleine.viewith.provider.ReviewReportProvider;
-import com.puremadeleine.viewith.provider.SeatProvider;
-import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.provider.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -31,10 +29,11 @@ class ReviewServiceTest {
     VenueProvider venueProvider = mock(VenueProvider.class);
     SeatProvider seatProvider = mock(SeatProvider.class);
     ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
+    MemberProvider memberProvider = mock(MemberProvider.class);
     ReviewService.ReviewServiceMapper reviewServiceMapper = Mappers.getMapper(ReviewService.ReviewServiceMapper.class);
 
     ReviewService reviewService = new ReviewService(
-            reviewProvider, venueProvider, seatProvider,reviewReportProvider, reviewServiceMapper);
+            reviewProvider, venueProvider, seatProvider,reviewReportProvider, memberProvider, reviewServiceMapper);
 
     @DisplayName("create review successfully")
     @Test
@@ -54,6 +53,8 @@ class ReviewServiceTest {
 
         SeatEntity seat = getSeat();
 
+        MemberEntity member = getMember();
+
         ReviewEntity review = getReview();
 
         when(venueProvider.getVenue(anyLong())).thenReturn(venue);
@@ -61,7 +62,7 @@ class ReviewServiceTest {
         when(reviewProvider.saveReview(any(ReviewEntity.class))).thenReturn(review);
 
         // when
-        CreateReviewResDto result = reviewService.createReview(req);
+        CreateReviewResDto result = reviewService.createReview(req, member.getId());
 
         // then
         assertThat(result.getReviewId()).isEqualTo(1L);
@@ -246,6 +247,13 @@ class ReviewServiceTest {
                 .id(1L)
                 .rating(1.5F)
                 .content("후기")
+                .build();
+    }
+
+    MemberEntity getMember() {
+        return MemberEntity.builder()
+                .id(1L)
+                .nickname("닉네임")
                 .build();
     }
 

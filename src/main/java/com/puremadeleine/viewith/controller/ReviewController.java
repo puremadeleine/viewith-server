@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.controller;
 
 import com.puremadeleine.viewith.dto.common.SortType;
+import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.review.*;
 import com.puremadeleine.viewith.service.ReviewService;
 import jakarta.validation.constraints.Max;
@@ -19,8 +20,8 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping("")
-    public CreateReviewResDto createReview(@RequestBody CreateReviewReqDto createReviewReqDto) {
-        return reviewService.createReview(createReviewReqDto);
+    public CreateReviewResDto createReview(@RequestBody CreateReviewReqDto createReviewReqDto, MemberInfo memberInfo) {
+        return reviewService.createReview(createReviewReqDto, memberInfo.getMemberId());
     }
 
     @GetMapping("/{review_id}")

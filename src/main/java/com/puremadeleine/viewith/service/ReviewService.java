@@ -1,15 +1,13 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.ReviewReportEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.review.*;
-import com.puremadeleine.viewith.provider.ReviewProvider;
-import com.puremadeleine.viewith.provider.ReviewReportProvider;
-import com.puremadeleine.viewith.provider.SeatProvider;
-import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.provider.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,13 +28,16 @@ public class ReviewService {
     VenueProvider venueProvider;
     SeatProvider seatProvider;
     ReviewReportProvider reviewReportProvider;
+    MemberProvider memberProvider;
     ReviewServiceMapper mapper;
 
     @Transactional
-    public CreateReviewResDto createReview(CreateReviewReqDto reqDto) {
+    public CreateReviewResDto createReview(CreateReviewReqDto reqDto, Long memberId) {
+        MemberEntity activeMember = memberProvider.getActiveMember(memberId);
         VenueEntity venue = venueProvider.getVenue(reqDto.getVenueId());
         SeatEntity seat = seatProvider.getSeat(reqDto.getSection(), reqDto.getSeatRow(), reqDto.getSeatColumn());
-        ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat);
+
+        ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, activeMember);
         ReviewEntity savedReview = reviewProvider.saveReview(review);
         return CreateReviewResDto.builder().reviewId(savedReview.getId()).build();
     }
