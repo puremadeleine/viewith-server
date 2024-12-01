@@ -70,8 +70,9 @@ public class ReviewService {
         return toReviewListResDto(isSummary, reviewList);
     }
 
-    public void reportReview(Long reviewId, ReportReviewReqDto req) {
+    public void reportReview(Long reviewId, ReportReviewReqDto req, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
+        if (review.getMember().getId().equals(memberId)) throw new ViewithException(PERMISSION_DENIED_FOR_REVIEW);
         review.reportReview();
         ReviewReportEntity reviewReport =
                 ReviewReportEntity.createReviewReport(review, req.getReportReason(), req.getReportReasonDetail());

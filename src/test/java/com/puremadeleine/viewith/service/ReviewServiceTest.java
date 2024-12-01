@@ -286,17 +286,43 @@ class ReviewServiceTest {
                     .rating(1.5F)
                     .content("후기")
                     .reportCount(4)
+                    .member(getMember(1L))
                     .build();
             when(reviewProvider.getNormalReview(anyLong())).thenReturn(review);
 
             ReportReviewReqDto req = ReportReviewReqDto.builder().reportReason(ReportReason.OFFENSIVE).build();
+            MemberEntity member = getMember(2L);
 
             // when
-            reviewService.reportReview(reviewId, req);
+            reviewService.reportReview(reviewId, req, member.getId());
 
             // then
             assertThat(review.getReportCount()).isEqualTo(5);
             assertThat(review.getStatus()).isEqualTo(Status.REPORTED);
+        }
+
+        @DisplayName("Fail to report review when there is no permission for the review")
+        @Test
+        void delete_review_fail_when_no_permission_for_review() {
+            // given
+            Long reviewId = 1L;
+            ReviewEntity review = ReviewEntity.builder()
+                    .id(reviewId)
+                    .rating(1.5F)
+                    .content("후기")
+                    .member(getMember(2L))
+                    .build();
+            when(reviewProvider.getNormalReview(anyLong())).thenReturn(review);
+
+            ReportReviewReqDto req = ReportReviewReqDto.builder().reportReason(ReportReason.OFFENSIVE).build();
+            MemberEntity member = getMember(2L);
+
+            // when
+            Exception exception = assertThrows(ViewithException.class, () ->
+                    reviewService.reportReview(reviewId, req, member.getId()));
+
+            // then
+            assertThat(exception.getMessage()).isEqualTo(PERMISSION_DENIED_FOR_REVIEW.getMessage());
         }
     }
 

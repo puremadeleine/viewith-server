@@ -63,7 +63,8 @@ public class ReviewController {
 
     @PostMapping("/{review_id}/report")
     public void reportReview(@PathVariable("review_id") Long reviewId,
-                             @RequestBody ReportReviewReqDto req) {
-        reviewService.reportReview(reviewId, req);
+                             @RequestBody ReportReviewReqDto req,
+                             MemberInfo memberInfo) {
+        reviewService.reportReview(reviewId, req, memberInfo.getMemberId());
     }
 }
