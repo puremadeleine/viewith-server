@@ -7,6 +7,7 @@ import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.review.*;
+import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
+import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 
 @Service
 @RequiredArgsConstructor
@@ -43,14 +45,16 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(Long reviewId, UpdateReviewReqDto reqDto) {
+    public void updateReview(Long reviewId, UpdateReviewReqDto reqDto, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
+        checkPermission(review.getMember().getId(), memberId);
         review.updateReview(reqDto);
     }
 
     @Transactional
-    public void deleteReview(Long reviewId) {
+    public void deleteReview(Long reviewId, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
+        checkPermission(review.getMember().getId(), memberId);
         review.deleteReview();
     }
 
@@ -72,6 +76,13 @@ public class ReviewService {
         ReviewReportEntity reviewReport =
                 ReviewReportEntity.createReviewReport(review, req.getReportReason(), req.getReportReasonDetail());
         reviewReportProvider.saveReviewReport(reviewReport);
+    }
+
+
+    private void checkPermission(Long reviewWriterId, Long reqMemberId) {
+        if (!reviewWriterId.equals(reqMemberId)) {
+            throw new ViewithException(PERMISSION_DENIED_FOR_REVIEW);
+        }
     }
 
     @Mapper(componentModel = "spring")

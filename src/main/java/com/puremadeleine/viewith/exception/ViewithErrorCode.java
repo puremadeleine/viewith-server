@@ -21,6 +21,7 @@ public enum ViewithErrorCode {
 
     // review
     NO_NORMAL_REVIEW(HttpStatus.NOT_FOUND, 40001, "no normal review"),
+    PERMISSION_DENIED_FOR_REVIEW(HttpStatus.NOT_FOUND, 40002, "permission denied for this review"),
 
     // help
     NO_HELP(HttpStatus.NOT_FOUND, 50001, "no help"),

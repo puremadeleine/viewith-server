@@ -31,13 +31,13 @@ public class ReviewController {
 
     @PutMapping("/{review_id}")
     public void updateReview(@PathVariable("review_id") Long reviewId,
-                                          @RequestBody UpdateReviewReqDto reqDto) {
-        reviewService.updateReview(reviewId, reqDto);
+                                          @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
+        reviewService.updateReview(reviewId, reqDto, memberInfo.getMemberId());
     }
 
     @DeleteMapping("/{review_id}")
-    public void deleteReview(@PathVariable("review_id") Long reviewId) {
-        reviewService.deleteReview(reviewId);
+    public void deleteReview(@PathVariable("review_id") Long reviewId, MemberInfo memberInfo) {
+        reviewService.deleteReview(reviewId, memberInfo.getMemberId());
     }
 
     @GetMapping("/list")
