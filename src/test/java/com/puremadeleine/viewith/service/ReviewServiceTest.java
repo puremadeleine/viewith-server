@@ -176,6 +176,7 @@ class ReviewServiceTest {
 
             // then
             assertThat(result.getReviewId()).isEqualTo(1L);
+            assertThat(result.getUserInfo().getUserNickname()).isEqualTo("닉네임");
         }
     }
 

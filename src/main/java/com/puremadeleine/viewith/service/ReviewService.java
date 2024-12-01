@@ -89,6 +89,9 @@ public class ReviewService {
     public interface ReviewServiceMapper {
 
         @Mapping(source = "id", target = "reviewId")
+        @Mapping(source = "member", target = "userInfo")
+        @Mapping(source = "member.id", target = "userInfo.userId")
+        @Mapping(source = "member.nickname", target = "userInfo.userNickname")
         ReviewInfoResDto toReviewInfoResDto(ReviewEntity review);
     }
 

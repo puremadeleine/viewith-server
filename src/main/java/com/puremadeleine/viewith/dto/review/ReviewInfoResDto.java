@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.dto.review;
 
+import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,16 @@ public class ReviewInfoResDto {
     String content;
     Float rating;
     LocalDateTime createTime;
+    ReviewerInfoResDto userInfo;
 
-    // todo : member info , seat_bookmark_info 추가
+    // todo : seat_bookmark_info 추가
 
+    @Getter
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class ReviewerInfoResDto {
+
+        Long userId;
+        String userNickname;
+    }
 }

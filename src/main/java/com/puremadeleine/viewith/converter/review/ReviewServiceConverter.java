@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.converter.review;
 
+import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.dto.review.ReviewInfoSummaryResDto;
 import com.puremadeleine.viewith.dto.review.ReviewListResDto;
@@ -30,6 +31,7 @@ public class ReviewServiceConverter {
                     .summary(pureContent.substring(0, min(pureContent.length(), 30)))
                     .rating(review.getRating())
                     .createTime(review.getCreateTime())
+                    .userInfo(toReviewerInfoResDto(review.getMember()))
                     .build();
         }
         return ReviewInfoSummaryResDto.builder()
@@ -37,6 +39,15 @@ public class ReviewServiceConverter {
                 .content(review.getContent())
                 .rating(review.getRating())
                 .createTime(review.getCreateTime())
+                .userInfo(toReviewerInfoResDto(review.getMember()))
                 .build();
     }
+
+    private static ReviewInfoSummaryResDto.ReviewerInfoResDto toReviewerInfoResDto(MemberEntity member) {
+        return ReviewInfoSummaryResDto.ReviewerInfoResDto.builder()
+                .userId(member.getId())
+                .userNickname(member.getNickname())
+                .build();
+    }
+
 }

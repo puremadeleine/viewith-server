@@ -21,6 +21,16 @@ public class ReviewInfoSummaryResDto {
     String summary;
     Float rating;
     LocalDateTime createTime;
+    ReviewerInfoResDto userInfo;
 
-    // todo : member info , seat_bookmark_info 추가
+    // todo : seat_bookmark_info 추가
+
+    @Getter
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class ReviewerInfoResDto {
+
+        Long userId;
+        String userNickname;
+    }
 }

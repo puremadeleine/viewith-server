@@ -25,7 +25,7 @@ public class ReviewController {
     }
 
     @GetMapping("/{review_id}")
-    public ReviewInfoResDto getReview(@PathVariable("review_id") Long reviewId) {
+    public ReviewInfoResDto getReview(@PathVariable("review_id") Long reviewId, MemberInfo memberInfo) {
         return reviewService.getReviewInfo(reviewId);
     }
 
@@ -48,7 +48,8 @@ public class ReviewController {
             @RequestParam(value = "floor") String floor,
             @RequestParam(value = "section", required = false) String section,
             @RequestParam(value = "seat_row", required = false) Integer seatRow,
-            @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
+            @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary,
+            MemberInfo memberInfo) {
         ReviewListReqDto req = ReviewListReqDto.builder()
                 .page(page)
                 .size(size)
