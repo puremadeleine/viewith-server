@@ -19,4 +19,8 @@ public class PerformanceProvider {
     public List<PerformanceEntity> search(String keyword) {
         return performanceRepository.findByTitleContainsIgnoreCase(keyword);
     }
+
+    public List<PerformanceEntity> findTopPerformancesPerVenue(int limit) {
+        return performanceRepository.findTopPerformancesPerVenue(limit);
+    }
 }

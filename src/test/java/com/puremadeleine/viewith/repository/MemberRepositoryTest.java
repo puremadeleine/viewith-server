@@ -79,6 +79,7 @@ class MemberRepositoryTest {
 
     private MemberEntity makeDummyMemberEntity(OAuthType oAuthType, boolean isDeleted) {
         return Instancio.of(MemberEntity.class)
+                .ignore(field(MemberEntity::getId))
                 .set(field(MemberEntity::getOauthType), oAuthType)
                 .set(field(MemberEntity::getDeleteYn), isDeleted)
                 .create();

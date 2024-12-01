@@ -21,7 +21,7 @@ class MemberServiceTest {
     MemberService memberService = new MemberService(memberProvider, kakaoService, jwtService);
 
     @ParameterizedTest
-    @ValueSource(strings = {"한글만", "asd", "숫자1포함", "123", "공 백 포 함", "공백    포함", "딱10글자일때테스트", "한asd123한"})
+    @ValueSource(strings = {"한글만", "asd", "숫자1포함", "123", "공 백 포 함", "공백    포함", "딱15글자6789012345", "한asd123한"})
     void validateNickname(String nickname) {
         //given
         when(memberProvider.isNicknameUnique(nickname)).thenReturn(true);
@@ -35,7 +35,7 @@ class MemberServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"10글자초과78901", " 공백시작", "공백종료 ", "   ", " ", "특수문자#$"})
+    @ValueSource(strings = {"딱16글자67890123456", " 공백시작", "공백종료 ", "   ", " ", "특수문자#$"})
     void validateNickname_fail_test(String nickname) {
         //when, then
         assertThatThrownBy(() -> memberService.validateNickname(nickname))
