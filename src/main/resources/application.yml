@@ -18,7 +18,7 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-#        show_sql: true
+        #        show_sql: true
         format_sql: true
     defer-datasource-initialization: true
 
@@ -60,3 +60,4 @@ security:
     - /v1/help/5
     - /v1/help/list
     - /v1/performances/search
+    - /v1/venues
