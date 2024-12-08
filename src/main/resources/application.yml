@@ -41,12 +41,13 @@ kakao:
 security:
   exclude-uris:
     - /
+    - /health
     - /v1
     - /v1/members/login/*
-    - /health
     - /v1/reviews/list
     - /v1/reviews/*
-    - /v1/help/*
-    - /v1/help/list
+    - /v1/help/**
     - /v1/performances/search
     - /v1/venues
+    - /v1/venues/*
+    - /v1/venues/*/seats

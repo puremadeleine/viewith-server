@@ -2,6 +2,7 @@ package com.puremadeleine.viewith.provider;
 
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.Status;
+import com.puremadeleine.viewith.dto.review.ReviewCntDto;
 import com.puremadeleine.viewith.dto.review.ReviewListReqDto;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.repository.ReviewCustomRepository;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.puremadeleine.viewith.exception.ViewithErrorCode.*;
+import static com.puremadeleine.viewith.exception.ViewithErrorCode.NO_NORMAL_REVIEW;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +46,13 @@ public class ReviewProvider {
         List<ReviewEntity> reviewList = reviewCustomRepository.findReviewListPrioritizingMedia(req);
         int total = reviewCustomRepository.countReviewTotal(req);
         return new PageImpl<>(reviewList, PageRequest.of(req.getPage() - 1, req.getSize()), total);
+    }
+
+    public List<ReviewCntDto> countNormalReviewsByVenueAndSeat(Long venueId) {
+        return countReviewsByVenueAndSeatAndStatus(venueId, Status.NORMAL);
+    }
+
+    public List<ReviewCntDto> countReviewsByVenueAndSeatAndStatus(Long venueId, Status status) {
+        return reviewRepository.countReviewsBySeat(venueId, status);
     }
 }

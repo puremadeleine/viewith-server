@@ -1,13 +1,17 @@
 package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
+import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
+import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
+import com.puremadeleine.viewith.dto.review.ReviewCntDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
-import com.puremadeleine.viewith.provider.PerformanceProvider;
-import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.provider.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Service;
@@ -21,8 +25,15 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VenueService {
 
+    private static final String FLOOR = "FLOOR";
+    private static final String SEAT = "SEAT";
+    private static final String SEPARATOR = "_";
+
     VenueProvider venueProvider;
+    VenueStageProvider venueStageProvider;
+    SeatProvider seatProvider;
     PerformanceProvider performanceProvider;
+    ReviewProvider reviewProvider;
     VenueServiceMapper venueServiceMapper;
 
     public VenueListResDto getVenues(int performanceCnt) {
@@ -49,6 +60,46 @@ public class VenueService {
                 ));
     }
 
+    public VenueResDto getVenue(long venueId) {
+        VenueEntity venueEntity = venueProvider.getVenue(venueId);
+        List<VenueStageEntity> stageEntities = venueStageProvider.getVenueStages(venueId);
+        var stages = venueServiceMapper.toStages(stageEntities);
+
+        List<SeatEntity> seatEntities = seatProvider.getSeats(venueId);
+        var sections = seatEntities.stream()
+                .map(SeatEntity::getSection)
+                .distinct()
+                .toList();
+        List<ReviewCntDto> reviewCountDtos = reviewProvider.countNormalReviewsByVenueAndSeat(venueId);
+
+        Map<String, Long> cntByKey = reviewCountDtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> makeSectionKey(dto.getFloor(), dto.getSection()),
+                        ReviewCntDto::getReviewCount
+                ));
+        
+        var reviewInfos = seatEntities.stream()
+                .map(s -> makeSectionKey(s.getFloor(), s.getSection()))
+                .map(key -> VenueResDto.VenueReviewInfo.builder()
+                        .sectionKey(key)
+                        .reviewCnt(cntByKey.getOrDefault(key, 0L))
+                        .build()
+                )
+                .toList();
+
+        return VenueResDto.builder()
+                .venueUrl(venueEntity.getImageUrl())
+                .sections(sections)
+                .stages(stages)
+                .venueReviewInfos(reviewInfos)
+                .build();
+    }
+
+    private String makeSectionKey(String floor, String section) {
+        String prefix = FLOOR.equalsIgnoreCase(floor) ? FLOOR : SEAT;
+        return StringUtils.join(prefix, SEPARATOR, section);
+    }
+
     @Mapper(componentModel = "spring")
     public interface VenueServiceMapper {
         @Mapping(source = "venue.id", target = "venueId")
@@ -57,5 +108,11 @@ public class VenueService {
         VenueListResDto.VenueResDto toVenueResDto(VenueEntity venue, List<VenueListResDto.Performance> performances);
 
         VenueListResDto.Performance toPerformance(PerformanceEntity performance);
+
+        @Mapping(source = "id", target = "stageId")
+        VenueResDto.Stage toStage(VenueStageEntity stageEntity);
+
+        List<VenueResDto.Stage> toStages(List<VenueStageEntity> stageEntities);
+
     }
 }
