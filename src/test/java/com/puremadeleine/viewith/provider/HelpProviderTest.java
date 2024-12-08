@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +59,7 @@ class HelpProviderTest {
         // when
         Page<HelpEntity> result = helpProvider.getHelpList(page, size);
 
-        // then
+        // the
         assertThat(result.getContent().size()).isEqualTo(2);
         assertThat(result.getContent().getFirst().getTitle()).isEqualTo("도움말1");
     }

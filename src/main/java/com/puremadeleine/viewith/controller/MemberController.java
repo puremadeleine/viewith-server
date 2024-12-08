@@ -48,7 +48,7 @@ public class MemberController {
     }
 
     @GetMapping(path = "/bookmarks")
-    public Object getBookmarks(MemberInfo memberInfo) {
-        return new Object();
+    public MemberInfo getBookmarks(MemberInfo memberInfo) {
+        return memberInfo;
     }
 }
