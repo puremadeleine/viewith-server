@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.domain.review;
 
 import com.puremadeleine.viewith.domain.BaseTimeEntity;
+import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
@@ -19,7 +20,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewEntity extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
     Long id;
 
@@ -50,9 +51,12 @@ public class ReviewEntity extends BaseTimeEntity {
     @JoinColumn(name = "performance_id")
     PerformanceEntity performance;
 
-    // todo : member info 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    MemberEntity member;
 
-    public static ReviewEntity createReview(CreateReviewReqDto reqDto, VenueEntity venue, SeatEntity seat) {
+    public static ReviewEntity createReview(CreateReviewReqDto reqDto, VenueEntity venue,
+                                            SeatEntity seat, MemberEntity member) {
         return ReviewEntity.builder()
                 .content(reqDto.getContent())
                 .rating(reqDto.getRating())
@@ -61,6 +65,7 @@ public class ReviewEntity extends BaseTimeEntity {
                 .venue(venue)
                 .seat(seat)
                 .block(reqDto.getBlock())
+                .member(member)
                 .build();
     }
 

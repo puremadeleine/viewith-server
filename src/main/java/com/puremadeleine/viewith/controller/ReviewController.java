@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.controller;
 
 import com.puremadeleine.viewith.dto.common.SortType;
+import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.review.*;
 import com.puremadeleine.viewith.service.ReviewService;
 import jakarta.validation.constraints.Max;
@@ -19,24 +20,24 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping("")
-    public CreateReviewResDto createReview(@RequestBody CreateReviewReqDto createReviewReqDto) {
-        return reviewService.createReview(createReviewReqDto);
+    public CreateReviewResDto createReview(@RequestBody CreateReviewReqDto createReviewReqDto, MemberInfo memberInfo) {
+        return reviewService.createReview(createReviewReqDto, memberInfo.getMemberId());
     }
 
     @GetMapping("/{review_id}")
-    public ReviewInfoResDto getReview(@PathVariable("review_id") Long reviewId) {
+    public ReviewInfoResDto getReview(@PathVariable("review_id") Long reviewId, MemberInfo memberInfo) {
         return reviewService.getReviewInfo(reviewId);
     }
 
     @PutMapping("/{review_id}")
     public void updateReview(@PathVariable("review_id") Long reviewId,
-                                          @RequestBody UpdateReviewReqDto reqDto) {
-        reviewService.updateReview(reviewId, reqDto);
+                                          @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
+        reviewService.updateReview(reviewId, reqDto, memberInfo.getMemberId());
     }
 
     @DeleteMapping("/{review_id}")
-    public void deleteReview(@PathVariable("review_id") Long reviewId) {
-        reviewService.deleteReview(reviewId);
+    public void deleteReview(@PathVariable("review_id") Long reviewId, MemberInfo memberInfo) {
+        reviewService.deleteReview(reviewId, memberInfo.getMemberId());
     }
 
     @GetMapping("/list")
@@ -47,7 +48,8 @@ public class ReviewController {
             @RequestParam(value = "floor") String floor,
             @RequestParam(value = "section", required = false) String section,
             @RequestParam(value = "seat_row", required = false) Integer seatRow,
-            @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
+            @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary,
+            MemberInfo memberInfo) {
         ReviewListReqDto req = ReviewListReqDto.builder()
                 .page(page)
                 .size(size)
@@ -61,7 +63,8 @@ public class ReviewController {
 
     @PostMapping("/{review_id}/report")
     public void reportReview(@PathVariable("review_id") Long reviewId,
-                             @RequestBody ReportReviewReqDto req) {
-        reviewService.reportReview(reviewId, req);
+                             @RequestBody ReportReviewReqDto req,
+                             MemberInfo memberInfo) {
+        reviewService.reportReview(reviewId, req, memberInfo.getMemberId());
     }
 }
