@@ -61,23 +61,20 @@ public class VenueService {
     }
 
     public VenueResDto getVenue(long venueId) {
+        // 공연장, 무대 정보
         VenueEntity venueEntity = venueProvider.getVenue(venueId);
         List<VenueStageEntity> stageEntities = venueStageProvider.getVenueStages(venueId);
         var stages = venueServiceMapper.toStages(stageEntities);
 
+        // 좌석 정보
         List<SeatEntity> seatEntities = seatProvider.getSeats(venueId);
         var sections = seatEntities.stream()
                 .map(SeatEntity::getSection)
                 .distinct()
                 .toList();
-        List<ReviewCntDto> reviewCountDtos = reviewProvider.countNormalReviewsByVenueAndSeat(venueId);
-
-        Map<String, Long> cntByKey = reviewCountDtos.stream()
-                .collect(Collectors.toMap(
-                        dto -> makeSectionKey(dto.getFloor(), dto.getSection()),
-                        ReviewCntDto::getReviewCount
-                ));
         
+        // 리뷰 정보
+        Map<String, Long> cntByKey = getReviewCntBySectionKey(venueId);
         var reviewInfos = seatEntities.stream()
                 .map(s -> makeSectionKey(s.getFloor(), s.getSection()))
                 .map(key -> VenueResDto.VenueReviewInfo.builder()
@@ -87,12 +84,16 @@ public class VenueService {
                 )
                 .toList();
 
-        return VenueResDto.builder()
-                .venueUrl(venueEntity.getImageUrl())
-                .sections(sections)
-                .stages(stages)
-                .venueReviewInfos(reviewInfos)
-                .build();
+        return venueServiceMapper.toVenueResDto(venueEntity, sections, stages, reviewInfos);
+    }
+
+    private Map<String, Long> getReviewCntBySectionKey(long venueId) {
+        List<ReviewCntDto> reviewCountDtos = reviewProvider.countNormalReviewsByVenueAndSeat(venueId);
+        return reviewCountDtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> makeSectionKey(dto.getFloor(), dto.getSection()),
+                        ReviewCntDto::getReviewCount
+                ));
     }
 
     private String makeSectionKey(String floor, String section) {
@@ -114,5 +115,10 @@ public class VenueService {
 
         List<VenueResDto.Stage> toStages(List<VenueStageEntity> stageEntities);
 
+        @Mapping(source = "venueEntity.imageUrl", target = "venueUrl")
+        VenueResDto toVenueResDto(VenueEntity venueEntity,
+                                  List<String> sections,
+                                  List<VenueResDto.Stage> stages,
+                                  List<VenueResDto.VenueReviewInfo> venueReviewInfos);
     }
 }
