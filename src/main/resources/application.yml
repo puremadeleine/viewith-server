@@ -43,7 +43,6 @@ security:
     - /
     - /v1
     - /v1/members/login/*
-    - /v1/members/test/3
     - /health
     - /v1/reviews/list
     - /v1/reviews/*

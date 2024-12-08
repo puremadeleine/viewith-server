@@ -6,7 +6,6 @@ import com.puremadeleine.viewith.exception.ViewithException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,9 +15,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.lang.annotation.Annotation;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
@@ -41,10 +38,6 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
             return memberInfoOptional;
         }
 
-        if (hasNullableAnnotation(parameter)) {
-            return memberInfoOptional.orElse(null);
-        }
-
         //TODO: throw new ViewithException(ViewithErrorCode.INVALID_TOKEN) 로 변환
         // new AuthenticationCredentialsNotFoundException("Not Foune MemberInfo"));
         return memberInfoOptional.orElseThrow(() -> new ViewithException(ViewithErrorCode.INVALID_TOKEN));
@@ -60,17 +53,5 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
 
     private boolean isOptional(MethodParameter parameter) {
         return parameter.getParameterType() == Optional.class;
-    }
-
-    private boolean hasNullableAnnotation(MethodParameter parameter) {
-        Annotation[] annotations = parameter.getParameterAnnotations();
-        if (ArrayUtils.isEmpty(annotations)) {
-            return false;
-        }
-
-        return Stream.of(annotations)
-                .map(Annotation::annotationType)
-                .map(Class::getSimpleName)
-                .anyMatch("Nullable"::equals);
     }
 }

@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends AbstractPreAuthenticatedProcessingF
                 );
             }
         }));
-        setAuthenticationFailureHandler(((request, response, exception) -> log.info(exception.getMessage())));
+        setAuthenticationFailureHandler(((request, response, exception) -> log.info("[Viewith-Error] " + exception.getMessage(), exception)));
     }
 
     @Override
