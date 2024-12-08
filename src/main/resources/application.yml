@@ -42,22 +42,12 @@ security:
   exclude-uris:
     - /
     - /v1
-    - /v1/members/login/KAKAO
-    - /v1/members/login/APPLE
-    - /v1/members/test3
-    - /v1/members/test4
+    - /v1/members/login/*
+    - /v1/members/test/3
     - /health
     - /v1/reviews/list
-    - /v1/reviews/1
-    - /v1/reviews/2
-    - /v1/reviews/3
-    - /v1/reviews/4
-    - /v1/reviews/5
-    - /v1/help/1
-    - /v1/help/2
-    - /v1/help/3
-    - /v1/help/4
-    - /v1/help/5
+    - /v1/reviews/*
+    - /v1/help/*
     - /v1/help/list
     - /v1/performances/search
     - /v1/venues
