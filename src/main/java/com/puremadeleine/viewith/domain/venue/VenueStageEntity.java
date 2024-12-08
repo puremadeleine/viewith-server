@@ -25,6 +25,6 @@ public class VenueStageEntity {
     @Enumerated(EnumType.STRING)
     VenueStageType type;
     String name;
-    String sgvUrl;
+    String svgUrl;
 
 }
