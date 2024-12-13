@@ -1,6 +1,5 @@
 package com.puremadeleine.viewith.resolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
@@ -16,8 +15,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Optional;
 
 @Component
@@ -25,50 +22,36 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        // MemberInfo || Optional<MemberInfo>
-        return MemberInfo.class.isAssignableFrom(parameter.getParameterType())
-                ||
-                (
-                        Optional.class.isAssignableFrom(parameter.getParameterType())
-                                && isOptionalOfMemberInfo(parameter.getGenericParameterType())
-                );
-
+        MethodParameter nestedParameter = parameter.nestedIfOptional();
+        return nestedParameter.getParameterType().equals(MemberInfo.class)
+                || nestedParameter.getNestedParameterType().equals(MemberInfo.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<MemberInfo> memberInfoOptional = findMemberInfo();
 
-        // 미인증
-        boolean notAuth = authentication == null || !authentication.isAuthenticated() || !MemberInfo.class.isAssignableFrom(authentication.getDetails().getClass());
-        if (notAuth) {
-            if (Optional.class.isAssignableFrom(parameter.getParameterType())) {
-                return Optional.empty();
-            } else {
-                throw new ViewithException(ViewithErrorCode.INVALID_TOKEN);
-            }
+        if (isOptional(parameter)) {
+            return memberInfoOptional;
         }
 
-        MemberInfo memberInfo = (MemberInfo) authentication.getDetails();
-        memberInfo = memberInfo.updateNickname(authentication.getName());
-
-        if (MemberInfo.class.isAssignableFrom(parameter.getParameterType())) {
-            return memberInfo;
-        } else {
-            return Optional.of(memberInfo);
-        }
+        //TODO: throw new ViewithException(ViewithErrorCode.INVALID_TOKEN) 로 변환
+        // new AuthenticationCredentialsNotFoundException("Not Foune MemberInfo"));
+        return memberInfoOptional.orElseThrow(() -> new ViewithException(ViewithErrorCode.INVALID_TOKEN));
     }
 
-    private boolean isOptionalOfMemberInfo(Type type) {
-        if (type instanceof ParameterizedType parameterizedType) {
-            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-            return actualTypeArguments.length == 1 && MemberInfo.class.isAssignableFrom((Class<?>) actualTypeArguments[0]);
-        }
-        return false;
+    private Optional<MemberInfo> findMemberInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return Optional.ofNullable(authentication)
+                .map(auth -> (MemberInfo) auth.getDetails())
+                .map(memberInfo -> memberInfo.updateNickname(authentication.getName()))
+                .stream().findAny();
+    }
+
+    private boolean isOptional(MethodParameter parameter) {
+        return parameter.getParameterType() == Optional.class;
     }
 }

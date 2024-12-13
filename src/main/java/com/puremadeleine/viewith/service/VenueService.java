@@ -1,12 +1,19 @@
 package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
+import com.puremadeleine.viewith.domain.venue.SeatEntity;
+import com.puremadeleine.viewith.domain.venue.VenueEntity;
+import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
+import com.puremadeleine.viewith.dto.review.ReviewCntDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
-import com.puremadeleine.viewith.provider.PerformanceProvider;
-import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.provider.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,34 +25,26 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VenueService {
 
-    private static final int PERFORMANCE_MAX_DISPLAY = 4;
+    private static final String FLOOR = "FLOOR";
+    private static final String SEAT = "SEAT";
+    private static final String SEPARATOR = "_";
 
     VenueProvider venueProvider;
+    VenueStageProvider venueStageProvider;
+    SeatProvider seatProvider;
     PerformanceProvider performanceProvider;
+    ReviewProvider reviewProvider;
+    VenueServiceMapper venueServiceMapper;
 
-    public VenueListResDto getVenues() {
-        return makeMock();
-
-//        List<VenueEntity> venues = venueProvider.getVenues();
-//        var performancesPerVenue = getTopPerformancesPerVenue(PERFORMANCE_MAX_DISPLAY);
-//
-//        //TODO: 해당 작업 mapper or converter 로 이동
-//        var venueRes = venues.stream()
-//                .map(venue -> {
-//                    Long venueId = venue.getId();
-//                    return VenueListResDto.VenueResDto.builder()
-//                            .venueId(venueId)
-//                            .venueName(venue.getName())
-//                            .venueLocation(venue.getLocation())
-//                            .performances(performancesPerVenue.getOrDefault(venueId, List.of()))
-//                            .build();
-//                })
-//                .toList();
-//
-//
-//        return VenueListResDto.builder()
-//                .venues(venueRes)
-//                .build();
+    public VenueListResDto getVenues(int performanceCnt) {
+        List<VenueEntity> venues = venueProvider.getVenues();
+        var performancesPerVenue = getTopPerformancesPerVenue(performanceCnt);
+        var venueRes = venues.stream()
+                .map(venue -> venueServiceMapper.toVenueResDto(venue, performancesPerVenue.getOrDefault(venue.getId(), List.of())))
+                .toList();
+        return VenueListResDto.builder()
+                .venues(venueRes)
+                .build();
     }
 
     public Map<Long, List<VenueListResDto.Performance>> getTopPerformancesPerVenue(int maxPerformances) {
@@ -55,62 +54,71 @@ public class VenueService {
                 .collect(Collectors.groupingBy(
                         performance -> performance.getVenue().getId(),
                         Collectors.mapping(
-                                // TODO: 해당 작업 mapper, converter 로 이동
-                                (p) -> VenueListResDto.Performance.builder()
-                                        .artist(p.getArtist())
-                                        .imageUrl(p.getImageUrl())
-                                        .build(),
+                                venueServiceMapper::toPerformance,
                                 Collectors.toList()
                         )
                 ));
     }
 
-    private VenueListResDto makeMock() {
-        // Create performances for Venue 1
-        VenueListResDto.Performance performance1 = VenueListResDto.Performance.builder()
-                .artist("BTS")
-                .imageUrl("http://example.com/bts.jpg")
-                .build();
+    public VenueResDto getVenue(long venueId) {
+        // 공연장, 무대 정보
+        VenueEntity venueEntity = venueProvider.getVenue(venueId);
+        List<VenueStageEntity> stageEntities = venueStageProvider.getVenueStages(venueId);
+        var stages = venueServiceMapper.toStages(stageEntities);
 
-        VenueListResDto.Performance performance2 = VenueListResDto.Performance.builder()
-                .artist("Blackpink")
-                .imageUrl("http://example.com/blackpink.jpg")
-                .build();
+        // 좌석 정보
+        List<SeatEntity> seatEntities = seatProvider.getSeats(venueId);
+        var sections = seatEntities.stream()
+                .map(SeatEntity::getSection)
+                .distinct()
+                .toList();
+        
+        // 리뷰 정보
+        Map<String, Long> cntByKey = getReviewCntBySectionKey(venueId);
+        var reviewInfos = seatEntities.stream()
+                .map(s -> makeSectionKey(s.getFloor(), s.getSection()))
+                .map(key -> VenueResDto.VenueReviewInfo.builder()
+                        .sectionKey(key)
+                        .reviewCnt(cntByKey.getOrDefault(key, 0L))
+                        .build()
+                )
+                .toList();
 
-        // Create performances for Venue 2
-        VenueListResDto.Performance performance3 = VenueListResDto.Performance.builder()
-                .artist("IU")
-                .imageUrl("http://example.com/iu.jpg")
-                .build();
+        return venueServiceMapper.toVenueResDto(venueEntity, sections, stages, reviewInfos);
+    }
 
-        VenueListResDto.Performance performance4 = VenueListResDto.Performance.builder()
-                .artist("NCT 127")
-                .imageUrl("http://example.com/nct127.jpg")
-                .build();
+    private Map<String, Long> getReviewCntBySectionKey(long venueId) {
+        List<ReviewCntDto> reviewCountDtos = reviewProvider.countNormalReviewsByVenueAndSeat(venueId);
+        return reviewCountDtos.stream()
+                .collect(Collectors.toMap(
+                        dto -> makeSectionKey(dto.getFloor(), dto.getSection()),
+                        ReviewCntDto::getReviewCount
+                ));
+    }
 
-        VenueListResDto.Performance performance5 = VenueListResDto.Performance.builder()
-                .artist("NCT DREAM")
-                .imageUrl("http://example.com/nctdream.jpg")
-                .build();
+    private String makeSectionKey(String floor, String section) {
+        String prefix = FLOOR.equalsIgnoreCase(floor) ? FLOOR : SEAT;
+        return StringUtils.join(prefix, SEPARATOR, section);
+    }
 
-        // Create Venue 1
-        VenueListResDto.VenueResDto venue1 = VenueListResDto.VenueResDto.builder()
-                .venueId(1L)
-                .venueName("고척 스카이돔")
-                .venueLocation("서울특별시 구로구 경인로 ")
-                .performances(List.of(performance1, performance2, performance4, performance5))
-                .build();
+    @Mapper(componentModel = "spring")
+    public interface VenueServiceMapper {
+        @Mapping(source = "venue.id", target = "venueId")
+        @Mapping(source = "venue.name", target = "venueName")
+        @Mapping(source = "venue.location", target = "venueLocation")
+        VenueListResDto.VenueResDto toVenueResDto(VenueEntity venue, List<VenueListResDto.Performance> performances);
 
-        // Create Venue 2
-        VenueListResDto.VenueResDto venue2 = VenueListResDto.VenueResDto.builder()
-                .venueId(2L)
-                .venueName("KSPO DOME")
-                .venueLocation("서울특별시 구로구 경인로 430")
-                .performances(List.of(performance3))
-                .build();
+        VenueListResDto.Performance toPerformance(PerformanceEntity performance);
 
-        return VenueListResDto.builder()
-                .venues(List.of(venue1, venue2))
-                .build();
+        @Mapping(source = "id", target = "stageId")
+        VenueResDto.Stage toStage(VenueStageEntity stageEntity);
+
+        List<VenueResDto.Stage> toStages(List<VenueStageEntity> stageEntities);
+
+        @Mapping(source = "venueEntity.imageUrl", target = "venueUrl")
+        VenueResDto toVenueResDto(VenueEntity venueEntity,
+                                  List<String> sections,
+                                  List<VenueResDto.Stage> stages,
+                                  List<VenueResDto.VenueReviewInfo> venueReviewInfos);
     }
 }
