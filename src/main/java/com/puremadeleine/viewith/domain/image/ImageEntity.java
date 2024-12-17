@@ -14,8 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ImageEntity extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
     Long id;
 
@@ -24,4 +23,13 @@ public class ImageEntity extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     SourceType sourceType;
+
+    public static ImageEntity createImage(String imageUrl, Long sourceId, SourceType sourceType) {
+        return ImageEntity.builder()
+                .imageUrl(imageUrl)
+                .sourceId(sourceId)
+                .sourceType(sourceType)
+                .build();
+
+    }
 }

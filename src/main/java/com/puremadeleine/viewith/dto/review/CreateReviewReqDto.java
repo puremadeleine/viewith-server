@@ -20,6 +20,4 @@ public class CreateReviewReqDto {
     Block block;
     String content;
     Float rating;
-
-    // todo : 이미지 추가
 }

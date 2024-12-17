@@ -26,6 +26,8 @@ public enum ViewithErrorCode {
     // help
     NO_HELP(HttpStatus.NOT_FOUND, 50001, "no help"),
 
+    // image
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, 60001, "image upload failed"),
 
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, 99999, "unknown exception occured");
 

@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.domain.image.SourceType;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.ReviewReportEntity;
@@ -17,6 +18,9 @@ import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
@@ -31,16 +35,19 @@ public class ReviewService {
     SeatProvider seatProvider;
     ReviewReportProvider reviewReportProvider;
     MemberProvider memberProvider;
+    ImageService imageService;
     ReviewServiceMapper mapper;
 
     @Transactional
-    public CreateReviewResDto createReview(CreateReviewReqDto reqDto, Long memberId) {
+    public CreateReviewResDto createReview(CreateReviewReqDto reqDto, List<MultipartFile> images, Long memberId) {
         MemberEntity activeMember = memberProvider.getActiveMember(memberId);
         VenueEntity venue = venueProvider.getVenue(reqDto.getVenueId());
         SeatEntity seat = seatProvider.getSeat(reqDto.getSection(), reqDto.getSeatRow(), reqDto.getSeatColumn());
 
         ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, activeMember);
         ReviewEntity savedReview = reviewProvider.saveReview(review);
+        imageService.saveImages(images, review.getId(), SourceType.REVIEW);
+
         return CreateReviewResDto.builder().reviewId(savedReview.getId()).build();
     }
 
