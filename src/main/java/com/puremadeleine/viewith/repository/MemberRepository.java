@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByIdAndDeleteYn(Long id, boolean deleteYn);
 
-    Optional<MemberEntity> findByOauthTypeAndOauthUserId(OAuthType oauthType, Long oauthUserId);
+    Optional<MemberEntity> findByOauthTypeAndOauthUserIdAndDeleteYn(OAuthType oauthType, Long oauthUserId, boolean deleteYn);
 
     Optional<MemberEntity> findByNickname(String nickname);
 }

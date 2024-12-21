@@ -40,6 +40,6 @@ public class MemberProvider {
     }
 
     public Optional<MemberEntity> findMemberByKakaoId(Long kakaoId) {
-        return memberRepository.findByOauthTypeAndOauthUserId(OAuthType.KAKAO, kakaoId);
+        return memberRepository.findByOauthTypeAndOauthUserIdAndDeleteYn(OAuthType.KAKAO, kakaoId, false);
     }
 }

@@ -1,9 +1,11 @@
 package com.puremadeleine.viewith.repository.client;
 
 import com.puremadeleine.viewith.config.client.FeignLoggerConfig;
+import com.puremadeleine.viewith.dto.client.AccessTokenInfoResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -13,4 +15,7 @@ public interface KakaoApiRepository {
     UserInfoResDto getUserInfo(@RequestHeader("Authorization") String accessToken,
                                @RequestParam("secure_resource") Boolean secureResource,
                                @RequestParam("property_keys") String properties);
+
+    @PostMapping(value = "/v1/user/access_token_info", consumes = "application/x-www-form-urlencoded")
+    AccessTokenInfoResDto getAccessTokenInfo(@RequestHeader("Authorization") String accessToken);
 }

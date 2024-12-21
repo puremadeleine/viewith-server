@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.config.client.KakaoOAuthProperties;
+import com.puremadeleine.viewith.dto.client.AccessTokenInfoResDto;
 import com.puremadeleine.viewith.dto.client.AccessTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.repository.client.KakaoApiRepository;
@@ -28,6 +29,10 @@ public class KakaoService {
 
     public UserInfoResDto getKakaoUserInfo(String accessToken) {
         return kakaoApiRepository.getUserInfo(TOKEN_PREFIX + accessToken, null, KAKAO_INFO);
+    }
+
+    public AccessTokenInfoResDto getAccessTokenInfo(String accessToken) {
+        return kakaoApiRepository.getAccessTokenInfo(TOKEN_PREFIX + accessToken);
     }
 
     public void logout(String accessToken) {

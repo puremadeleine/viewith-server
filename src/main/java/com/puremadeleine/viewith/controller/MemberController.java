@@ -18,8 +18,8 @@ public class MemberController {
 
     @GetMapping(path = "/login/{auth_type}")
     public JoinResDto login(@PathVariable(name = "auth_type") OAuthType oAuthType,
-                            @RequestParam String code) {
-        return memberService.login(oAuthType, code);
+                            @RequestParam String token) {
+        return memberService.login(oAuthType, token);
     }
 
     @PutMapping(path = "/refresh")

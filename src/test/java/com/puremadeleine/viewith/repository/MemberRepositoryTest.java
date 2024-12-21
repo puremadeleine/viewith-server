@@ -60,13 +60,13 @@ class MemberRepositoryTest {
 
     @ParameterizedTest
     @EnumSource(value = OAuthType.class, names = {"KAKAO", "APPLE"})
-    void findByOauthTypeAndOauthUserId(OAuthType oauthType) {
+    void findByOauthTypeAndOauthUserIdAndDeleteYn(OAuthType oauthType) {
         // given
         MemberEntity member = makeDummyMemberEntity(oauthType, false);
         member = memberRepository.save(member);
 
         // when
-        Optional<MemberEntity> actual = memberRepository.findByOauthTypeAndOauthUserId(OAuthType.KAKAO, member.getOauthUserId());
+        Optional<MemberEntity> actual = memberRepository.findByOauthTypeAndOauthUserIdAndDeleteYn(OAuthType.KAKAO, member.getOauthUserId(), member.getDeleteYn());
 
         // then
         if (OAuthType.KAKAO.equals(oauthType)) {
