@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
@@ -77,7 +78,9 @@ public class ReviewService {
         Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.getSortType()))
                 ? reviewProvider.getReviewListPrioritizingMedia(req)
                 : reviewProvider.getReviewList(req);
-        return toReviewListResDto(isSummary, reviewList);
+        List<Long> reviewIds = reviewList.getContent().stream().map(ReviewEntity::getId).toList();
+        Map<Long, List<String>> reviewImageUrlMap = imageService.getReviewImageUrlMap(reviewIds);
+        return toReviewListResDto(isSummary, reviewList, reviewImageUrlMap);
     }
 
     public void reportReview(Long reviewId, ReportReviewReqDto req, Long memberId) {

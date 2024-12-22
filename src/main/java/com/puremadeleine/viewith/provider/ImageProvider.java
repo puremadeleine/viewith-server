@@ -24,4 +24,8 @@ public class ImageProvider {
     public List<ImageEntity> getImageList(Long sourceId, SourceType sourceType) {
         return imageRepository.findBySourceIdAndSourceType(sourceId, sourceType);
     }
+
+    public List<ImageEntity> getImageList(List<Long> sourceIds, SourceType sourceType) {
+        return imageRepository.findBySourceIdInAndSourceType(sourceIds, sourceType);
+    }
 }

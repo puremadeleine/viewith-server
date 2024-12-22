@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,5 +37,14 @@ public class ImageService {
     public List<String> getReviewImageUrlList(Long sourceId) {
         return imageProvider.getImageList(sourceId, SourceType.REVIEW)
                 .stream().map(ImageEntity::getImageUrl).toList();
+    }
+
+    public Map<Long, List<String>> getReviewImageUrlMap(List<Long> sourceIds) {
+        return imageProvider.getImageList(sourceIds, SourceType.REVIEW)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        ImageEntity::getId,
+                        Collectors.mapping(ImageEntity::getImageUrl, Collectors.toList())
+                ));
     }
 }

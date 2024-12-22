@@ -9,4 +9,6 @@ import java.util.List;
 public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
 
     List<ImageEntity> findBySourceIdAndSourceType(Long sourceId, SourceType sourceType);
+
+    List<ImageEntity> findBySourceIdInAndSourceType(List<Long> sourceIds, SourceType sourceType);
 }
