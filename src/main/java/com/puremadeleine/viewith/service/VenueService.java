@@ -7,6 +7,7 @@ import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
 import com.puremadeleine.viewith.provider.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -101,6 +102,11 @@ public class VenueService {
         return StringUtils.join(prefix, SEPARATOR, section);
     }
 
+    public List<VenueSearchResDto> searchVenue(String keyword) {
+        List<VenueEntity> searchList = venueProvider.search(keyword);
+        return venueServiceMapper.toVenueSearchResDtoList(searchList);
+    }
+
     @Mapper(componentModel = "spring")
     public interface VenueServiceMapper {
         @Mapping(source = "venue.id", target = "venueId")
@@ -120,5 +126,12 @@ public class VenueService {
                                   List<String> sections,
                                   List<VenueResDto.Stage> stages,
                                   List<VenueResDto.VenueReviewInfo> venueReviewInfos);
+
+        List<VenueSearchResDto> toVenueSearchResDtoList(List<VenueEntity> venues);
+
+        @Mapping(source = "id", target = "venueId")
+        @Mapping(source = "name", target = "venueName")
+        @Mapping(source = "location", target = "venueLocation")
+        VenueSearchResDto toVenueSearchResDto(VenueEntity venue);
     }
 }
