@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.domain.image.ImageEntity;
 import com.puremadeleine.viewith.domain.image.SourceType;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +69,8 @@ public class ReviewService {
 
     public ReviewInfoResDto getReviewInfo(Long reviewId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
-        return mapper.toReviewInfoResDto(review);
+        List<String> imageUrls = imageService.getReviewImageUrlList(reviewId);
+        return mapper.toReviewInfoResDto(review, imageUrls);
     }
 
     public ReviewListResDto getReviewList(ReviewListReqDto req, boolean isSummary) {
@@ -96,11 +99,12 @@ public class ReviewService {
     @Mapper(componentModel = "spring")
     public interface ReviewServiceMapper {
 
-        @Mapping(source = "id", target = "reviewId")
-        @Mapping(source = "member", target = "userInfo")
-        @Mapping(source = "member.id", target = "userInfo.userId")
-        @Mapping(source = "member.nickname", target = "userInfo.userNickname")
-        ReviewInfoResDto toReviewInfoResDto(ReviewEntity review);
+        @Mapping(source = "review.id", target = "reviewId")
+        @Mapping(source = "review.member", target = "userInfo")
+        @Mapping(source = "review.member.id", target = "userInfo.userId")
+        @Mapping(source = "review.member.nickname", target = "userInfo.userNickname")
+        @Mapping(source = "imageList", target = "imageList")
+        ReviewInfoResDto toReviewInfoResDto(ReviewEntity review, List<String> imageList);
     }
 
 }

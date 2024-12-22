@@ -25,10 +25,14 @@ public class ImageService {
         List<ImageEntity> imageEntities = new ArrayList<>();
         for (MultipartFile image : images) {
             String imageUrl = s3Uploader.uploadFile(image);
-            System.out.println(imageUrl);
             ImageEntity imageEntity = ImageEntity.createImage(imageUrl, sourceId, sourceType);
             imageEntities.add(imageEntity);
         }
         imageProvider.saveAll(imageEntities);
+    }
+
+    public List<String> getReviewImageUrlList(Long sourceId) {
+        return imageProvider.getImageList(sourceId, SourceType.REVIEW)
+                .stream().map(ImageEntity::getImageUrl).toList();
     }
 }

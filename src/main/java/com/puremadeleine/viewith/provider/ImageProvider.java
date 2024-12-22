@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.provider;
 
 import com.puremadeleine.viewith.domain.image.ImageEntity;
+import com.puremadeleine.viewith.domain.image.SourceType;
 import com.puremadeleine.viewith.repository.ImageRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,9 @@ public class ImageProvider {
 
     public void saveAll(List<ImageEntity> images) {
         imageRepository.saveAll(images);
+    }
+
+    public List<ImageEntity> getImageList(Long sourceId, SourceType sourceType) {
+        return imageRepository.findBySourceIdAndSourceType(sourceId, sourceType);
     }
 }
