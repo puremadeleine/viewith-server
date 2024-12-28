@@ -136,6 +136,6 @@ public class MemberService extends SpringProxyAware<MemberService> {
     @Transactional
     public void withdrawByKakao(MemberInfo memberInfo) {
         memberProvider.delete(memberInfo.getMemberId());
-//        kakaoService.unlink(memberInfo.getAccessToken());
+        kakaoService.unlink(memberInfo.getAccessToken());
     }
 }

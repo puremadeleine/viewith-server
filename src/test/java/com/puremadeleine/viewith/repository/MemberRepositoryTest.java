@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
@@ -78,11 +79,13 @@ class MemberRepositoryTest {
     }
 
     private MemberEntity makeDummyMemberEntity(OAuthType oAuthType, boolean isDeleted) {
+        Long oauthId = new Random().nextLong();
         return Instancio.of(MemberEntity.class)
                 .ignore(field(MemberEntity::getId))
                 .set(field(MemberEntity::getOauthType), oAuthType)
                 .set(field(MemberEntity::getDeleteYn), isDeleted)
-                .set(field(MemberEntity::getViewithOauthUserId), field(MemberEntity::getOauthUserId).toString())
+                .set(field(MemberEntity::getOauthUserId), oauthId)
+                .set(field(MemberEntity::getViewithOauthUserId), oauthId.toString())
                 .create();
     }
 }
