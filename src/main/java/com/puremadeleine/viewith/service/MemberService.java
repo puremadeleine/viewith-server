@@ -69,6 +69,10 @@ public class MemberService extends SpringProxyAware<MemberService> {
     }
 
     public ProfileResDto getProfile(Long memberId) {
+        MemberEntity member = memberProvider.findActiveMember(memberId)
+                .orElseThrow(() -> new ViewithException(ViewithErrorCode.UNKNOWN_EXCEPTION));
+
+
         return ProfileResDto.builder().build();
     }
 
