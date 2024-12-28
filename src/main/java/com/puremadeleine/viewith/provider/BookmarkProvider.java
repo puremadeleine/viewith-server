@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,7 +34,15 @@ public class BookmarkProvider {
         return bookmarkRepository.findByMember_IdAndSeat_Id(memberId, seatId);
     }
 
+    public List<BookmarkEntity> findBookmarks(List<Long> bookmarkIds) {
+        return bookmarkRepository.findAllByIdWithMember(bookmarkIds);
+    }
+
     public void deleteBookmark(BookmarkEntity bookmarkEntity) {
         bookmarkRepository.delete(bookmarkEntity);
+    }
+
+    public void deleteBookmark(List<BookmarkEntity> bookmarkEntities) {
+        bookmarkRepository.deleteAll(bookmarkEntities);
     }
 }
