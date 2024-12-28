@@ -1,13 +1,11 @@
 package com.puremadeleine.viewith.domain.member;
 
 import com.puremadeleine.viewith.domain.BaseTimeEntity;
-import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.dto.member.OAuthType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -48,22 +46,16 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     Long oauthUserId;
 
-    @Column(unique = true)
-    String oauthEmail;
-
     @Setter(value = AccessLevel.PRIVATE)
     @Column(name = "delete_yn", nullable = false)
     Boolean deleteYn;
 
-    public static MemberEntity createKakaoMember(UserInfoResDto kakaoUserInfo, String nickname) {
+    public static MemberEntity createKakaoMember(long oauthUserId, String nickname) {
         return MemberEntity.builder()
                 .nickname(nickname)
                 .oauthType(OAuthType.KAKAO)
-                .oauthUserId(kakaoUserInfo.getId())
-                .viewithOauthUserId(kakaoUserInfo.getId().toString())
-                .oauthEmail(Optional.ofNullable(kakaoUserInfo.getKakaoAccount())
-                        .map(UserInfoResDto.KakaoAccount::getEmail)
-                        .orElse(null))
+                .oauthUserId(oauthUserId)
+                .viewithOauthUserId(String.valueOf(oauthUserId))
                 .deleteYn(false)
                 .build();
     }
@@ -72,7 +64,7 @@ public class MemberEntity extends BaseTimeEntity {
         this.setNickname(nickname);
     }
 
-    public void deleteMember() {
+    public void delete() {
         this.setDeleteYn(true);
         this.setViewithOauthUserId(UUID.randomUUID().toString());
     }

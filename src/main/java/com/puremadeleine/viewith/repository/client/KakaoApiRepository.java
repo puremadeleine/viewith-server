@@ -6,16 +6,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "kakao-api", url = "${kakao.api.uri}", configuration = FeignLoggerConfig.class)
 public interface KakaoApiRepository {
     @GetMapping(value = "/v2/user/me", consumes = "application/x-www-form-urlencoded")
-    UserInfoResDto getUserInfo(@RequestHeader("Authorization") String accessToken,
-                               @RequestParam("secure_resource") Boolean secureResource,
-                               @RequestParam("property_keys") String properties);
+    UserInfoResDto getUserInfo(@RequestHeader("Authorization") String accessToken);
 
-    //    /v1/user/unlink
     @PostMapping(value = "/v1/user/unlink")
     void unlink(@RequestHeader("Authorization") String accessTokens);
 }

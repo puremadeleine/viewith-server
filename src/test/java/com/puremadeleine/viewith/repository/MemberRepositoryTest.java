@@ -60,13 +60,13 @@ class MemberRepositoryTest {
 
     @ParameterizedTest
     @EnumSource(value = OAuthType.class, names = {"KAKAO", "APPLE"})
-    void findByOauthTypeAndOauthUserId(OAuthType oauthType) {
+    void findByOauthTypeAndOauthUserIdAndDeleteYn(OAuthType oauthType) {
         // given
         MemberEntity member = makeDummyMemberEntity(oauthType, false);
         member = memberRepository.save(member);
 
         // when
-        Optional<MemberEntity> actual = memberRepository.findByOauthTypeAndOauthUserId(OAuthType.KAKAO, member.getOauthUserId());
+        Optional<MemberEntity> actual = memberRepository.findByOauthTypeAndViewithOauthUserIdAndDeleteYn(OAuthType.KAKAO, member.getOauthUserId().toString(), member.getDeleteYn());
 
         // then
         if (OAuthType.KAKAO.equals(oauthType)) {
@@ -82,6 +82,7 @@ class MemberRepositoryTest {
                 .ignore(field(MemberEntity::getId))
                 .set(field(MemberEntity::getOauthType), oAuthType)
                 .set(field(MemberEntity::getDeleteYn), isDeleted)
+                .set(field(MemberEntity::getViewithOauthUserId), field(MemberEntity::getOauthUserId).toString())
                 .create();
     }
 }

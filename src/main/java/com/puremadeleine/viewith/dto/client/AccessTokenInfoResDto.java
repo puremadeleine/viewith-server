@@ -10,6 +10,8 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserInfoResDto {
-    Long id;
+public class AccessTokenInfoResDto {
+    long id;
+    Integer expiresIn;
+    Integer appId;
 }
