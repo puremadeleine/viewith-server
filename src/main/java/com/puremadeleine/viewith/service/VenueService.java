@@ -7,7 +7,9 @@ import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.provider.*;
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +76,7 @@ public class VenueService {
                 .map(SeatEntity::getSection)
                 .distinct()
                 .toList();
-        
+
         // 리뷰 정보
         Map<String, Long> cntByKey = getReviewCntBySectionKey(venueId);
         var reviewInfos = seatEntities.stream()
@@ -99,6 +103,21 @@ public class VenueService {
     private String makeSectionKey(String floor, String section) {
         String prefix = FLOOR.equalsIgnoreCase(floor) ? FLOOR : SEAT;
         return StringUtils.join(prefix, SEPARATOR, section);
+    }
+
+    public VenueSeatResDto getVenueSeats(long venueId, @Nullable String floor, @Nullable Long row) {
+        if (isNull(floor)) {
+            // 해당 공연장의 Floor List 반환
+            
+        }
+
+        if (isNull(row)) {
+            // 해당 floor의 최대 row 반환
+
+        }
+
+        // 해당 floor, row의 최대 column 반환
+
     }
 
     @Mapper(componentModel = "spring")

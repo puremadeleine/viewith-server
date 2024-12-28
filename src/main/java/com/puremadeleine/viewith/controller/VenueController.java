@@ -2,6 +2,7 @@ package com.puremadeleine.viewith.controller;
 
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.service.VenueService;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
@@ -28,8 +29,10 @@ public class VenueController {
     }
 
     @GetMapping("/{venue_id}/seats")
-    public Object getVenueSeats(@PathVariable(value = "venue_id") long venueId,
-                                @Nullable @RequestParam(required = false) String floor) {
-        return null;
+    public VenueSeatResDto getVenueSeats(@PathVariable(value = "venue_id") long venueId,
+                                         @Nullable @RequestParam(required = false) String floor,
+                                         @Nullable @RequestParam(required = false) Long row) {
+
+        return venueService.getVenueSeats(venueId, floor, row);
     }
 }
