@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.controller;
 
+import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
@@ -34,5 +35,19 @@ public class VenueController {
                                          @Nullable @RequestParam(required = false) Long row) {
 
         return venueService.getVenueSeats(venueId, floor, row);
+    }
+
+    @PostMapping("/{venue_id}/seats/{seat_id}/bookmarks")
+    public void createBookmark(MemberInfo memberInfo,
+                               @PathVariable(value = "venue_id") long venueId,
+                               @PathVariable(value = "seat_id") long seatId) {
+        venueService.createBookmark(memberInfo, seatId);
+    }
+
+    @DeleteMapping("/{venue_id}/seats/{seat_id}/bookmarks")
+    public void deleteBookmark(MemberInfo memberInfo,
+                               @PathVariable(value = "venue_id") long venueId,
+                               @PathVariable(value = "seat_id") long seatId) {
+        venueService.deleteBookmark(memberInfo, seatId);
     }
 }

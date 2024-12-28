@@ -15,7 +15,5 @@ public class VenueSeatResDto {
     @Nullable
     List<String> floors;
     @Nullable
-    List<Integer> rows;
-    @Nullable
-    List<Integer> columns;
+    Long maxRow;
 }
