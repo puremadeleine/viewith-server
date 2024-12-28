@@ -14,6 +14,7 @@ import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.*;
+import io.jsonwebtoken.lang.Collections;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -144,6 +145,19 @@ public class VenueService {
     public void deleteBookmark(MemberInfo memberInfo, long seatId) {
         BookmarkEntity bookmark = bookmarkProvider.getBookmark(memberInfo.getMemberId(), seatId);
         bookmarkProvider.deleteBookmark(bookmark);
+    }
+
+    @Transactional
+    public void deleteBookmarks(MemberInfo memberInfo, List<Long> bookmarkIds) {
+        List<BookmarkEntity> bookmarks = bookmarkProvider.findBookmarks(bookmarkIds);
+        List<BookmarkEntity> memberBookmarks = bookmarks.stream()
+                .filter(b -> b.getMember().getId().equals(memberInfo.getMemberId()))
+                .toList();
+        if (Collections.isEmpty(memberBookmarks)) {
+            throw new ViewithException(ViewithErrorCode.NO_BOOKMARK);
+        }
+
+        bookmarkProvider.deleteBookmark(memberBookmarks);
     }
 
     @Mapper(componentModel = "spring")

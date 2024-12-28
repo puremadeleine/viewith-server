@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/venues")
 @RequiredArgsConstructor
@@ -49,5 +51,12 @@ public class VenueController {
                                @PathVariable(value = "venue_id") long venueId,
                                @PathVariable(value = "seat_id") long seatId) {
         venueService.deleteBookmark(memberInfo, seatId);
+    }
+
+    @DeleteMapping("/{venue_id}/seats/bookmarks")
+    public void deleteBookmark(MemberInfo memberInfo,
+                               @PathVariable(value = "venue_id") long venueId,
+                               @RequestParam(value = "bookmark_ids") List<Long> bookmarkIds) {
+        venueService.deleteBookmarks(memberInfo, bookmarkIds);
     }
 }
