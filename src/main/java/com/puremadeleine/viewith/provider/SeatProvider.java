@@ -19,6 +19,11 @@ public class SeatProvider {
 
     final SeatRepository seatRepository;
 
+    public SeatEntity getSeat(long seatId) {
+        return seatRepository.findById(seatId)
+                .orElseThrow(() -> new ViewithException(NO_SEAT));
+    }
+
     public SeatEntity getSeat(String section, Integer seatRow, Integer seatColumn) {
         return seatRepository.findBySectionAndSeatRowAndSeatColumn(section, seatRow, seatColumn)
                 .orElseThrow(() ->

@@ -33,4 +33,11 @@ public class BookmarkEntity extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seat_id")
     SeatEntity seat;
+
+    public static BookmarkEntity createBookmark(MemberEntity member, SeatEntity seat) {
+        return BookmarkEntity.builder()
+                .member(member)
+                .seat(seat)
+                .build();
+    }
 }
