@@ -23,4 +23,9 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
             """)
     List<ReviewCntDto> countReviewsBySeat(@Param("venueId") Long venueId,
                                           @Param("status") Status status);
+
+
+    @Query("SELECT COUNT(r) FROM ReviewEntity r WHERE r.member.id = :memberId AND r.status = :status")
+    long countReviewsByMember(@Param("memberId") Long memberId,
+                              @Param("status") Status status);
 }

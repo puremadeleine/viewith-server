@@ -7,7 +7,9 @@ import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.dto.member.*;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
+import com.puremadeleine.viewith.provider.BookmarkProvider;
 import com.puremadeleine.viewith.provider.MemberProvider;
+import com.puremadeleine.viewith.provider.ReviewProvider;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,8 @@ import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 public class MemberService extends SpringProxyAware<MemberService> {
 
     MemberProvider memberProvider;
+    BookmarkProvider bookmarkProvider;
+    ReviewProvider reviewProvider;
     KakaoService kakaoService;
     JwtService jwtService;
 
@@ -71,9 +75,14 @@ public class MemberService extends SpringProxyAware<MemberService> {
     public ProfileResDto getProfile(Long memberId) {
         MemberEntity member = memberProvider.findActiveMember(memberId)
                 .orElseThrow(() -> new ViewithException(ViewithErrorCode.UNKNOWN_EXCEPTION));
+        long bookmarksCnt = bookmarkProvider.countByMemberId(member.getId());
+        long reviewsCnt = reviewProvider.countByMemberId(member.getId());
 
-
-        return ProfileResDto.builder().build();
+        return ProfileResDto.builder()
+                .nickname(member.getNickname())
+                .bookmarksCount(bookmarksCnt)
+                .writtenReviewsCount(reviewsCnt)
+                .build();
     }
 
     public void putNickname(MemberInfo member, String nickname) {

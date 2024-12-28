@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "tb_bookmark",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "UN_USER", columnNames = {"user_id", "seat_id"}
+                        name = "UN_USER", columnNames = {"member_id", "seat_id"}
                 )
         }
 )

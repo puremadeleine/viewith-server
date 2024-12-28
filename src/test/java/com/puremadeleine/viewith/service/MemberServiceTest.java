@@ -3,7 +3,9 @@ package com.puremadeleine.viewith.service;
 import com.puremadeleine.viewith.dto.member.ValidateNicknameResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
+import com.puremadeleine.viewith.provider.BookmarkProvider;
 import com.puremadeleine.viewith.provider.MemberProvider;
+import com.puremadeleine.viewith.provider.ReviewProvider;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -17,8 +19,10 @@ class MemberServiceTest {
     MemberProvider memberProvider = mock(MemberProvider.class);
     KakaoService kakaoService = mock(KakaoService.class);
     JwtService jwtService = mock(JwtService.class);
+    BookmarkProvider bookmarkProvider = mock(BookmarkProvider.class);
+    ReviewProvider reviewProvider = mock(ReviewProvider.class);
 
-    MemberService memberService = new MemberService(memberProvider, kakaoService, jwtService);
+    MemberService memberService = new MemberService(memberProvider, bookmarkProvider, reviewProvider, kakaoService, jwtService);
 
     @ParameterizedTest
     @ValueSource(strings = {"한글만", "asd", "숫자1포함", "123", "공 백 포 함", "공백    포함", "딱15글자6789012345", "한asd123한"})

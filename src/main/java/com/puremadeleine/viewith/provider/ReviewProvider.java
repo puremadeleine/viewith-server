@@ -55,4 +55,12 @@ public class ReviewProvider {
     public List<ReviewCntDto> countReviewsByVenueAndSeatAndStatus(Long venueId, Status status) {
         return reviewRepository.countReviewsBySeat(venueId, status);
     }
+
+    public long countByMemberId(Long memberId) {
+        return countByMemberId(memberId, Status.NORMAL);
+    }
+
+    public long countByMemberId(Long memberId, Status status) {
+        return reviewRepository.countReviewsByMember(memberId, status);
+    }
 }
