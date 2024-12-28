@@ -1,6 +1,5 @@
 package com.puremadeleine.viewith.config.auth;
 
-import com.puremadeleine.viewith.auth.JwtAuthenticationEntryPoint;
 import com.puremadeleine.viewith.auth.JwtAuthenticationFilter;
 import com.puremadeleine.viewith.auth.JwtAuthenticationProvider;
 import lombok.AccessLevel;
@@ -28,7 +27,7 @@ import java.util.List;
 public class SecurityConfig {
 
     JwtAuthenticationProvider jwtAuthenticationProvider;
-    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    //    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     SecurityProperties securityProperties;
 
     @Bean
@@ -37,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+//                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }

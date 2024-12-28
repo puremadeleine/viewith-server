@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Table(name = "tb_member",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "UN_OAUTH", columnNames = {"oauth_type", "oauth_user_id"}
+                        name = "UN_OAUTH", columnNames = {"oauth_type", "viewith_oauth_user_id"}
                 ),
                 @UniqueConstraint(
                         name = "UN_NICKNAME", columnNames = {"nickname"}
@@ -39,7 +40,12 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     OAuthType oauthType;
 
-    @Column(nullable = false, unique = true)
+    @Setter(value = AccessLevel.PRIVATE)
+    @Column(nullable = false, unique = true, length = 40)
+    String viewithOauthUserId;
+
+    @Setter(value = AccessLevel.PRIVATE)
+    @Column(nullable = false)
     Long oauthUserId;
 
     @Column(unique = true)
@@ -54,6 +60,7 @@ public class MemberEntity extends BaseTimeEntity {
                 .nickname(nickname)
                 .oauthType(OAuthType.KAKAO)
                 .oauthUserId(kakaoUserInfo.getId())
+                .viewithOauthUserId(kakaoUserInfo.getId().toString())
                 .oauthEmail(Optional.ofNullable(kakaoUserInfo.getKakaoAccount())
                         .map(UserInfoResDto.KakaoAccount::getEmail)
                         .orElse(null))
@@ -65,7 +72,8 @@ public class MemberEntity extends BaseTimeEntity {
         this.setNickname(nickname);
     }
 
-    public void updateDeleteYn(boolean deleteYn) {
-        this.setDeleteYn(deleteYn);
+    public void deleteMember() {
+        this.setDeleteYn(true);
+        this.setViewithOauthUserId(UUID.randomUUID().toString());
     }
 }

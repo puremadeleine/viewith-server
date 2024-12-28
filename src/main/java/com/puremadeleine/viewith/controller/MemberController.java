@@ -28,8 +28,8 @@ public class MemberController {
     }
 
     @DeleteMapping(path = "")
-    public Object withdraw(@RequestParam(name = "oauth_type") @Validated OAuthType oauthType) {
-        return new Object();
+    public void withdraw(MemberInfo memberInfo) {
+        memberService.withdraw(memberInfo);
     }
 
     @GetMapping(path = "/profiles")

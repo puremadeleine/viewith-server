@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMember;
+import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +53,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
         // token 생성
         MemberInfo memberInfo = MemberInfo.builder()
-                .authType(OAuthType.KAKAO)
+                .authType(KAKAO)
                 .memberId(member.getId())
                 .accessToken(oauthAccessToken)
                 .refreshToken(tokenInfo.getRefreshToken())
@@ -130,5 +131,22 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
     private static int getRandomNumber(int size) {
         return new Random().nextInt(size);
+    }
+
+    public void withdraw(MemberInfo memberInfo) {
+        switch (memberInfo.getAuthType()) {
+            case KAKAO -> getProxy().withdrawByKakao(memberInfo));
+            case APPLE -> getProxy().withdrawByApple(memberInfo);
+            default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
+        }
+    }
+
+    public void withdrawByApple(MemberInfo memberInfo) {
+
+    }
+
+    public void withdrawByKakao(MemberInfo memberInfo) {
+        memberProvider.delete(memberInfo.getMemberId());
+        kakaoService.unlink(memberInfo.getAccessToken());
     }
 }

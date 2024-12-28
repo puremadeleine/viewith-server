@@ -30,7 +30,6 @@ public class JwtAuthenticationProvider implements AuthenticationManager {
         String token = (String) authentication.getCredentials();
         if (isNull(token) || token.isEmpty()) {
             return new UsernamePasswordAuthenticationToken(null, null, new ArrayList<>());
-//            return null;
         }
 
         boolean isValid = jwtService.validateAccessToken(token);

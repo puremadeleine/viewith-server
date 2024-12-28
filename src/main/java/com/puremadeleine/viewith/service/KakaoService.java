@@ -30,8 +30,8 @@ public class KakaoService {
         return kakaoApiRepository.getUserInfo(TOKEN_PREFIX + accessToken, null, KAKAO_INFO);
     }
 
-    public void logout(String accessToken) {
-
+    public void unlink(String accessToken) {
+        kakaoApiRepository.unlink(TOKEN_PREFIX + accessToken);
     }
 
     public void updateAccessToken(String accessToken) {
