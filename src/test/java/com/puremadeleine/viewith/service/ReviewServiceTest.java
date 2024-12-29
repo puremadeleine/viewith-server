@@ -34,10 +34,11 @@ class ReviewServiceTest {
     SeatProvider seatProvider = mock(SeatProvider.class);
     ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
     MemberProvider memberProvider = mock(MemberProvider.class);
+    ImageService imageService = mock(ImageService.class);
     ReviewService.ReviewServiceMapper reviewServiceMapper = Mappers.getMapper(ReviewService.ReviewServiceMapper.class);
 
     ReviewService reviewService = new ReviewService(
-            reviewProvider, venueProvider, seatProvider,reviewReportProvider, memberProvider, reviewServiceMapper);
+            reviewProvider, venueProvider, seatProvider,reviewReportProvider, memberProvider, imageService, reviewServiceMapper);
 
 
     @Nested
@@ -71,7 +72,7 @@ class ReviewServiceTest {
             when(reviewProvider.saveReview(any(ReviewEntity.class))).thenReturn(review);
 
             // when
-            CreateReviewResDto result = reviewService.createReview(req, member.getId());
+            CreateReviewResDto result = reviewService.createReview(req, null, member.getId());
 
             // then
             assertThat(result.getReviewId()).isEqualTo(1L);
