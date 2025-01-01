@@ -48,7 +48,8 @@ public class MemberInfoArgumentResolver implements HandlerMethodArgumentResolver
         return Optional.ofNullable(authentication)
                 .map(auth -> (MemberInfo) auth.getDetails())
                 .map(memberInfo -> memberInfo.updateNickname(authentication.getName()))
-                .stream().findAny();
+                .stream()
+                .findAny();
     }
 
     private boolean isOptional(MethodParameter parameter) {

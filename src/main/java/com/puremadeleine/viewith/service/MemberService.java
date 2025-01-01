@@ -3,12 +3,13 @@ package com.puremadeleine.viewith.service;
 import com.puremadeleine.viewith.aware.SpringProxyAware;
 import com.puremadeleine.viewith.constants.NicknameConstants;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
-import com.puremadeleine.viewith.dto.client.AccessTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.dto.member.*;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
+import com.puremadeleine.viewith.provider.BookmarkProvider;
 import com.puremadeleine.viewith.provider.MemberProvider;
+import com.puremadeleine.viewith.provider.ReviewProvider;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMember;
+import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 
 @Service
 @RequiredArgsConstructor
@@ -27,38 +29,37 @@ import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMe
 public class MemberService extends SpringProxyAware<MemberService> {
 
     MemberProvider memberProvider;
+    BookmarkProvider bookmarkProvider;
+    ReviewProvider reviewProvider;
     KakaoService kakaoService;
     JwtService jwtService;
 
-    public JoinResDto login(OAuthType authType, String code) {
+    public JoinResDto login(OAuthType authType, String accessToken, String refreshToken) {
         return switch (authType) {
-            case KAKAO -> getProxy().loginByKakao(code);
-            case APPLE -> loginByApple(code);
+            case KAKAO -> getProxy().loginByKakao(accessToken, refreshToken);
+            case APPLE -> loginByApple(accessToken, refreshToken);
             default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
         };
     }
 
     @Transactional
-    public JoinResDto loginByKakao(String code) {
+    public JoinResDto loginByKakao(String oauthAccessToken, String oauthRefreshToken) {
         // Kakao 인증 및 유저 정보 조회
-        AccessTokenResDto tokenInfo = kakaoService.getAccessToken(code);
-        String oauthAccessToken = tokenInfo.getAccessToken();
-        UserInfoResDto kakaoUserInfo = kakaoService.getKakaoUserInfo(oauthAccessToken);
+        UserInfoResDto tokenInfo = kakaoService.getAccessTokenInfo(oauthAccessToken);
 
         // DB 정보 조회 및 handle
-        Optional<MemberEntity> optionalMember = memberProvider.findMemberByKakaoId(kakaoUserInfo.getId());
-        MemberEntity member = optionalMember.map(this::handleExistingMember)
-                .orElseGet(() -> createAndSaveNewMember(kakaoUserInfo));
+        Optional<MemberEntity> optionalMember = memberProvider.findMemberByKakaoId(tokenInfo.getId());
+        MemberEntity member = optionalMember.orElseGet(() -> createAndSaveKakaoMember(tokenInfo.getId()));
 
         // token 생성
         MemberInfo memberInfo = MemberInfo.builder()
-                .authType(OAuthType.KAKAO)
+                .authType(KAKAO)
                 .memberId(member.getId())
                 .accessToken(oauthAccessToken)
-                .refreshToken(tokenInfo.getRefreshToken())
+                .refreshToken(oauthRefreshToken)
                 .build();
-        String accessToken = jwtService.makeAccessToken(memberInfo, tokenInfo.getExpiresIn());
-        String refreshToken = jwtService.makeRefreshToken(memberInfo, tokenInfo.getRefreshTokenExpiresIn());
+        String accessToken = jwtService.makeAccessToken(memberInfo);
+        String refreshToken = jwtService.makeRefreshToken(memberInfo);
 
         return JoinResDto.builder()
                 .accessToken(accessToken)
@@ -67,12 +68,21 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .build();
     }
 
-    public JoinResDto loginByApple(String code) {
+    public JoinResDto loginByApple(String accessToken, String refreshToken) {
         return JoinResDto.builder().build();
     }
 
     public ProfileResDto getProfile(Long memberId) {
-        return ProfileResDto.builder().build();
+        MemberEntity member = memberProvider.findActiveMember(memberId)
+                .orElseThrow(() -> new ViewithException(ViewithErrorCode.UNKNOWN_EXCEPTION));
+        long bookmarksCnt = bookmarkProvider.countByMemberId(member.getId());
+        long reviewsCnt = reviewProvider.countByMemberId(member.getId());
+
+        return ProfileResDto.builder()
+                .nickname(member.getNickname())
+                .bookmarksCount(bookmarksCnt)
+                .writtenReviewsCount(reviewsCnt)
+                .build();
     }
 
     public void putNickname(MemberInfo member, String nickname) {
@@ -96,16 +106,8 @@ public class MemberService extends SpringProxyAware<MemberService> {
         return ValidateNicknameResDto.builder().isValidated(true).build();
     }
 
-    private MemberEntity handleExistingMember(MemberEntity existingMember) {
-        if (existingMember.getDeleteYn()) {
-            existingMember.updateDeleteYn(false);
-            return memberProvider.save(existingMember);
-        }
-        return existingMember;
-    }
-
-    private MemberEntity createAndSaveNewMember(UserInfoResDto kakaoUserInfo) {
-        MemberEntity newMember = createKakaoMember(kakaoUserInfo, makeRandomNickname());
+    private MemberEntity createAndSaveKakaoMember(long oauthMemberId) {
+        MemberEntity newMember = createKakaoMember(oauthMemberId, makeRandomNickname());
         return memberProvider.save(newMember);
     }
 
@@ -130,5 +132,23 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
     private static int getRandomNumber(int size) {
         return new Random().nextInt(size);
+    }
+
+    public void withdraw(MemberInfo memberInfo) {
+        switch (memberInfo.getAuthType()) {
+            case KAKAO -> getProxy().withdrawByKakao(memberInfo);
+            case APPLE -> getProxy().withdrawByApple(memberInfo);
+            default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
+        }
+    }
+
+    public void withdrawByApple(MemberInfo memberInfo) {
+
+    }
+
+    @Transactional
+    public void withdrawByKakao(MemberInfo memberInfo) {
+        memberProvider.delete(memberInfo.getMemberId());
+        kakaoService.unlink(memberInfo.getAccessToken());
     }
 }

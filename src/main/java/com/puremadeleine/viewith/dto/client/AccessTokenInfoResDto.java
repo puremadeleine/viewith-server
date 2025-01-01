@@ -1,19 +1,17 @@
-package com.puremadeleine.viewith.dto.member;
+package com.puremadeleine.viewith.dto.client;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
 @Getter
-@Value
 @Jacksonized
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ProfileResDto {
-    String nickname;
-    Long writtenReviewsCount;
-    Long bookmarksCount;
+public class AccessTokenInfoResDto {
+    long id;
+    Integer expiresIn;
+    Integer appId;
 }

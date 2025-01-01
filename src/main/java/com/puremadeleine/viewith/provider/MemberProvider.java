@@ -40,6 +40,14 @@ public class MemberProvider {
     }
 
     public Optional<MemberEntity> findMemberByKakaoId(Long kakaoId) {
-        return memberRepository.findByOauthTypeAndOauthUserId(OAuthType.KAKAO, kakaoId);
+        return memberRepository.findByOauthTypeAndViewithOauthUserIdAndDeleteYn(OAuthType.KAKAO, kakaoId.toString(), false);
     }
+
+    public void delete(Long memberId) {
+        MemberEntity member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ViewithException(ViewithErrorCode.INVALID_PARAM));
+        member.delete();
+        memberRepository.save(member);
+    }
+
 }
