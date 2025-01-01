@@ -10,6 +10,7 @@ public enum ViewithErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 10000, "invalid token"),
     FORBIDDEN_TOKEN(HttpStatus.FORBIDDEN, 10001, "forbidden token"),
     INVALID_PARAM(HttpStatus.BAD_REQUEST, 10002, "invalid param"),
+    INVALID_OAUTH_TOKEN(HttpStatus.UNAUTHORIZED, 10004, "invalid oauth token"),
 
     // member
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, 20001, "duplicated nickname"),
