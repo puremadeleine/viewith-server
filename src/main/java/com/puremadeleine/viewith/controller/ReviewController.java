@@ -10,6 +10,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/reviews")
@@ -20,8 +23,9 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping("")
-    public CreateReviewResDto createReview(@RequestBody CreateReviewReqDto createReviewReqDto, MemberInfo memberInfo) {
-        return reviewService.createReview(createReviewReqDto, memberInfo.getMemberId());
+    public CreateReviewResDto createReview(@RequestPart(value = "CreateReviewReqDto") CreateReviewReqDto createReviewReqDto,
+                                           @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+        return reviewService.createReview(createReviewReqDto, images, 1L);
     }
 
     @GetMapping("/{review_id}")

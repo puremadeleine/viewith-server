@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -21,6 +22,7 @@ public class ReviewInfoSummaryResDto {
     String summary;
     Float rating;
     LocalDateTime createTime;
+    List<String> imageList;
     ReviewerInfoResDto userInfo;
 
     // todo : seat_bookmark_info 추가
