@@ -44,9 +44,6 @@ public class ReviewEntity extends BaseTimeEntity {
     @JoinColumn(name = "seat_id")
     SeatEntity seat;
 
-    @Enumerated(EnumType.STRING)
-    Block block;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
     PerformanceEntity performance;
@@ -64,7 +61,6 @@ public class ReviewEntity extends BaseTimeEntity {
                 .reportCount(0)
                 .venue(venue)
                 .seat(seat)
-                .block(reqDto.getBlock())
                 .member(member)
                 .build();
     }

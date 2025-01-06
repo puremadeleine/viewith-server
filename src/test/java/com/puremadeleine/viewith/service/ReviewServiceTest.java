@@ -20,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
-import static com.puremadeleine.viewith.domain.review.Block.LEFT;
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,7 +53,6 @@ class ReviewServiceTest {
                     .section("A")
                     .seatRow(1)
                     .seatColumn(1)
-                    .block(LEFT)
                     .rating(5.0F)
                     .content("후기")
                     .build();

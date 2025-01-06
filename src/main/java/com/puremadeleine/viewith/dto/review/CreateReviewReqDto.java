@@ -1,6 +1,5 @@
 package com.puremadeleine.viewith.dto.review;
 
-import com.puremadeleine.viewith.domain.review.Block;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +16,6 @@ public class CreateReviewReqDto {
     String section;
     Integer seatRow;
     Integer seatColumn;
-    Block block;
     String content;
     Float rating;
 }
