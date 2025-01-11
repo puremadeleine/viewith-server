@@ -103,9 +103,13 @@ public class ReviewService {
     public interface ReviewServiceMapper {
 
         @Mapping(source = "review.id", target = "reviewId")
-        @Mapping(source = "review.member", target = "userInfo")
         @Mapping(source = "review.member.id", target = "userInfo.userId")
         @Mapping(source = "review.member.nickname", target = "userInfo.userNickname")
+        @Mapping(source = "review.seat.floor", target = "seatInfo.floor")
+        @Mapping(source = "review.seat.section", target = "seatInfo.section")
+        @Mapping(source = "review.seat.seatRow", target = "seatInfo.seatRow")
+        @Mapping(source = "review.seat.seatColumn", target = "seatInfo.seatColumn")
+        @Mapping(source = "review.seat.block", target = "seatInfo.block")
         @Mapping(source = "imageList", target = "imageList")
         ReviewInfoResDto toReviewInfoResDto(ReviewEntity review, List<String> imageList);
     }
