@@ -38,7 +38,7 @@ public class ReviewInfoResDto {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class SeatInfoDto {
 
-        Integer floor;
+        String floor;
         String section;
         Integer seatRow;
         Integer seatColumn;

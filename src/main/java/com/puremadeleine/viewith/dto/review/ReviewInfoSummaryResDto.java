@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.puremadeleine.viewith.domain.review.Block;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class ReviewInfoSummaryResDto {
     LocalDateTime createTime;
     List<String> imageList;
     ReviewerInfoResDto userInfo;
+    SeatInfoDto seatInfo;
 
     // todo : seat_bookmark_info 추가
 
@@ -34,5 +36,17 @@ public class ReviewInfoSummaryResDto {
 
         Long userId;
         String userNickname;
+    }
+
+    @Getter
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class SeatInfoDto {
+
+        String floor;
+        String section;
+        Integer seatRow;
+        Integer seatColumn;
+        Block block;
     }
 }

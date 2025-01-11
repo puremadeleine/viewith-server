@@ -2,6 +2,7 @@ package com.puremadeleine.viewith.converter.review;
 
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
+import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.dto.review.ReviewInfoSummaryResDto;
 import com.puremadeleine.viewith.dto.review.ReviewListResDto;
 import com.puremadeleine.viewith.util.HtmlUtils;
@@ -41,6 +42,7 @@ public class ReviewServiceConverter {
                     .createTime(review.getCreateTime())
                     .imageList(imageUrls)
                     .userInfo(toReviewerInfoResDto(review.getMember()))
+                    .seatInfo(toSeatInfoDto(review.getSeat()))
                     .build();
         }
         return ReviewInfoSummaryResDto.builder()
@@ -50,6 +52,7 @@ public class ReviewServiceConverter {
                 .createTime(review.getCreateTime())
                 .imageList(imageUrls)
                 .userInfo(toReviewerInfoResDto(review.getMember()))
+                .seatInfo(toSeatInfoDto(review.getSeat()))
                 .build();
     }
 
@@ -57,6 +60,16 @@ public class ReviewServiceConverter {
         return ReviewInfoSummaryResDto.ReviewerInfoResDto.builder()
                 .userId(member.getId())
                 .userNickname(member.getNickname())
+                .build();
+    }
+
+    private static ReviewInfoSummaryResDto.SeatInfoDto toSeatInfoDto(SeatEntity seat) {
+        return ReviewInfoSummaryResDto.SeatInfoDto.builder()
+                .floor(seat.getFloor())
+                .section(seat.getSection())
+                .seatRow(seat.getSeatRow())
+                .seatColumn(seat.getSeatColumn())
+                .block(seat.getBlock())
                 .build();
     }
 
