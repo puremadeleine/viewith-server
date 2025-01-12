@@ -1,6 +1,5 @@
 package com.puremadeleine.viewith.service;
 
-import com.puremadeleine.viewith.domain.image.ImageEntity;
 import com.puremadeleine.viewith.domain.image.SourceType;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +36,7 @@ public class ReviewService {
     SeatProvider seatProvider;
     ReviewReportProvider reviewReportProvider;
     MemberProvider memberProvider;
+    BookmarkProvider bookmarkProvider;
     ImageService imageService;
     ReviewServiceMapper mapper;
 
@@ -68,10 +67,11 @@ public class ReviewService {
         review.deleteReview();
     }
 
-    public ReviewInfoResDto getReviewInfo(Long reviewId) {
+    public ReviewInfoResDto getReviewInfo(Long reviewId, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
+        boolean bookmarked = bookmarkProvider.isBookmarked(review.getSeat().getId(), memberId);
         List<String> imageUrls = imageService.getReviewImageUrlList(reviewId);
-        return mapper.toReviewInfoResDto(review, imageUrls);
+        return mapper.toReviewInfoResDto(review, bookmarked, imageUrls);
     }
 
     public ReviewListResDto getReviewList(ReviewListReqDto req, boolean isSummary) {
@@ -101,7 +101,6 @@ public class ReviewService {
 
     @Mapper(componentModel = "spring")
     public interface ReviewServiceMapper {
-
         @Mapping(source = "review.id", target = "reviewId")
         @Mapping(source = "review.member.id", target = "userInfo.userId")
         @Mapping(source = "review.member.nickname", target = "userInfo.userNickname")
@@ -110,8 +109,10 @@ public class ReviewService {
         @Mapping(source = "review.seat.seatRow", target = "seatInfo.seatRow")
         @Mapping(source = "review.seat.seatColumn", target = "seatInfo.seatColumn")
         @Mapping(source = "review.seat.block", target = "seatInfo.block")
+//        @Mapping(source = "review.seat.id", target = "seatBookmarkInfo.seatId")     //  문제
+        @Mapping(source = "bookmarked", target = "seatBookmarkInfo.bookmarked")
         @Mapping(source = "imageList", target = "imageList")
-        ReviewInfoResDto toReviewInfoResDto(ReviewEntity review, List<String> imageList);
+        ReviewInfoResDto toReviewInfoResDto(ReviewEntity review, Boolean bookmarked, List<String> imageList);
     }
 
 }

@@ -21,8 +21,7 @@ public class ReviewInfoResDto {
     List<String> imageList;
     ReviewerInfoResDto userInfo;
     SeatInfoDto seatInfo;
-
-    // todo : seat_bookmark_info 추가
+    SeatBookmarkInfo seatBookmarkInfo;
 
     @Getter
     @Builder
@@ -43,5 +42,14 @@ public class ReviewInfoResDto {
         Integer seatRow;
         Integer seatColumn;
         Block block;
+    }
+
+    @Getter
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class SeatBookmarkInfo {
+
+        Long seatId;
+        Boolean bookmarked;
     }
 }

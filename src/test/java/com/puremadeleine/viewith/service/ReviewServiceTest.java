@@ -33,11 +33,13 @@ class ReviewServiceTest {
     SeatProvider seatProvider = mock(SeatProvider.class);
     ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
     MemberProvider memberProvider = mock(MemberProvider.class);
+    BookmarkProvider bookmarkProvider = mock(BookmarkProvider.class);
     ImageService imageService = mock(ImageService.class);
     ReviewService.ReviewServiceMapper reviewServiceMapper = Mappers.getMapper(ReviewService.ReviewServiceMapper.class);
 
     ReviewService reviewService = new ReviewService(
-            reviewProvider, venueProvider, seatProvider,reviewReportProvider, memberProvider, imageService, reviewServiceMapper);
+            reviewProvider, venueProvider, seatProvider,reviewReportProvider,
+            memberProvider, bookmarkProvider, imageService, reviewServiceMapper);
 
 
     @Nested
@@ -171,7 +173,7 @@ class ReviewServiceTest {
             when(reviewProvider.getNormalReview(anyLong())).thenReturn(review);
 
             // when
-            ReviewInfoResDto result = reviewService.getReviewInfo(1L);
+            ReviewInfoResDto result = reviewService.getReviewInfo(1L, 1L);
 
             // then
             assertThat(result.getReviewId()).isEqualTo(1L);

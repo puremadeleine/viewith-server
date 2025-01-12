@@ -27,8 +27,6 @@ public class ReviewInfoSummaryResDto {
     ReviewerInfoResDto userInfo;
     SeatInfoDto seatInfo;
 
-    // todo : seat_bookmark_info 추가
-
     @Getter
     @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)

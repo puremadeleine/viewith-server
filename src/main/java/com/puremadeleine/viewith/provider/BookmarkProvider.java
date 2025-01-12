@@ -15,4 +15,8 @@ public class BookmarkProvider {
     public long countByMemberId(long memberId) {
         return bookmarkRepository.countByMemberId(memberId);
     }
+
+    public boolean isBookmarked(Long seatId, Long memberId) {
+        return bookmarkRepository.existsBySeatIdAndMemberId(seatId, memberId);
+    }
 }
