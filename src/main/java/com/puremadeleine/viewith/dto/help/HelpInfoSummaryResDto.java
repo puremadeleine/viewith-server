@@ -14,6 +14,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 public class HelpInfoSummaryResDto {
 
+    Long helpId;
     String title;
     String content;
     String summary;
