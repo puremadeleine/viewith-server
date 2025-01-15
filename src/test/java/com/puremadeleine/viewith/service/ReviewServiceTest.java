@@ -348,6 +348,7 @@ class ReviewServiceTest {
                 .id(1L)
                 .rating(1.5F)
                 .content("후기")
+                .seat(getSeat())
                 .member(getMember(1L))
                 .build();
     }
