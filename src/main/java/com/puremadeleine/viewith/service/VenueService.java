@@ -1,14 +1,22 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.domain.bookmark.BookmarkEntity;
+import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
+import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
+import com.puremadeleine.viewith.exception.ViewithErrorCode;
+import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
 import com.puremadeleine.viewith.provider.*;
+import io.jsonwebtoken.lang.Collections;
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,10 +24,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +48,8 @@ public class VenueService {
     PerformanceProvider performanceProvider;
     ReviewProvider reviewProvider;
     VenueServiceMapper venueServiceMapper;
+    BookmarkProvider bookmarkProvider;
+    MemberProvider memberProvider;
 
     public VenueListResDto getVenues(int performanceCnt) {
         List<VenueEntity> venues = venueProvider.getVenues();
@@ -73,7 +87,7 @@ public class VenueService {
                 .map(SeatEntity::getSection)
                 .distinct()
                 .toList();
-        
+
         // 리뷰 정보
         Map<String, Long> cntByKey = getReviewCntBySectionKey(venueId);
         var reviewInfos = seatEntities.stream()
@@ -100,6 +114,51 @@ public class VenueService {
     private String makeSectionKey(String floor, String section) {
         String prefix = FLOOR.equalsIgnoreCase(floor) ? FLOOR : SEAT;
         return StringUtils.join(prefix, SEPARATOR, section);
+    }
+
+    public VenueSeatResDto getVenueSeats(long venueId, @Nullable String floor, @Nullable Long row) {
+        if (isNull(floor)) {
+            // 해당 공연장의 Floor List 반환
+
+        }
+
+        if (isNull(row)) {
+            // 해당 floor의 최대 row 반환
+
+        }
+        return VenueSeatResDto.builder().build();
+    }
+
+    @Transactional
+    public void createBookmark(MemberInfo memberInfo, long seatId) {
+        Optional<BookmarkEntity> bookmark = bookmarkProvider.findBookmark(memberInfo.getMemberId(), seatId);
+        bookmark.ifPresent(b -> {
+            throw new ViewithException(ViewithErrorCode.DUPLICATED_BOOKMARK);
+        });
+
+        MemberEntity member = memberProvider.getActiveMember(memberInfo.getMemberId());
+        SeatEntity seat = seatProvider.getSeat(seatId);
+        BookmarkEntity newBookmark = BookmarkEntity.createBookmark(member, seat);
+        bookmarkProvider.save(newBookmark);
+    }
+
+    @Transactional
+    public void deleteBookmark(MemberInfo memberInfo, long seatId) {
+        BookmarkEntity bookmark = bookmarkProvider.getBookmark(memberInfo.getMemberId(), seatId);
+        bookmarkProvider.deleteBookmark(bookmark);
+    }
+
+    @Transactional
+    public void deleteBookmarks(MemberInfo memberInfo, List<Long> bookmarkIds) {
+        List<BookmarkEntity> bookmarks = bookmarkProvider.findBookmarks(bookmarkIds);
+        List<BookmarkEntity> memberBookmarks = bookmarks.stream()
+                .filter(b -> b.getMember().getId().equals(memberInfo.getMemberId()))
+                .toList();
+        if (Collections.isEmpty(memberBookmarks)) {
+            throw new ViewithException(ViewithErrorCode.NO_BOOKMARK);
+        }
+
+        bookmarkProvider.deleteBookmark(memberBookmarks);
     }
 
     public List<VenueSearchResDto> searchVenue(String keyword) {
