@@ -29,4 +29,7 @@ public class VenueProvider {
     }
 
 
+    public List<VenueEntity> search(String keyword) {
+        return venueRepository.findByNameContainsIgnoreCase(keyword);
+    }
 }
