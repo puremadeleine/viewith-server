@@ -51,7 +51,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
     ReviewProvider reviewProvider;
     KakaoService kakaoService;
     JwtService jwtService;
-    private final VenueProvider venueProvider;
+    VenueProvider venueProvider;
 
     public JoinResDto login(OAuthType authType, String accessToken, String refreshToken) {
         return switch (authType) {
