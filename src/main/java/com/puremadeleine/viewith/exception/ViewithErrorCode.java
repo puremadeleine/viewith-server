@@ -30,8 +30,10 @@ public enum ViewithErrorCode {
     // bookmark
     DUPLICATED_BOOKMARK(HttpStatus.CONFLICT, 70001, "duplicated bookmark"),
     NO_BOOKMARK(HttpStatus.NOT_FOUND, 70002, "no bookmark"),
+
     // image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, 60001, "image upload failed"),
+
 
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, 99999, "unknown exception occured");
 
