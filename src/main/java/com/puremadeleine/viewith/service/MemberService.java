@@ -3,6 +3,7 @@ package com.puremadeleine.viewith.service;
 import com.puremadeleine.viewith.aware.SpringProxyAware;
 import com.puremadeleine.viewith.constants.NicknameConstants;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
+import com.puremadeleine.viewith.dto.client.UpdateTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.dto.member.*;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
@@ -150,5 +151,44 @@ public class MemberService extends SpringProxyAware<MemberService> {
     public void withdrawByKakao(MemberInfo memberInfo) {
         memberProvider.delete(memberInfo.getMemberId());
         kakaoService.unlink(memberInfo.getAccessToken());
+    }
+
+    public RefreshResDto refresh(RefreshReqDto refreshReqDto) {
+        boolean isValidRefreshToken = jwtService.validateRefreshToken(refreshReqDto.getRefreshToken());
+
+        if (!isValidRefreshToken) {
+            throw new ViewithException(ViewithErrorCode.INVALID_TOKEN);
+        }
+
+        MemberInfo memberInfo = jwtService.getMemberInfoByRefreshToken(refreshReqDto.getRefreshToken());
+
+        return switch (memberInfo.getAuthType()) {
+            case KAKAO -> getProxy().refreshByKakao(memberInfo);
+            case APPLE -> getProxy().refreshByApple(memberInfo);
+            default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
+        };
+    }
+
+    public RefreshResDto refreshByKakao(MemberInfo member) {
+        UpdateTokenResDto newTokenInfo = kakaoService.updateAccessToken(member.getRefreshToken());
+
+        MemberInfo newMember = MemberInfo.builder()
+                .authType(KAKAO)
+                .memberId(member.getMemberId())
+                .accessToken(newTokenInfo.getAccessToken())
+                .refreshToken(newTokenInfo.getRefreshToken())
+                .build();
+
+        String accessToken = jwtService.makeAccessToken(newMember);
+        String refreshToken = jwtService.makeRefreshToken(newMember);
+
+        return RefreshResDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public RefreshResDto refreshByApple(MemberInfo memberInfo) {
+        return RefreshResDto.builder().build();
     }
 }

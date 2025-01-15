@@ -5,7 +5,6 @@ import com.puremadeleine.viewith.service.MemberService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,8 +23,8 @@ public class MemberController {
     }
 
     @PutMapping(path = "/refresh")
-    public Object refresh(@RequestParam(name = "oauth_type") @Validated OAuthType oauthType) {
-        return new Object();
+    public RefreshResDto refresh(@RequestBody RefreshReqDto refreshReqDto) {
+        return memberService.refresh(refreshReqDto);
     }
 
     @DeleteMapping(path = "")

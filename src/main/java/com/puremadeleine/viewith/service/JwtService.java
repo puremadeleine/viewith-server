@@ -59,12 +59,15 @@ public class JwtService {
         return JwtUtil.getMemberInfo(accessToken, jwtProperties.getAccessSecretKey());
     }
 
+    public MemberInfo getMemberInfoByRefreshToken(String refreshToken) {
+        return JwtUtil.getMemberInfo(refreshToken, jwtProperties.getRefreshSecretKey());
+    }
+
     public boolean validateAccessToken(String accessToken) {
         return JwtUtil.validateToken(accessToken, jwtProperties.getAccessSecretKey());
     }
 
-    public boolean isExpiredAccessToken(String accessToken) {
-        return JwtUtil.isExpiredToken(accessToken, jwtProperties.getAccessSecretKey());
+    public boolean validateRefreshToken(String refreshToken) {
+        return JwtUtil.validateToken(refreshToken, jwtProperties.getRefreshSecretKey());
     }
-
 }

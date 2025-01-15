@@ -47,7 +47,6 @@ public class MemberProvider {
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ViewithException(ViewithErrorCode.INVALID_PARAM));
         member.delete();
-        memberRepository.save(member);
     }
 
 }
