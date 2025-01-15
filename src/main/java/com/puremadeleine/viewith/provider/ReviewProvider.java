@@ -4,6 +4,7 @@ import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.Status;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
 import com.puremadeleine.viewith.dto.review.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.ReviewWithSeatIdDto;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.repository.ReviewCustomRepository;
 import com.puremadeleine.viewith.repository.ReviewRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.NO_NORMAL_REVIEW;
@@ -62,5 +64,9 @@ public class ReviewProvider {
 
     public long countByMemberId(Long memberId, Status status) {
         return reviewRepository.countReviewsByMember(memberId, status);
+    }
+
+    public List<ReviewWithSeatIdDto> findTopReviewsBySeatIdsAndStatus(Collection<Long> seatIds) {
+        return reviewRepository.findTopReviewsBySeatIdsAndStatus(seatIds, Status.NORMAL);
     }
 }

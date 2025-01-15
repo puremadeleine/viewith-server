@@ -11,8 +11,9 @@ VALUES (1, 1, 1, 1, 'A', 1),
        (3, 1, 2, 2, 'B', 2),
        (4, 2, 2, 2, 'B', 2),
        (5, 3, 2, 1, 'B', 1),
-       (6, 3, 0, 1, 'B', 1),
-       (7, 3, 0, 1, 'B', 2);
+       (6, 0, 0, 1, 'B', 1),
+       (7, 0, 0, 1, 'B', 2),
+       (8, 0, 0, 1, 'B', 3);
 
 -- tb_member
 INSERT
@@ -51,3 +52,10 @@ INSERT INTO tb_performance (performance_id, title, artist, start_date, end_date,
 VALUES (1, '첫번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
        (2, '두번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
        (3, '스키즈 콘서트', '더보이즈', now(), now(), 1);
+
+-- tb_bookmark
+INSERT INTO tb_bookmark (bookmark_id, member_id, seat_id)
+VALUES (1, 1, 1),
+       (2, 1, 2),
+       (3, 1, 3),
+       (4, 1, 8);
