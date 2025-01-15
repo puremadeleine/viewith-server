@@ -13,6 +13,7 @@ import com.puremadeleine.viewith.dto.venue.VenueResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
+import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
 import com.puremadeleine.viewith.provider.*;
 import io.jsonwebtoken.lang.Collections;
 import jakarta.annotation.Nullable;
@@ -160,6 +161,11 @@ public class VenueService {
         bookmarkProvider.deleteBookmark(memberBookmarks);
     }
 
+    public List<VenueSearchResDto> searchVenue(String keyword) {
+        List<VenueEntity> searchList = venueProvider.search(keyword);
+        return venueServiceMapper.toVenueSearchResDtoList(searchList);
+    }
+
     @Mapper(componentModel = "spring")
     public interface VenueServiceMapper {
         @Mapping(source = "venue.id", target = "venueId")
@@ -179,5 +185,12 @@ public class VenueService {
                                   List<String> sections,
                                   List<VenueResDto.Stage> stages,
                                   List<VenueResDto.VenueReviewInfo> venueReviewInfos);
+
+        List<VenueSearchResDto> toVenueSearchResDtoList(List<VenueEntity> venues);
+
+        @Mapping(source = "id", target = "venueId")
+        @Mapping(source = "name", target = "venueName")
+        @Mapping(source = "location", target = "venueLocation")
+        VenueSearchResDto toVenueSearchResDto(VenueEntity venue);
     }
 }

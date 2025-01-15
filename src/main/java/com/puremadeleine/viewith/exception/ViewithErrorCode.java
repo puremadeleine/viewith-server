@@ -26,6 +26,8 @@ public enum ViewithErrorCode {
     // help
     NO_HELP(HttpStatus.NOT_FOUND, 50001, "no help"),
 
+    // image
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, 60001, "image upload failed"),
     // bookmark
     DUPLICATED_BOOKMARK(HttpStatus.CONFLICT, 70001, "duplicated bookmark"),
     NO_BOOKMARK(HttpStatus.NOT_FOUND, 70002, "no bookmark"),

@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.controller;
 
+import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.performance.PerformanceSearchResDto;
 import com.puremadeleine.viewith.service.PerformanceService;
 import lombok.AccessLevel;
@@ -18,7 +19,7 @@ public class PerformanceController {
     PerformanceService performanceService;
 
     @GetMapping("/search")
-    public List<PerformanceSearchResDto> searchPerformance(@RequestParam String keyword) {
+    public List<PerformanceSearchResDto> searchPerformance(@RequestParam String keyword, MemberInfo memberInfo) {
         return performanceService.searchPerformance(keyword);
     }
 }

@@ -7,22 +7,30 @@ import com.puremadeleine.viewith.dto.review.ReviewListResDto;
 import com.puremadeleine.viewith.util.HtmlUtils;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.Map;
 import static java.lang.Math.min;
 
 public class ReviewServiceConverter {
 
-    public static ReviewListResDto toReviewListResDto(Boolean isSummary, Page<ReviewEntity> reviewList) {
+    public static ReviewListResDto toReviewListResDto(Boolean isSummary,
+                                                      Page<ReviewEntity> reviewList,
+                                                      Map<Long, List<String>> reviewImageUrlMap) {
         return ReviewListResDto.builder()
                 .page(reviewList.getPageable().getPageNumber() + 1)
                 .size(reviewList.getSize())
                 .listSize(reviewList.getContent().size())
                 .total(reviewList.getTotalElements())
                 .hasNext(reviewList.hasNext())
-                .list(reviewList.stream().map(r -> toReviewInfoSummaryResDto(isSummary, r)).toList())
+                .list(reviewList.stream()
+                        .map(r -> toReviewInfoSummaryResDto(isSummary, r, reviewImageUrlMap.get(r.getId())))
+                        .toList())
                 .build();
     }
 
-    public static ReviewInfoSummaryResDto toReviewInfoSummaryResDto(Boolean isSummary, ReviewEntity review) {
+    public static ReviewInfoSummaryResDto toReviewInfoSummaryResDto(Boolean isSummary,
+                                                                    ReviewEntity review,
+                                                                    List<String> imageUrls) {
 
         String pureContent = HtmlUtils.removeHtml(review.getContent());
         if (Boolean.TRUE.equals(isSummary)) {
@@ -31,6 +39,7 @@ public class ReviewServiceConverter {
                     .summary(pureContent.substring(0, min(pureContent.length(), 30)))
                     .rating(review.getRating())
                     .createTime(review.getCreateTime())
+                    .imageList(imageUrls)
                     .userInfo(toReviewerInfoResDto(review.getMember()))
                     .build();
         }
@@ -39,6 +48,7 @@ public class ReviewServiceConverter {
                 .content(review.getContent())
                 .rating(review.getRating())
                 .createTime(review.getCreateTime())
+                .imageList(imageUrls)
                 .userInfo(toReviewerInfoResDto(review.getMember()))
                 .build();
     }

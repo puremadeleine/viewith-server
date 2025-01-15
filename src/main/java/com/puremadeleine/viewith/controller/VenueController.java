@@ -3,6 +3,7 @@ package com.puremadeleine.viewith.controller;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.service.VenueService;
 import jakarta.annotation.Nullable;
@@ -54,9 +55,14 @@ public class VenueController {
     }
 
     @DeleteMapping("/{venue_id}/seats/bookmarks")
-    public void deleteBookmark(MemberInfo memberInfo,
+    public void deleteBookmarks(MemberInfo memberInfo,
                                @PathVariable(value = "venue_id") long venueId,
                                @RequestParam(value = "bookmark_ids") List<Long> bookmarkIds) {
         venueService.deleteBookmarks(memberInfo, bookmarkIds);
+    }
+
+    @GetMapping("/search")
+    public List<VenueSearchResDto> searchVenue(@RequestParam String keyword, MemberInfo memberInfo) {
+        return venueService.searchVenue(keyword);
     }
 }

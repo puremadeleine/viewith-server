@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtService {
     static long ACCESS_TOKEN_EXPIRED_MS = TimeUnit.HOURS.toMillis(6);
-    static long REFRESH_TOKEN_EXPIRED_MS = TimeUnit.HOURS.toMillis(23);
+    static long REFRESH_TOKEN_EXPIRED_MS = TimeUnit.DAYS.toMillis(30);
 
     JwtProperties jwtProperties;
     MemberProvider memberProvider;
