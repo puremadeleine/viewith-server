@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import static com.puremadeleine.viewith.constants.SeatConstants.FLOOR;
 import static com.puremadeleine.viewith.constants.SeatConstants.SEAT;
 import static com.puremadeleine.viewith.constants.SeatConstants.SEPARATOR;
+import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -177,7 +178,7 @@ public class VenueService {
                 .floor(rowsByFloor.getKey())
                 .rows(rowsByFloor.getValue()
                         .stream()
-                        .filter(r -> r != 0)
+                        .filter(r -> r != UNSELECTED_NUMBER)
                         .toList())
                 .build();
     }
