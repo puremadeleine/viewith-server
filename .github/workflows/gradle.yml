@@ -30,7 +30,6 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-job:
   deploy:
     runs-on: ubuntu-latest
     permissions:
