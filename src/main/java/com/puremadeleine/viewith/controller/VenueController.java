@@ -5,9 +5,7 @@ import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
-import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.service.VenueService;
-import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,11 +32,9 @@ public class VenueController {
     }
 
     @GetMapping("/{venue_id}/seats")
-    public VenueSeatResDto getVenueSeats(@PathVariable(value = "venue_id") long venueId,
-                                         @Nullable @RequestParam(required = false) String floor,
-                                         @Nullable @RequestParam(required = false) Long row) {
+    public VenueSeatResDto getVenueSeats(@PathVariable(value = "venue_id") long venueId) {
 
-        return venueService.getVenueSeats(venueId, floor, row);
+        return venueService.getVenueSeats(venueId);
     }
 
     @PostMapping("/{venue_id}/seats/{seat_id}/bookmarks")
@@ -57,8 +53,8 @@ public class VenueController {
 
     @DeleteMapping("/{venue_id}/seats/bookmarks")
     public void deleteBookmarks(MemberInfo memberInfo,
-                               @PathVariable(value = "venue_id") long venueId,
-                               @RequestParam(value = "bookmark_ids") List<Long> bookmarkIds) {
+                                @PathVariable(value = "venue_id") long venueId,
+                                @RequestParam(value = "bookmark_ids") List<Long> bookmarkIds) {
         venueService.deleteBookmarks(memberInfo, bookmarkIds);
     }
 

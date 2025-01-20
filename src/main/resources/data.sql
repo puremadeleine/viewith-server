@@ -9,7 +9,10 @@ INSERT INTO tb_seat (seat_id, seat_column, seat_row, venue_id, section, floor)
 VALUES (1, 1, 1, 1, 'A', 1),
        (2, 2, 1, 1, 'A', 1),
        (3, 1, 2, 2, 'B', 2),
-       (4, 2, 2, 2, 'B', 2);
+       (4, 2, 2, 2, 'B', 2),
+       (5, 3, 2, 1, 'B', 1),
+       (6, 3, 0, 1, 'B', 1),
+       (7, 3, 0, 1, 'B', 2);
 
 -- tb_member
 INSERT

@@ -8,18 +8,21 @@ import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
+import com.puremadeleine.viewith.dto.venue.FloorRowDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
-import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
-import com.puremadeleine.viewith.exception.ViewithErrorCode;
-import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
-import com.puremadeleine.viewith.provider.*;
+import com.puremadeleine.viewith.provider.BookmarkProvider;
+import com.puremadeleine.viewith.provider.MemberProvider;
+import com.puremadeleine.viewith.provider.PerformanceProvider;
+import com.puremadeleine.viewith.provider.ReviewProvider;
+import com.puremadeleine.viewith.provider.SeatProvider;
+import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.provider.VenueStageProvider;
 import io.jsonwebtoken.lang.Collections;
-import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,16 +37,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
+import static com.puremadeleine.viewith.constants.SeatConstants.FLOOR;
+import static com.puremadeleine.viewith.constants.SeatConstants.SEAT;
+import static com.puremadeleine.viewith.constants.SeatConstants.SEPARATOR;
+import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VenueService {
-
-    private static final String FLOOR = "FLOOR";
-    private static final String SEAT = "SEAT";
-    private static final String SEPARATOR = "_";
 
     VenueProvider venueProvider;
     VenueStageProvider venueStageProvider;
@@ -119,17 +121,12 @@ public class VenueService {
         return StringUtils.join(prefix, SEPARATOR, section);
     }
 
-    public VenueSeatResDto getVenueSeats(long venueId, @Nullable String floor, @Nullable Long row) {
-        if (isNull(floor)) {
-            // 해당 공연장의 Floor List 반환
+    public VenueSeatResDto getVenueSeats(long venueId) {
+        List<VenueSeatResDto.SeatInfoDto> seatInfos = convertToSeatInfoDto(seatProvider.getAllSeatsByVenueId(venueId));
 
-        }
-
-        if (isNull(row)) {
-            // 해당 floor의 최대 row 반환
-
-        }
-        return VenueSeatResDto.builder().build();
+        return VenueSeatResDto.builder()
+                .seatInfos(seatInfos)
+                .build();
     }
 
     @Transactional
@@ -162,6 +159,28 @@ public class VenueService {
         }
 
         bookmarkProvider.deleteBookmark(memberBookmarks);
+    }
+
+    public List<VenueSeatResDto.SeatInfoDto> convertToSeatInfoDto(List<FloorRowDto> floorRows) {
+        return floorRows.stream()
+                .collect(Collectors.groupingBy(
+                        FloorRowDto::getFloor,
+                        Collectors.mapping(FloorRowDto::getRow, Collectors.toList())
+                ))
+                .entrySet()
+                .stream()
+                .map(this::mapToSeatInfoDto)
+                .toList();
+    }
+
+    private VenueSeatResDto.SeatInfoDto mapToSeatInfoDto(Map.Entry<String, List<Integer>> rowsByFloor) {
+        return VenueSeatResDto.SeatInfoDto.builder()
+                .floor(rowsByFloor.getKey())
+                .rows(rowsByFloor.getValue()
+                        .stream()
+                        .filter(r -> r != UNSELECTED_NUMBER)
+                        .toList())
+                .build();
     }
 
     public List<VenueSearchResDto> searchVenue(String keyword) {

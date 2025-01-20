@@ -12,8 +12,14 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VenueSeatResDto {
-    @Nullable
-    List<String> floors;
-    @Nullable
-    Long maxRow;
+    List<SeatInfoDto> seatInfos;
+
+    @Getter
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class SeatInfoDto {
+        String floor;
+        @Nullable
+        List<Integer> rows;
+    }
 }

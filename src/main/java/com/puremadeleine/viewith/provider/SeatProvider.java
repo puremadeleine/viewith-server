@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.provider;
 
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
+import com.puremadeleine.viewith.dto.venue.FloorRowDto;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.repository.SeatRepository;
 import lombok.AccessLevel;
@@ -34,5 +35,9 @@ public class SeatProvider {
 
     public List<SeatEntity> getSeats(long venueId) {
         return seatRepository.findAllByVenue_Id(venueId);
+    }
+
+    public List<FloorRowDto> getAllSeatsByVenueId(long venueId) {
+        return seatRepository.findAllSeatsByVenueId(venueId);
     }
 }
