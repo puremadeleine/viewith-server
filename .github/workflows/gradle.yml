@@ -44,13 +44,6 @@ jobs:
           touch ./application-private.yml
           echo "${{ secrets.APPLICATION_PRIVATE }}" > ./application-private.yml
 
-      - uses: actions/checkout@v4
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          
       - name: Build
         run: ./gradlew build
 
