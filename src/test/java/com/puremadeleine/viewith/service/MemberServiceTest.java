@@ -6,6 +6,7 @@ import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.BookmarkProvider;
 import com.puremadeleine.viewith.provider.MemberProvider;
 import com.puremadeleine.viewith.provider.ReviewProvider;
+import com.puremadeleine.viewith.provider.VenueProvider;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -21,8 +22,9 @@ class MemberServiceTest {
     JwtService jwtService = mock(JwtService.class);
     BookmarkProvider bookmarkProvider = mock(BookmarkProvider.class);
     ReviewProvider reviewProvider = mock(ReviewProvider.class);
+    VenueProvider venueProvider = mock(VenueProvider.class);
 
-    MemberService memberService = new MemberService(memberProvider, bookmarkProvider, reviewProvider, kakaoService, jwtService);
+    MemberService memberService = new MemberService(memberProvider, bookmarkProvider, reviewProvider, kakaoService, jwtService, venueProvider);
 
     @ParameterizedTest
     @ValueSource(strings = {"한글만", "asd", "숫자1포함", "123", "공 백 포 함", "공백    포함", "딱15글자6789012345", "한asd123한"})

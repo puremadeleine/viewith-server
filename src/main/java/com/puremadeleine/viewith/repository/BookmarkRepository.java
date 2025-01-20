@@ -13,6 +13,16 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
     @Query("SELECT COUNT(b) FROM BookmarkEntity b WHERE b.member.id = :memberId")
     long countByMemberId(@Param("memberId") Long memberId);
 
+    @EntityGraph(attributePaths = "seat")
+    List<BookmarkEntity> findByMemberId(Long memberId);
+
+    @Query(value = """
+            SELECT b.* FROM tb_bookmark b
+            JOIN (SELECT s.seat_id FROM tb_seat s WHERE s.venue_id = :venueId) s ON b.seat_id = s.seat_id
+            WHERE b.member_id = :memberId
+            """, nativeQuery = true)
+    List<BookmarkEntity> findBookmarksByVenueIdAndMemberId(@Param("venueId") Long venueId, @Param("memberId") Long memberId);
+
     Optional<BookmarkEntity> findByMember_IdAndSeat_Id(Long memberId, Long seatId);
 
     @EntityGraph(attributePaths = "member")

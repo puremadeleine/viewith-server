@@ -3,10 +3,12 @@ package com.puremadeleine.viewith.repository;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.Status;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
+import com.puremadeleine.viewith.dto.review.ReviewWithSeatIdDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +16,14 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
     Optional<ReviewEntity> findByIdAndStatus(Long reviewId, Status status);
 
+    @Query("""
+            SELECT new com.puremadeleine.viewith.dto.review.ReviewWithSeatIdDto(r.seat.id, MAX(r.createTime))
+            FROM ReviewEntity r
+            WHERE r.seat.id IN :seatIds AND r.status = :status
+            GROUP BY r.seat.id
+            ORDER BY MAX(r.createTime) DESC
+            """)
+    List<ReviewWithSeatIdDto> findTopReviewsBySeatIdsAndStatus(@Param("seatIds") Collection<Long> seatIds, @Param("status") Status status);
 
     @Query("""
             SELECT new com.puremadeleine.viewith.dto.review.ReviewCntDto(COUNT(r), s.floor, s.section)

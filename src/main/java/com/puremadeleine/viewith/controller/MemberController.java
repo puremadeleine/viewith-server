@@ -48,7 +48,7 @@ public class MemberController {
     }
 
     @GetMapping(path = "/bookmarks")
-    public MemberInfo getBookmarks(MemberInfo memberInfo) {
-        return memberInfo;
+    public BookmarkResDto getBookmarks(MemberInfo memberInfo) {
+        return memberService.getBookmarks(memberInfo);
     }
 }
