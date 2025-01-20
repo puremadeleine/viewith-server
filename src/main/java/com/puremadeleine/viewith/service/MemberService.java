@@ -2,15 +2,26 @@ package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.aware.SpringProxyAware;
 import com.puremadeleine.viewith.constants.NicknameConstants;
+import com.puremadeleine.viewith.domain.bookmark.BookmarkEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
+import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.client.UpdateTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
-import com.puremadeleine.viewith.dto.member.*;
+import com.puremadeleine.viewith.dto.member.BookmarkResDto;
+import com.puremadeleine.viewith.dto.member.JoinResDto;
+import com.puremadeleine.viewith.dto.member.MemberInfo;
+import com.puremadeleine.viewith.dto.member.OAuthType;
+import com.puremadeleine.viewith.dto.member.ProfileResDto;
+import com.puremadeleine.viewith.dto.member.RefreshReqDto;
+import com.puremadeleine.viewith.dto.member.RefreshResDto;
+import com.puremadeleine.viewith.dto.member.ValidateNicknameResDto;
+import com.puremadeleine.viewith.dto.review.ReviewWithSeatIdDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.BookmarkProvider;
 import com.puremadeleine.viewith.provider.MemberProvider;
 import com.puremadeleine.viewith.provider.ReviewProvider;
+import com.puremadeleine.viewith.provider.VenueProvider;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +29,15 @@ import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
+import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
+import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_STRING;
 import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMember;
 import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 
@@ -34,6 +51,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
     ReviewProvider reviewProvider;
     KakaoService kakaoService;
     JwtService jwtService;
+    VenueProvider venueProvider;
 
     public JoinResDto login(OAuthType authType, String accessToken, String refreshToken) {
         return switch (authType) {
@@ -190,5 +208,69 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
     public RefreshResDto refreshByApple(MemberInfo memberInfo) {
         return RefreshResDto.builder().build();
+    }
+
+    public BookmarkResDto getBookmarks(MemberInfo memberInfo) {
+        List<VenueEntity> venues = venueProvider.getVenues();
+        Long memberId = memberInfo.getMemberId();
+        List<BookmarkResDto.BookmarkDto> bookmarkDtos = venues.stream()
+                .map(v -> getBookmarkDto(v, memberId))
+                .toList();
+
+        return BookmarkResDto.builder()
+                .bookmarks(bookmarkDtos)
+                .build();
+    }
+
+    private BookmarkResDto.BookmarkDto getBookmarkDto(VenueEntity v, Long memberId) {
+        List<BookmarkEntity> bookmarks = bookmarkProvider.getBookmarksByVenueIdAndMemberId(v.getId(), memberId);
+        List<Long> bookmarkSeatIds = bookmarks.stream()
+                .map(b -> b.getSeat().getId())
+                .toList();
+        Map<Long, LocalDateTime> reviewLastCreateTimeBySeatId = getReviewLastCreateTimeBySeatIds(bookmarkSeatIds);
+
+        List<BookmarkResDto.BookmarkFloorDto> bookmarkFloorDtos = mapToBookmarkFloorDto(bookmarks, reviewLastCreateTimeBySeatId);
+        return BookmarkResDto.BookmarkDto.builder()
+                .venueId(v.getId())
+                .venueName(v.getName())
+                .bookmarkFloors(bookmarkFloorDtos)
+                .build();
+    }
+
+    private Map<Long, LocalDateTime> getReviewLastCreateTimeBySeatIds(List<Long> seatIds) {
+        return reviewProvider.findTopReviewsBySeatIdsAndStatus(seatIds)
+                .stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toMap(
+                                ReviewWithSeatIdDto::getSeatId,
+                                ReviewWithSeatIdDto::getCreateTime
+                        ),
+                        Map::copyOf  // 불변으로 변환
+                ));
+    }
+
+    public List<BookmarkResDto.BookmarkFloorDto> mapToBookmarkFloorDto(List<BookmarkEntity> bookmarkEntities,
+                                                                       Map<Long, LocalDateTime> reviewLastCreateTimeBySeatId) {
+        return bookmarkEntities.stream()
+                .collect(Collectors.groupingBy(entity -> entity.getSeat().getFloor())) // floor 기준 그룹화
+                .entrySet()
+                .stream()
+                .map(entry -> BookmarkResDto.BookmarkFloorDto.builder()
+                        .bookmarkFloor(entry.getKey()) // key = floor
+                        .bookmarkSeats(entry.getValue().stream() // 해당 그룹의 각 엔티티를 BookmarkSeatDto로 변환
+                                .map(entity -> {
+                                    String section = entity.getSeat().getSection();
+                                    Integer row = entity.getSeat().getSeatRow();
+
+                                    return BookmarkResDto.BookmarkSeatDto.builder()
+                                            .bookmarkId(entity.getId())
+                                            .bookmarkSection(StringUtils.equals(section, UNSELECTED_STRING) ? null : section)
+                                            .bookmarkRow(row == UNSELECTED_NUMBER ? null : row)
+                                            .lastUpdateDate(reviewLastCreateTimeBySeatId.get(entity.getSeat().getId()))
+                                            .build();
+                                })
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList()); // 최종 결과 리스트로 수집
     }
 }

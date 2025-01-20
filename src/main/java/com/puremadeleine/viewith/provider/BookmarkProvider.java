@@ -38,6 +38,14 @@ public class BookmarkProvider {
         return bookmarkRepository.findAllByIdWithMember(bookmarkIds);
     }
 
+    public List<BookmarkEntity> getBookmarks(Long memberId) {
+        return bookmarkRepository.findByMemberId(memberId);
+    }
+
+    public List<BookmarkEntity> getBookmarksByVenueIdAndMemberId(Long venueId, Long memberId) {
+        return bookmarkRepository.findBookmarksByVenueIdAndMemberId(venueId, memberId);
+    }
+
     public void deleteBookmark(BookmarkEntity bookmarkEntity) {
         bookmarkRepository.delete(bookmarkEntity);
     }
