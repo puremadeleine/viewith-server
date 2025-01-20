@@ -2,7 +2,13 @@ package com.puremadeleine.viewith.controller;
 
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
-import com.puremadeleine.viewith.dto.review.*;
+import com.puremadeleine.viewith.dto.review.request.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReportReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.service.ReviewService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -35,7 +41,7 @@ public class ReviewController {
 
     @PutMapping("/{review_id}")
     public void updateReview(@PathVariable("review_id") Long reviewId,
-                                          @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
+                             @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
         reviewService.updateReview(reviewId, reqDto, memberInfo.getMemberId());
     }
 

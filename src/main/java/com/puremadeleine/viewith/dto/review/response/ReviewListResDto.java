@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.dto.review;
+package com.puremadeleine.viewith.dto.review.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;

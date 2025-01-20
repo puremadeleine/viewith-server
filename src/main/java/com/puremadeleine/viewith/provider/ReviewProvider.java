@@ -3,7 +3,7 @@ package com.puremadeleine.viewith.provider;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.Status;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
-import com.puremadeleine.viewith.dto.review.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.repository.ReviewCustomRepository;
 import com.puremadeleine.viewith.repository.ReviewRepository;

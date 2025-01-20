@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.dto.review;
+package com.puremadeleine.viewith.dto.review.response;
 
 import com.puremadeleine.viewith.domain.review.Block;
 import lombok.AccessLevel;
@@ -20,29 +20,8 @@ public class ReviewInfoResDto {
     LocalDateTime createTime;
     List<String> imageList;
     ReviewerInfoResDto userInfo;
-    SeatInfoDto seatInfo;
+    SeatInfoResDto seatInfo;
     SeatBookmarkInfo seatBookmarkInfo;
-
-    @Getter
-    @Builder
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class ReviewerInfoResDto {
-
-        Long userId;
-        String userNickname;
-    }
-
-    @Getter
-    @Builder
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class SeatInfoDto {
-
-        String floor;
-        String section;
-        Integer seatRow;
-        Integer seatColumn;
-        Block block;
-    }
 
     @Getter
     @Builder

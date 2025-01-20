@@ -7,13 +7,18 @@ import com.puremadeleine.viewith.domain.review.Status;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
-import com.puremadeleine.viewith.dto.review.*;
+import com.puremadeleine.viewith.dto.review.request.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReportReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,11 +40,10 @@ class ReviewServiceTest {
     MemberProvider memberProvider = mock(MemberProvider.class);
     BookmarkProvider bookmarkProvider = mock(BookmarkProvider.class);
     ImageService imageService = mock(ImageService.class);
-    ReviewService.ReviewServiceMapper reviewServiceMapper = Mappers.getMapper(ReviewService.ReviewServiceMapper.class);
 
     ReviewService reviewService = new ReviewService(
             reviewProvider, venueProvider, seatProvider,reviewReportProvider,
-            memberProvider, bookmarkProvider, imageService, reviewServiceMapper);
+            memberProvider, bookmarkProvider, imageService);
 
 
     @Nested
