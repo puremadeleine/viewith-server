@@ -10,6 +10,7 @@ public enum ViewithErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 10000, "invalid token"),
     FORBIDDEN_TOKEN(HttpStatus.FORBIDDEN, 10001, "forbidden token"),
     INVALID_PARAM(HttpStatus.BAD_REQUEST, 10002, "invalid param"),
+    INVALID_OAUTH_TOKEN(HttpStatus.UNAUTHORIZED, 10004, "invalid oauth token"),
 
     // member
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, 20001, "duplicated nickname"),
@@ -26,8 +27,13 @@ public enum ViewithErrorCode {
     // help
     NO_HELP(HttpStatus.NOT_FOUND, 50001, "no help"),
 
+    // bookmark
+    DUPLICATED_BOOKMARK(HttpStatus.CONFLICT, 70001, "duplicated bookmark"),
+    NO_BOOKMARK(HttpStatus.NOT_FOUND, 70002, "no bookmark"),
+
     // image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, 60001, "image upload failed"),
+
 
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, 99999, "unknown exception occured");
 

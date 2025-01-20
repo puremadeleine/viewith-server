@@ -29,7 +29,7 @@ logging:
     org.hibernate.type: trace
     com.puremadeleine.viewith.repository.client: debug
     feign: debug
-    
+
 feign:
   client:
     config:
@@ -46,13 +46,14 @@ kakao:
 security:
   exclude-uris:
     - /
-    - /v1
-    - /v1/members/login/KAKAO
-    - /v1/members/login/APPLE
-    - /v1/members/test3
-    - /v1/members/test4
     - /health
+    - /v1
+    - /v1/members/login/*
+    - /v1/members/refresh
     - /v1/reviews/list
-    - /v1/reviews/1
-    - /v1/help/1
-    - /v1/help/list
+    - /v1/reviews/*
+    - /v1/help/**
+    - /v1/performances/search
+    - /v1/venues
+    - /v1/venues/*
+    - /v1/venues/*/seats

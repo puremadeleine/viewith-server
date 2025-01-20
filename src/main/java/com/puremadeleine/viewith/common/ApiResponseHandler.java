@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.common;
 
+import com.puremadeleine.viewith.exception.ErrorResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -21,17 +22,18 @@ public class ApiResponseHandler implements ResponseBodyAdvice {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-                                  Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response)
-    {
+                                  Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         // 요청의 HTTP 메서드에 따라 상태 코드 설정
         HttpMethod method = request.getMethod();
-        if (method == HttpMethod.POST) {
+
+        if (method == HttpMethod.POST && (isNull(body) || !body.getClass().isAssignableFrom(ErrorResponse.class))) {
             response.setStatusCode(HttpStatus.CREATED);
-        } else if (method == HttpMethod.PUT && isNull(body)) {
+        } else if (isNull(body) && (method == HttpMethod.PUT || method == HttpMethod.DELETE)) {
             response.setStatusCode(HttpStatus.NO_CONTENT);
             return null;
         }
-        if (MediaType.TEXT_HTML.equals(selectedContentType) || MediaType.TEXT_PLAIN.equals(selectedContentType)) return body;
+        if (MediaType.TEXT_HTML.equals(selectedContentType) || MediaType.TEXT_PLAIN.equals(selectedContentType))
+            return body;
         return isNull(body) ? body : ApiResponse.of(body);
     }
 }
