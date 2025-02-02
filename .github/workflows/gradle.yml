@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI/CD with Gradle
 
 on:
   push:
@@ -18,7 +18,9 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -26,30 +28,67 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execution permission
+        run: chmod +x ./gradlew
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
+      - name: Upload build artifacts (JAR)
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-jar
+          path: build/libs/*.jar
+
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
-      - name: make application-private.yml
-        run: |
-          cd ./src/main/resources
-          touch ./application-private.yml
-          echo "${{ secrets.APPLICATION_PRIVATE }}" > ./application-private.yml
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: application-jar
+          path: build/libs/
+
+      - name: Create application-private.yml
+        run: |
+          echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           
-      - name: Build
-        run: ./gradlew build
+      - name: Grant execution permission
+        run: chmod +x ./gradlew
+
+      - name: Build project
+        run: ./gradlew build -x test
+
+      - name: Upload JAR to AWS S3 (Optional)
+        run: |
+          aws s3 cp build/libs/*.jar s3://${{ secrets.AWS_S3_BUCKET }}/app.jar
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to EC2 and restart service
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+          script: |
+            cd /home/${{ secrets.AWS_EC2_USER }}/app
+            aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/app.jar app.jar
+            sudo systemctl restart myapp
