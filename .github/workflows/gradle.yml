@@ -39,8 +39,8 @@ jobs:
       - name: Upload build artifacts (JAR)
         uses: actions/upload-artifact@v4
         with:
-          name: application-jar
-          path: build/libs/*.jar
+          name: viewith-jar
+          path: build/libs/viewith-servier.jar
 
   deploy:
     needs: build
@@ -55,7 +55,7 @@ jobs:
       - name: Download JAR artifact
         uses: actions/download-artifact@v4
         with:
-          name: application-jar
+          name: viewith-jar
           path: build/libs/
 
       - name: Create application-private.yml
@@ -81,14 +81,3 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-
-      - name: Deploy to EC2 and restart service
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USER }}
-          key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          script: |
-            cd /home/${{ secrets.AWS_EC2_USER }}/app
-            aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/app.jar app.jar
-            sudo systemctl restart myapp
