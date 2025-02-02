@@ -31,7 +31,6 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-job:
   deploy:
     runs-on: ubuntu-latest
     permissions:
@@ -44,10 +43,13 @@ job:
           cd ./src/main/resources
           touch ./application-private.yml
           echo "${{ secrets.APPLICATION_PRIVATE }}" > ./application-private.yml
-      
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-        shell: bash
 
-      - name: Build and Test
-        run: ./gradlew build test
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          
+      - name: Build
+        run: ./gradlew build
