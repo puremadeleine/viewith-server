@@ -37,7 +37,9 @@ jobs:
         run: ./gradlew build
 
       - name: List built files
-        run: ls -R build/libs
+        run: |
+          ls -R build/libs
+          ls -R src/main/resources
         
       - name: Upload build artifacts (JAR)
         uses: actions/upload-artifact@v4
