@@ -15,7 +15,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - name: Checkout source code
@@ -37,7 +37,6 @@ jobs:
         run: |
           cd src/main/resources
           touch application-private.yml
-          echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
