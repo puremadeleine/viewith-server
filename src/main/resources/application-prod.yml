@@ -2,12 +2,6 @@ spring:
   application:
     name: viewith-server
 
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url:
-    username:
-    password:
-
   jpa:
     hibernate:
       ddl-auto: none
