@@ -37,6 +37,8 @@ jobs:
         run: |
           cd src/main/resources
           touch application-private.yml
+          echo "test" > src/main/resources/application-private.yml
+          cat src/main/resources/application-private.yml
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
@@ -45,6 +47,7 @@ jobs:
         run: |
           ls -R build/libs
           ls -R src/main/resources
+          cat src/main/resources/application-private.yml
         
       - name: Upload build artifacts (JAR)
         uses: actions/upload-artifact@v4
