@@ -33,10 +33,11 @@ jobs:
 
       - name: Create application-private.yml
         run: |
-          cd src/main/resources
+          cd ./src/main/resources
           touch application-private.yml
-          ls -R src/main/resources
-          cat src/main/resources/application.yml
+          ls -al
+          ls -R ./src/main/resources
+          cat ./src/main/resources/application.yml
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
