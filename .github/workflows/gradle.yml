@@ -35,6 +35,7 @@ jobs:
         run: |
           cd src/main/resources
           touch application-private.yml
+          ls -R src/main/resources
           cat src/main/resources/application.yml
 
       - name: Build with Gradle Wrapper
