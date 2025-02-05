@@ -37,7 +37,7 @@ jobs:
         run: |
           cd src/main/resources
           touch application-private.yml
-          echo "test" > src/main/resources/application-private.yml
+          echo "${{ secrets.APPLICATION_PRIVATE }}" | base64 --decode > src/main/resources/application-private.yml
           cat src/main/resources/application-private.yml
 
       - name: Build with Gradle Wrapper
