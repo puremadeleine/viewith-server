@@ -51,7 +51,6 @@ security:
     - /v1/members/login/*
     - /v1/members/refresh
     - /v1/reviews/list
-    - /v1/reviews/*
     - /v1/help/**
     - /v1/performances/search
     - /v1/venues
