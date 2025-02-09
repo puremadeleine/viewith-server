@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.domain.venue;
 
+import com.puremadeleine.viewith.domain.review.Block;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,8 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SeatEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seat_id")
     Long id;
 
@@ -26,4 +26,7 @@ public class SeatEntity {
     String section;
     Integer seatRow;
     Integer seatColumn;
+
+    @Enumerated(EnumType.STRING)
+    Block block;
 }

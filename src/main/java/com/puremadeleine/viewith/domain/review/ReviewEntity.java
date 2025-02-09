@@ -5,8 +5,8 @@ import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
-import com.puremadeleine.viewith.dto.review.CreateReviewReqDto;
-import com.puremadeleine.viewith.dto.review.UpdateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -44,9 +44,6 @@ public class ReviewEntity extends BaseTimeEntity {
     @JoinColumn(name = "seat_id")
     SeatEntity seat;
 
-    @Enumerated(EnumType.STRING)
-    Block block;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
     PerformanceEntity performance;
@@ -64,7 +61,6 @@ public class ReviewEntity extends BaseTimeEntity {
                 .reportCount(0)
                 .venue(venue)
                 .seat(seat)
-                .block(reqDto.getBlock())
                 .member(member)
                 .build();
     }

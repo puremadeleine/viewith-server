@@ -2,7 +2,7 @@ package com.puremadeleine.viewith.repository;
 
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
-import com.puremadeleine.viewith.dto.review.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
