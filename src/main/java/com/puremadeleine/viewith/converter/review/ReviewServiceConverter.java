@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.puremadeleine.viewith.converter.CommonConverter.toTimeStamp;
 import static java.lang.Math.min;
 
 public class ReviewServiceConverter {
@@ -38,7 +40,7 @@ public class ReviewServiceConverter {
                     .reviewId(review.getId())
                     .summary(pureContent.substring(0, min(pureContent.length(), 30)))
                     .rating(review.getRating())
-                    .createTime(review.getCreateTime())
+                    .createTime(toTimeStamp(review.getCreateTime()))
                     .imageList(imageUrls)
                     .userInfo(toReviewerInfoResDto(review.getMember()))
                     .seatInfo(toSeatInfoDto(review.getSeat()))
@@ -48,7 +50,7 @@ public class ReviewServiceConverter {
                 .reviewId(review.getId())
                 .content(review.getContent())
                 .rating(review.getRating())
-                .createTime(review.getCreateTime())
+                .createTime(toTimeStamp(review.getCreateTime()))
                 .imageList(imageUrls)
                 .userInfo(toReviewerInfoResDto(review.getMember()))
                 .seatInfo(toSeatInfoDto(review.getSeat()))
