@@ -11,13 +11,13 @@ import java.util.List;
 @Getter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class VenueSeatResDto {
-    List<SeatInfoDto> seatInfos;
+public class VenueFilterResDto {
+    List<FilterInfoDto> seatInfos;
 
     @Getter
     @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class SeatInfoDto {
+    public static class FilterInfoDto {
         String floor;
         @Nullable
         List<Integer> rows;

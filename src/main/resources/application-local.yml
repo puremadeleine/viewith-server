@@ -55,4 +55,4 @@ security:
     - /v1/performances/search
     - /v1/venues
     - /v1/venues/*
-    - /v1/venues/*/seats
+    - /v1/venues/*/filter
