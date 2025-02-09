@@ -5,6 +5,7 @@ import com.puremadeleine.viewith.dto.venue.VenueFilterResDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.service.VenueService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,11 @@ public class VenueController {
     public VenueFilterResDto getVenueFilter(@PathVariable(value = "venue_id") long venueId) {
 
         return venueService.getVenueFilter(venueId);
+    }
+
+    @GetMapping("/{venue_id}/seats")
+    public VenueSeatResDto getVenueSeatInfo(@PathVariable(value = "venue_id") long venueId) {
+        return venueService.getVenueSeatInfo(venueId);
     }
 
     @PostMapping("/{venue_id}/seats/{seat_id}/bookmarks")

@@ -56,3 +56,4 @@ security:
     - /v1/venues
     - /v1/venues/*
     - /v1/venues/*/filter
+    - /v1/venues/*/seats

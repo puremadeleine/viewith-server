@@ -13,6 +13,7 @@ import com.puremadeleine.viewith.dto.venue.VenueFilterResDto;
 import com.puremadeleine.viewith.dto.venue.VenueListResDto;
 import com.puremadeleine.viewith.dto.venue.VenueResDto;
 import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.BookmarkProvider;
@@ -41,6 +42,7 @@ import static com.puremadeleine.viewith.constants.SeatConstants.FLOOR;
 import static com.puremadeleine.viewith.constants.SeatConstants.SEAT;
 import static com.puremadeleine.viewith.constants.SeatConstants.SEPARATOR;
 import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
+import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_STRING;
 
 @Service
 @RequiredArgsConstructor
@@ -186,6 +188,58 @@ public class VenueService {
     public List<VenueSearchResDto> searchVenue(String keyword) {
         List<VenueEntity> searchList = venueProvider.search(keyword);
         return venueServiceMapper.toVenueSearchResDtoList(searchList);
+    }
+
+    public VenueSeatResDto getVenueSeatInfo(long venueId) {
+        List<SeatEntity> seats = seatProvider.getSeats(venueId);
+        Map<String, Map<Integer, List<SeatEntity>>> groupedSeats = groupSeats(seats);
+
+        List<VenueSeatResDto.SeatInfoDto> seatInfos = groupedSeats.entrySet()
+                .stream()
+                .map(sectionGroup -> buildSeatInfo(sectionGroup.getKey(), sectionGroup.getValue()))
+                .toList();
+
+        return VenueSeatResDto.builder()
+                .seatInfos(seatInfos)
+                .build();
+    }
+
+    // <Section, <Row, SeatEntity>>
+    private Map<String, Map<Integer, List<SeatEntity>>> groupSeats(List<SeatEntity> seats) {
+        return seats.stream()
+                .filter(seat -> !StringUtils.equals(UNSELECTED_STRING, seat.getSection()))
+                .collect(Collectors.groupingBy(
+                        SeatEntity::getSection,
+                        Collectors.groupingBy(SeatEntity::getSeatRow)
+                ));
+    }
+
+    private VenueSeatResDto.SeatInfoDto buildSeatInfo(String section, Map<Integer, List<SeatEntity>> rowMap) {
+        List<VenueSeatResDto.RowInfoDto> rows = rowMap.entrySet()
+                .stream()
+                .filter(rowGroup -> UNSELECTED_NUMBER != rowGroup.getKey())
+                .map(rowGroup -> buildRowInfo(rowGroup.getKey(), rowGroup.getValue()))
+                .collect(Collectors.toList());
+
+        return VenueSeatResDto.SeatInfoDto.builder()
+                .section(section)
+                .rows(rows)
+                .build();
+    }
+
+    private VenueSeatResDto.RowInfoDto buildRowInfo(Integer row, List<SeatEntity> seats) {
+        List<VenueSeatResDto.ColumnInfoDto> columns = seats.stream()
+                .filter(seat -> UNSELECTED_NUMBER != seat.getSeatColumn()) //TODO: Block Empty 값 체크 필요
+                .map(seat -> VenueSeatResDto.ColumnInfoDto.builder()
+                        .column(seat.getSeatColumn())
+                        .block("LEFT") //TODO: Block으로 변경
+                        .build())
+                .toList();
+
+        return VenueSeatResDto.RowInfoDto.builder()
+                .row(row)
+                .columns(columns)
+                .build();
     }
 
     @Mapper(componentModel = "spring")
