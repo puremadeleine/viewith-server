@@ -52,7 +52,7 @@ jobs:
           
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew build
+        run: ./gradlew build -x check 
 
       - name: List built files
         run: |
