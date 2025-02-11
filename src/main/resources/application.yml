@@ -3,12 +3,6 @@ spring:
     name: viewith-server
   profiles:
     include: private
-
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/viewith-db;MODE=MySQL
-    username: sa
-    password:
   sql:
     init:
       mode: NEVER
@@ -46,9 +40,9 @@ security:
     - /v1/members/login/*
     - /v1/members/refresh
     - /v1/reviews/list
-    - /v1/reviews/*
     - /v1/help/**
     - /v1/performances/search
     - /v1/venues
     - /v1/venues/*
+    - /v1/venues/*/filter
     - /v1/venues/*/seats
