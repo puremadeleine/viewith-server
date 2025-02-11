@@ -100,6 +100,7 @@ public class VenueService {
         Map<String, Long> cntByKey = getReviewCntBySectionKey(venueId);
         var reviewInfos = seatEntities.stream()
                 .map(s -> makeSectionKey(s.getFloor(), s.getSection()))
+                .distinct()
                 .map(key -> VenueResDto.VenueReviewInfo.builder()
                         .sectionKey(key)
                         .reviewCnt(cntByKey.getOrDefault(key, 0L))
