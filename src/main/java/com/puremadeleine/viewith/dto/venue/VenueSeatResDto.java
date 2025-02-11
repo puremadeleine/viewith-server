@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.dto.venue;
 
+import com.puremadeleine.viewith.domain.review.Block;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +35,6 @@ public class VenueSeatResDto {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class ColumnInfoDto {
         Integer column;
-        String block; //TODO: 추후 Block으로 변경
+        Block block;
     }
 }

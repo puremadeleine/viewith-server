@@ -2,6 +2,7 @@ package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.domain.bookmark.BookmarkEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
+import com.puremadeleine.viewith.domain.review.Block;
 import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
@@ -229,10 +230,11 @@ public class VenueService {
 
     private VenueSeatResDto.RowInfoDto buildRowInfo(Integer row, List<SeatEntity> seats) {
         List<VenueSeatResDto.ColumnInfoDto> columns = seats.stream()
-                .filter(seat -> UNSELECTED_NUMBER != seat.getSeatColumn()) //TODO: Block Empty 값 체크 필요
+                .filter(seat -> UNSELECTED_NUMBER != seat.getSeatColumn())
+                .filter(seat -> Block.NONE != seat.getBlock())
                 .map(seat -> VenueSeatResDto.ColumnInfoDto.builder()
                         .column(seat.getSeatColumn())
-                        .block("LEFT") //TODO: Block으로 변경
+                        .block(seat.getBlock())
                         .build())
                 .toList();
 
