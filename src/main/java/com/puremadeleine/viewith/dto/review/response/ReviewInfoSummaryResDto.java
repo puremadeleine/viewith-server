@@ -1,13 +1,11 @@
 package com.puremadeleine.viewith.dto.review.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.puremadeleine.viewith.domain.review.Block;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -22,7 +20,7 @@ public class ReviewInfoSummaryResDto {
     String content;
     String summary;
     Float rating;
-    LocalDateTime createTime;
+    Long createTime;
     List<String> imageList;
     ReviewerInfoResDto userInfo;
     SeatInfoResDto seatInfo;
