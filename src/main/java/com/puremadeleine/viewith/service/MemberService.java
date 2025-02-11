@@ -22,6 +22,7 @@ import com.puremadeleine.viewith.provider.BookmarkProvider;
 import com.puremadeleine.viewith.provider.MemberProvider;
 import com.puremadeleine.viewith.provider.ReviewProvider;
 import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.util.TimeUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -262,11 +263,12 @@ public class MemberService extends SpringProxyAware<MemberService> {
                                     String section = entity.getSeat().getSection();
                                     Integer row = entity.getSeat().getSeatRow();
 
+                                    LocalDateTime lastUpdateDate = reviewLastCreateTimeBySeatId.get(entity.getSeat().getId());
                                     return BookmarkResDto.BookmarkSeatDto.builder()
                                             .bookmarkId(entity.getId())
                                             .bookmarkSection(StringUtils.equals(section, UNSELECTED_STRING) ? null : section)
                                             .bookmarkRow(row == UNSELECTED_NUMBER ? null : row)
-                                            .lastUpdateDate(reviewLastCreateTimeBySeatId.get(entity.getSeat().getId()))
+                                            .lastUpdateDate(TimeUtil.toNullableTimestamp(lastUpdateDate))
                                             .build();
                                 })
                                 .collect(Collectors.toList()))
