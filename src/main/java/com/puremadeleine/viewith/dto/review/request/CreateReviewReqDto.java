@@ -1,6 +1,5 @@
-package com.puremadeleine.viewith.dto.review;
+package com.puremadeleine.viewith.dto.review.request;
 
-import com.puremadeleine.viewith.domain.review.ReportReason;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +10,12 @@ import lombok.extern.jackson.Jacksonized;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 @Jacksonized
-public class ReportReviewReqDto {
+public class CreateReviewReqDto {
 
-    ReportReason reportReason;
-    String reportReasonDetail;
+    Long venueId;
+    String section;
+    Integer seatRow;
+    Integer seatColumn;
+    String content;
+    Float rating;
 }

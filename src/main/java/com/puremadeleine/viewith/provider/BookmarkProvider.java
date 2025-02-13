@@ -53,4 +53,8 @@ public class BookmarkProvider {
     public void deleteBookmark(List<BookmarkEntity> bookmarkEntities) {
         bookmarkRepository.deleteAll(bookmarkEntities);
     }
+
+    public boolean isBookmarked(Long seatId, Long memberId) {
+        return bookmarkRepository.existsBySeatIdAndMemberId(seatId, memberId);
+    }
 }

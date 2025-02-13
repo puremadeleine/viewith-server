@@ -27,11 +27,13 @@ public class HelpServiceConverter {
         String pureContent = removeHtml(help.getContent());
         if (Boolean.TRUE.equals(isSummary)) {
             return HelpInfoSummaryResDto.builder()
+                    .helpId(help.getId())
                     .title(help.getTitle())
                     .summary(pureContent.substring(0, min(pureContent.length(), 30)))
                     .build();
         }
         return HelpInfoSummaryResDto.builder()
+                .helpId(help.getId())
                 .title(help.getTitle())
                 .content(pureContent)
                 .build();

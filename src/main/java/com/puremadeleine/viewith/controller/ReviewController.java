@@ -2,7 +2,13 @@ package com.puremadeleine.viewith.controller;
 
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
-import com.puremadeleine.viewith.dto.review.*;
+import com.puremadeleine.viewith.dto.review.request.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReportReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.service.ReviewService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -30,12 +36,12 @@ public class ReviewController {
 
     @GetMapping("/{review_id}")
     public ReviewInfoResDto getReview(@PathVariable("review_id") Long reviewId, MemberInfo memberInfo) {
-        return reviewService.getReviewInfo(reviewId);
+        return reviewService.getReviewInfo(reviewId, memberInfo.getMemberId());
     }
 
     @PutMapping("/{review_id}")
     public void updateReview(@PathVariable("review_id") Long reviewId,
-                                          @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
+                             @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
         reviewService.updateReview(reviewId, reqDto, memberInfo.getMemberId());
     }
 
@@ -52,8 +58,7 @@ public class ReviewController {
             @RequestParam(value = "floor") String floor,
             @RequestParam(value = "section", required = false) String section,
             @RequestParam(value = "seat_row", required = false) Integer seatRow,
-            @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary,
-            MemberInfo memberInfo) {
+            @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
         ReviewListReqDto req = ReviewListReqDto.builder()
                 .page(page)
                 .size(size)

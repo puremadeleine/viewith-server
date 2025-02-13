@@ -7,20 +7,24 @@ import com.puremadeleine.viewith.domain.review.Status;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
-import com.puremadeleine.viewith.dto.review.*;
+import com.puremadeleine.viewith.dto.review.request.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReportReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
-import static com.puremadeleine.viewith.domain.review.Block.LEFT;
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,11 +38,12 @@ class ReviewServiceTest {
     SeatProvider seatProvider = mock(SeatProvider.class);
     ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
     MemberProvider memberProvider = mock(MemberProvider.class);
+    BookmarkProvider bookmarkProvider = mock(BookmarkProvider.class);
     ImageService imageService = mock(ImageService.class);
-    ReviewService.ReviewServiceMapper reviewServiceMapper = Mappers.getMapper(ReviewService.ReviewServiceMapper.class);
 
     ReviewService reviewService = new ReviewService(
-            reviewProvider, venueProvider, seatProvider,reviewReportProvider, memberProvider, imageService, reviewServiceMapper);
+            reviewProvider, venueProvider, seatProvider,reviewReportProvider,
+            memberProvider, bookmarkProvider, imageService);
 
 
     @Nested
@@ -54,7 +59,6 @@ class ReviewServiceTest {
                     .section("A")
                     .seatRow(1)
                     .seatColumn(1)
-                    .block(LEFT)
                     .rating(5.0F)
                     .content("후기")
                     .build();
@@ -173,7 +177,7 @@ class ReviewServiceTest {
             when(reviewProvider.getNormalReview(anyLong())).thenReturn(review);
 
             // when
-            ReviewInfoResDto result = reviewService.getReviewInfo(1L);
+            ReviewInfoResDto result = reviewService.getReviewInfo(1L, 1L);
 
             // then
             assertThat(result.getReviewId()).isEqualTo(1L);
@@ -348,6 +352,7 @@ class ReviewServiceTest {
                 .id(1L)
                 .rating(1.5F)
                 .content("후기")
+                .seat(getSeat())
                 .member(getMember(1L))
                 .build();
     }

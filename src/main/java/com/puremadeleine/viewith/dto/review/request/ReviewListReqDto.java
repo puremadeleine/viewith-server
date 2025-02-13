@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.dto.review;
+package com.puremadeleine.viewith.dto.review.request;
 
 import com.puremadeleine.viewith.dto.common.SortType;
 import lombok.AccessLevel;

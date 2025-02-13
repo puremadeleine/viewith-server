@@ -28,4 +28,7 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
     @EntityGraph(attributePaths = "member")
     @Query("SELECT b FROM BookmarkEntity b WHERE b.id IN :bookmarkIds")
     List<BookmarkEntity> findAllByIdWithMember(@Param("bookmarkIds") List<Long> bookmarkIds);
+
+    @Query("SELECT COUNT(b) > 0 FROM BookmarkEntity b WHERE b.seat.id = :seatId AND b.member.id = :memberId")
+    Boolean existsBySeatIdAndMemberId(@Param("seatId") Long seatId, @Param("memberId") Long memberId);
 }
