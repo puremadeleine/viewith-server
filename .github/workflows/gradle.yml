@@ -36,7 +36,7 @@ jobs:
           echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew build -x check 
+        run: ./gradlew build 
 
       - name: List built files
         run: |
