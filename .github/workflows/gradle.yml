@@ -34,22 +34,6 @@ jobs:
       - name: Create application-private.yml
         run: |
           echo "${{ secrets.APPLICATION_PRIVATE }}" > src/main/resources/application-private.yml
-      
-      - name: Get Github Actions IP
-        id: ip #해당 단계의 식별자. 이후 step에서 ip가 필요할 때 ip라는 id로 참조
-        uses: haythem/public-ip@v1.2 #github action에서 사용할 액션 지정. ip를 받아오기
-        
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with: #해당 단계 수행시 필요한 값들 지정
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-  
-      - name: Add Github Actions IP to Security group
-        run: |
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-          
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build -x check 
@@ -64,14 +48,6 @@ jobs:
         with:
           name: viewith
           path: build/libs/viewith-server-0.0.1-SNAPSHOT.jar
-          
-      - name: Remove Github Actions IP from security group
-        run: |
-         aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 3306 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-        env:
-         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}     
 
   deploy:
     needs: build
