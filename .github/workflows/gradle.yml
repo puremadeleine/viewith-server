@@ -77,5 +77,5 @@ jobs:
           echo "${{ secrets.AWS_EC2_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
           scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/viewith-server-0.0.1-SNAPSHOT.jar ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/deploy/viewith-server.jar
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} "pgrep java | xargs kill -9; nohup java -jar /home/${{ secrets.AWS_EC2_USER }}/deploy/viewith-server.jar --spring.profiles.active=prod --server.port=8080  > app.log 2>&1 &"
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} "pgrep java | xargs kill -9; nohup java -jar /home/${{ secrets.AWS_EC2_USER }}/deploy/viewith-server.jar --spring.profiles.active=prod --server.port=8080  > /home/${{ secrets.AWS_EC2_USER }}/server-logs/app.log 2>&1 &"
     

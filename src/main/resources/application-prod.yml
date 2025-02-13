@@ -1,7 +1,7 @@
 spring:
-  application:
-    name: viewith-server
-
+  sql:
+    init:
+      mode: NEVER
   jpa:
     hibernate:
       ddl-auto: none
@@ -10,33 +10,9 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
 
-  jackson:
-    property-naming-strategy: SNAKE_CASE
-
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
     org.springframework.security: debug
     feign: debug
-
-kakao:
-  oauth:
-    uri: https://kauth.kakao.com
-  api:
-    uri: https://kapi.kakao.com
-
-security:
-  exclude-uris:
-    - /
-    - /health
-    - /v1
-    - /v1/members/login/*
-    - /v1/members/refresh
-    - /v1/reviews/list
-    - /v1/reviews/*
-    - /v1/help/**
-    - /v1/performances/search
-    - /v1/venues
-    - /v1/venues/*
-    - /v1/venues/*/seats
