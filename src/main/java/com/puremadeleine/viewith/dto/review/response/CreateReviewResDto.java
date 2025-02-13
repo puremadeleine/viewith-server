@@ -1,4 +1,4 @@
-package com.puremadeleine.viewith.dto.help;
+package com.puremadeleine.viewith.dto.review.response;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,10 +8,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class HelpInfoResDto {
+public class CreateReviewResDto {
 
-    String title;
-    String content;
-    Long createTime;
+    Long reviewId;
 
 }

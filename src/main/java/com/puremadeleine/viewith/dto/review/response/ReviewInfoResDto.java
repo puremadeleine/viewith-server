@@ -1,5 +1,6 @@
-package com.puremadeleine.viewith.dto.review;
+package com.puremadeleine.viewith.dto.review.response;
 
+import com.puremadeleine.viewith.domain.review.Block;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,15 +20,15 @@ public class ReviewInfoResDto {
     LocalDateTime createTime;
     List<String> imageList;
     ReviewerInfoResDto userInfo;
-
-    // todo : seat_bookmark_info 추가
+    SeatInfoResDto seatInfo;
+    SeatBookmarkInfo seatBookmarkInfo;
 
     @Getter
     @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class ReviewerInfoResDto {
+    public static class SeatBookmarkInfo {
 
-        Long userId;
-        String userNickname;
+        Long seatId;
+        Boolean bookmarked;
     }
 }

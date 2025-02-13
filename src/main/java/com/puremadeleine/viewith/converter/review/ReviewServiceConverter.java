@@ -2,13 +2,15 @@ package com.puremadeleine.viewith.converter.review;
 
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
-import com.puremadeleine.viewith.dto.review.ReviewInfoSummaryResDto;
-import com.puremadeleine.viewith.dto.review.ReviewListResDto;
+import com.puremadeleine.viewith.domain.venue.SeatEntity;
+import com.puremadeleine.viewith.dto.review.response.*;
 import com.puremadeleine.viewith.util.HtmlUtils;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.puremadeleine.viewith.converter.CommonConverter.toTimeStamp;
 import static java.lang.Math.min;
 
 public class ReviewServiceConverter {
@@ -38,25 +40,59 @@ public class ReviewServiceConverter {
                     .reviewId(review.getId())
                     .summary(pureContent.substring(0, min(pureContent.length(), 30)))
                     .rating(review.getRating())
-                    .createTime(review.getCreateTime())
+                    .createTime(toTimeStamp(review.getCreateTime()))
                     .imageList(imageUrls)
                     .userInfo(toReviewerInfoResDto(review.getMember()))
+                    .seatInfo(toSeatInfoDto(review.getSeat()))
                     .build();
         }
         return ReviewInfoSummaryResDto.builder()
                 .reviewId(review.getId())
                 .content(review.getContent())
                 .rating(review.getRating())
-                .createTime(review.getCreateTime())
+                .createTime(toTimeStamp(review.getCreateTime()))
                 .imageList(imageUrls)
                 .userInfo(toReviewerInfoResDto(review.getMember()))
+                .seatInfo(toSeatInfoDto(review.getSeat()))
                 .build();
     }
 
-    private static ReviewInfoSummaryResDto.ReviewerInfoResDto toReviewerInfoResDto(MemberEntity member) {
-        return ReviewInfoSummaryResDto.ReviewerInfoResDto.builder()
+    public static ReviewInfoResDto toReviewInfoResDto(ReviewEntity review,
+                                                      Boolean bookmarked,
+                                                      List<String> imageList) {
+        return ReviewInfoResDto.builder()
+                .reviewId(review.getId())
+                .content(review.getContent())
+                .rating(review.getRating())
+                .createTime(review.getCreateTime())
+                .imageList(imageList)
+                .userInfo(toReviewerInfoResDto(review.getMember()))
+                .seatInfo(toSeatInfoDto(review.getSeat()))
+                .seatBookmarkInfo(toSeatBookmarkInfo(review.getSeat(), bookmarked))
+                .build();
+    }
+
+    private static ReviewInfoResDto.SeatBookmarkInfo toSeatBookmarkInfo(SeatEntity seat, Boolean bookmarked) {
+        return ReviewInfoResDto.SeatBookmarkInfo.builder()
+                .seatId(seat.getId())
+                .bookmarked(bookmarked)
+                .build();
+    }
+
+    private static ReviewerInfoResDto toReviewerInfoResDto(MemberEntity member) {
+        return ReviewerInfoResDto.builder()
                 .userId(member.getId())
                 .userNickname(member.getNickname())
+                .build();
+    }
+
+    private static SeatInfoResDto toSeatInfoDto(SeatEntity seat) {
+        return SeatInfoResDto.builder()
+                .floor(seat.getFloor())
+                .section(seat.getSection())
+                .seatRow(seat.getSeatRow())
+                .seatColumn(seat.getSeatColumn())
+                .block(seat.getBlock())
                 .build();
     }
 

@@ -7,24 +7,18 @@ import com.puremadeleine.viewith.domain.review.ReviewReportEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
-import com.puremadeleine.viewith.dto.review.CreateReviewReqDto;
-import com.puremadeleine.viewith.dto.review.CreateReviewResDto;
-import com.puremadeleine.viewith.dto.review.ReportReviewReqDto;
-import com.puremadeleine.viewith.dto.review.ReviewInfoResDto;
-import com.puremadeleine.viewith.dto.review.ReviewListReqDto;
-import com.puremadeleine.viewith.dto.review.ReviewListResDto;
-import com.puremadeleine.viewith.dto.review.UpdateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.CreateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReportReviewReqDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
+import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.exception.ViewithException;
-import com.puremadeleine.viewith.provider.MemberProvider;
-import com.puremadeleine.viewith.provider.ReviewProvider;
-import com.puremadeleine.viewith.provider.ReviewReportProvider;
-import com.puremadeleine.viewith.provider.SeatProvider;
-import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.provider.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
+import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewInfoResDto;
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 
@@ -46,8 +41,8 @@ public class ReviewService {
     SeatProvider seatProvider;
     ReviewReportProvider reviewReportProvider;
     MemberProvider memberProvider;
+    BookmarkProvider bookmarkProvider;
     ImageService imageService;
-    ReviewServiceMapper mapper;
 
     @Transactional
     public CreateReviewResDto createReview(CreateReviewReqDto reqDto, List<MultipartFile> images, Long memberId) {
@@ -76,10 +71,11 @@ public class ReviewService {
         review.deleteReview();
     }
 
-    public ReviewInfoResDto getReviewInfo(Long reviewId) {
+    public ReviewInfoResDto getReviewInfo(Long reviewId, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
+        boolean bookmarked = bookmarkProvider.isBookmarked(review.getSeat().getId(), memberId);
         List<String> imageUrls = imageService.getReviewImageUrlList(reviewId);
-        return mapper.toReviewInfoResDto(review, imageUrls);
+        return toReviewInfoResDto(review, bookmarked, imageUrls);
     }
 
     public ReviewListResDto getReviewList(ReviewListReqDto req, boolean isSummary) {
@@ -106,16 +102,4 @@ public class ReviewService {
             throw new ViewithException(PERMISSION_DENIED_FOR_REVIEW);
         }
     }
-
-    @Mapper(componentModel = "spring")
-    public interface ReviewServiceMapper {
-
-        @Mapping(source = "review.id", target = "reviewId")
-        @Mapping(source = "review.member", target = "userInfo")
-        @Mapping(source = "review.member.id", target = "userInfo.userId")
-        @Mapping(source = "review.member.nickname", target = "userInfo.userNickname")
-        @Mapping(source = "imageList", target = "imageList")
-        ReviewInfoResDto toReviewInfoResDto(ReviewEntity review, List<String> imageList);
-    }
-
 }
