@@ -1,11 +1,9 @@
 spring:
   application:
     name: viewith-server
-  profiles:
-    include: private
-
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL
+    driver-class-name: org.h2.Driver
     username: sa
     password:
   sql:
@@ -20,6 +18,7 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
     database-platform: org.hibernate.dialect.MySQLDialect
 
@@ -33,17 +32,3 @@ logging:
     org.springframework.security: debug
     feign: debug
 
-kakao:
-  oauth:
-    uri: https://kauth.kakao.com
-  api:
-    uri: https://kapi.kakao.com
-
-security:
-  exclude-uris:
-    - /
-    - /v1
-    - /v1/members/login/KAKAO
-    - /v1/members/login/APPLE
-    - /v1/members/test3
-    - /v1/members/test4
