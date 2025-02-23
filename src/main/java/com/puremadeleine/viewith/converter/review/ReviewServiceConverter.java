@@ -3,14 +3,18 @@ package com.puremadeleine.viewith.converter.review;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
-import com.puremadeleine.viewith.dto.review.response.*;
+import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewInfoSummaryResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewerInfoResDto;
+import com.puremadeleine.viewith.dto.review.response.SeatInfoResDto;
 import com.puremadeleine.viewith.util.HtmlUtils;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.puremadeleine.viewith.converter.CommonConverter.toTimeStamp;
+import static com.puremadeleine.viewith.converter.CommonConverter.toTimestampOrZero;
 import static java.lang.Math.min;
 
 public class ReviewServiceConverter {
@@ -40,7 +44,7 @@ public class ReviewServiceConverter {
                     .reviewId(review.getId())
                     .summary(pureContent.substring(0, min(pureContent.length(), 30)))
                     .rating(review.getRating())
-                    .createTime(toTimeStamp(review.getCreateTime()))
+                    .createTime(toTimestampOrZero(review.getCreateTime()))
                     .imageList(imageUrls)
                     .userInfo(toReviewerInfoResDto(review.getMember()))
                     .seatInfo(toSeatInfoDto(review.getSeat()))
@@ -50,7 +54,7 @@ public class ReviewServiceConverter {
                 .reviewId(review.getId())
                 .content(review.getContent())
                 .rating(review.getRating())
-                .createTime(toTimeStamp(review.getCreateTime()))
+                .createTime(toTimestampOrZero(review.getCreateTime()))
                 .imageList(imageUrls)
                 .userInfo(toReviewerInfoResDto(review.getMember()))
                 .seatInfo(toSeatInfoDto(review.getSeat()))

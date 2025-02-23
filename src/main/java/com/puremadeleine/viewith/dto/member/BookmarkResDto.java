@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.dto.member;
 
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.jackson.Jacksonized;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -40,8 +40,11 @@ public class BookmarkResDto {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class BookmarkSeatDto {
         long bookmarkId;
+        @Nullable
         String bookmarkSection;
+        @Nullable
         Integer bookmarkRow;
-        LocalDateTime lastUpdateDate;
+        @Nullable
+        Long lastUpdateDate;
     }
 }
