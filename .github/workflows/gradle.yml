@@ -37,11 +37,6 @@ jobs:
 
       - name: Build with Gradle Wrapper
         run: ./gradlew clean build
-
-      - name: List built files
-        run: |
-          ls -R build/libs
-          ls -R src/main/resources
         
       - name: Upload build artifacts (JAR)
         uses: actions/upload-artifact@v4
@@ -65,13 +60,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-
-      - name: Test SSH Connection
-        run: |
-          echo "${{ secrets.AWS_EC2_SSH_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} "echo 'Connected successfully'"
-
+          
       - name: Upload JAR
         run: |
           echo "${{ secrets.AWS_EC2_SSH_KEY }}" > private_key.pem
