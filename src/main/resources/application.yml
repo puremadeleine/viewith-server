@@ -38,6 +38,10 @@ kakao:
   api:
     uri: https://kapi.kakao.com
 
+kopis:
+  api:
+    uri: https://www.kopis.or.kr/openApi/restful/pblprfr
+
 security:
   exclude-uris:
     - /
