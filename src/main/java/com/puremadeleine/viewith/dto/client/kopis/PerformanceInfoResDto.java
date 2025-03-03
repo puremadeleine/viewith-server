@@ -10,9 +10,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@XmlRootElement(name = "db")
 public class PerformanceInfoResDto {
 
-    String area;
-    String fcltynm;
+    String mt20id;
+
 }
