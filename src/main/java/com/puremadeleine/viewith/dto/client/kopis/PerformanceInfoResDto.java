@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.dto.client.kopis;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +13,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PerformanceInfoResDto {
 
-    String mt20id;
+    @JacksonXmlProperty(localName = "mt20id")
+    String id;
+
+    @JacksonXmlProperty(localName = "prfnm")
+    String name;
 
 }
