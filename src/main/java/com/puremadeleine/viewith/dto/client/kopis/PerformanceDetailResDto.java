@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PerformanceInfoResDto {
+public class PerformanceDetailResDto {
 
     @JacksonXmlProperty(localName = "mt20id")
     String id;
@@ -19,7 +19,19 @@ public class PerformanceInfoResDto {
     @JacksonXmlProperty(localName = "prfnm")
     String name;
 
+    @JacksonXmlProperty(localName = "prfcast")
+    String artist;
+
     @JacksonXmlProperty(localName = "fcltynm")
     String venue;
+
+    @JacksonXmlProperty(localName = "prfpdfrom")
+    String startDate;
+
+    @JacksonXmlProperty(localName = "prfpdto")
+    String endDate;
+
+    @JacksonXmlProperty(localName = "poster")
+    String imgUrl;
 
 }
