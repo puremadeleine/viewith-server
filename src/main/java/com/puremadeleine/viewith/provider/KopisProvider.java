@@ -20,9 +20,6 @@ public class KopisProvider {
 
     KopisRepository kopisRepository;
     KopisProperties kopisProperties;
-    static final String KSPO_DOME_CODE = "FC001247-01";     // 올림픽 체조 경기장
-    static final String JANGCHUNG_CODE = "FC001247-01";     // 장충체육관
-    static final String JAMSIL_ARENA = "FC001247-01";       // 잠실 실내체육관
 
     public List<PerformanceInfoResDto> getPerformanceList(String venueCode, String genreCode, String startDate, String endDate, int page, int size) {
 
