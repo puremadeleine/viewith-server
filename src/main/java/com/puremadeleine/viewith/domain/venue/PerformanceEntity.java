@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tb_performance")
@@ -22,8 +22,8 @@ public class PerformanceEntity {
 
     String title;
     String artist;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    LocalDate startDate;
+    LocalDate endDate;
     String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)

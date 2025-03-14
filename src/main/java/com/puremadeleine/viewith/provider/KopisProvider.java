@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class KopisProvider {
     public List<PerformanceInfoResDto> getPerformanceList(String venueCode, String genreCode, String startDate, String endDate, int page, int size) {
 
         KospiResponse<List<PerformanceInfoResDto>> res = kopisRepository.getPerformanceList(kopisProperties.getServiceKey(),
-                startDate, endDate, page, size, genreCode, "", venueCode);
+                startDate, endDate, page, size, genreCode, venueCode);
 
         if (checkSuccess(res)) {
             return res.getValue();
@@ -41,7 +42,7 @@ public class KopisProvider {
     }
 
     private <T> boolean checkSuccess(KospiResponse<T> response) {
-        return true;
+        return Objects.nonNull(response) && Objects.nonNull(response.getValue());
     }
 
 }

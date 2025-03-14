@@ -31,4 +31,6 @@ public class VenueEntity {
     String location;
     String imageUrl;
     String svgUrl;
+
+    String venueCode;
 }

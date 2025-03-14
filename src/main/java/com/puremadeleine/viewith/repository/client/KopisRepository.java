@@ -26,14 +26,13 @@ public interface KopisRepository {
     String DISTRICT_CODE = "signgucodesub";
     String VENUE_CODE = "prfplccd";
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     KospiResponse<List<PerformanceInfoResDto>> getPerformanceList(@RequestParam(SERVICE) String serviceKey,
                                                                   @RequestParam(START_DATE) String startDate,
                                                                   @RequestParam(END_DATE) String endDate,
                                                                   @RequestParam(PAGE) Integer page,
                                                                   @RequestParam(SIZE) Integer size,
                                                                   @RequestParam(value = GENRE_CODE, required = false) String genreCode,
-                                                                  @RequestParam(value = DISTRICT_CODE, required = false) String districtCode,
                                                                   @RequestParam(value = VENUE_CODE, required = false) String venueCode
     );
 

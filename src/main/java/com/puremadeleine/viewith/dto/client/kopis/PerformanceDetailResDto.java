@@ -17,7 +17,7 @@ public class PerformanceDetailResDto {
     String id;
 
     @JacksonXmlProperty(localName = "prfnm")
-    String name;
+    String title;
 
     @JacksonXmlProperty(localName = "prfcast")
     String artist;
