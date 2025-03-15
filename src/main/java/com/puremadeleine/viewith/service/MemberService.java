@@ -2,6 +2,7 @@ package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.aware.SpringProxyAware;
 import com.puremadeleine.viewith.constants.NicknameConstants;
+import com.puremadeleine.viewith.converter.CommonConverter;
 import com.puremadeleine.viewith.domain.bookmark.BookmarkEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
@@ -262,11 +263,12 @@ public class MemberService extends SpringProxyAware<MemberService> {
                                     String section = entity.getSeat().getSection();
                                     Integer row = entity.getSeat().getSeatRow();
 
+                                    LocalDateTime lastUpdateDate = reviewLastCreateTimeBySeatId.get(entity.getSeat().getId());
                                     return BookmarkResDto.BookmarkSeatDto.builder()
                                             .bookmarkId(entity.getId())
                                             .bookmarkSection(StringUtils.equals(section, UNSELECTED_STRING) ? null : section)
                                             .bookmarkRow(row == UNSELECTED_NUMBER ? null : row)
-                                            .lastUpdateDate(reviewLastCreateTimeBySeatId.get(entity.getSeat().getId()))
+                                            .lastUpdateDate(CommonConverter.toNullableTimestamp(lastUpdateDate))
                                             .build();
                                 })
                                 .collect(Collectors.toList()))

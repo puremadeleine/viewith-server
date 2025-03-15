@@ -1,12 +1,13 @@
 package com.puremadeleine.viewith.config.web;
 
+import com.puremadeleine.viewith.dto.member.OAuthType;
 import com.puremadeleine.viewith.resolver.MemberInfoArgumentResolver;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         resolvers.add(memberInfoArgumentResolver);
     }
 
-//    @Override
-//    public void addFormatters(FormatterRegistry registry) {
-//        registry.addConverter((Converter<?, ?>) OAuthType.OAuthTypeConverter.INSANCE);
-//    }
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(OAuthType.OAuthTypeConverter.INSTANCE);
+    }
 }

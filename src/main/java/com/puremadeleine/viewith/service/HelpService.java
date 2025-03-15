@@ -8,8 +8,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import static com.puremadeleine.viewith.converter.help.HelpServiceConverter.toHelpListResDto;
 
@@ -34,6 +38,11 @@ public class HelpService {
     @Mapper(componentModel = "spring")
     public interface HelpServiceMapper {
 
+        @Mapping(target = "createTime", expression = "java(toTimestamp(help.getCreateTime()))")
         HelpInfoResDto toHelpInfoResDto(HelpEntity help);
+
+        default Long toTimestamp(LocalDateTime dateTime) {
+            return (dateTime != null) ? dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() : 0L;
+        }
     }
 }
