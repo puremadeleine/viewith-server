@@ -36,7 +36,7 @@ public class UpcomingPerformanceService {
         performanceProvider.saveAll(allPerformances);
     }
 
-    public List<PerformanceEntity> getAllPerformances(List<VenueEntity> venues, String startDate, String endDate, int page, int size) {
+    private List<PerformanceEntity> getAllPerformances(List<VenueEntity> venues, String startDate, String endDate, int page, int size) {
         List<PerformanceEntity> performanceEntityList = new ArrayList<>();
         venues.forEach(v -> {
             List<PerformanceDetailResDto> performances = getPerformances(v, startDate, endDate, page, size);

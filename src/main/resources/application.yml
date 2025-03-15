@@ -25,6 +25,10 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+  task:
+    scheduling:
+      time-zone: Asia/Seoul
+
 logging:
   level:
     org.hibernate.SQL: debug
