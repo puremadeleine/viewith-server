@@ -18,7 +18,7 @@ public class UpcomingPerformanceServiceConverter {
                 .artist(performance.getArtist())
                 .imageUrl(performance.getImgUrl())
                 .startDate(LocalDate.parse(performance.getStartDate(), formatter))
-                .startDate(LocalDate.parse(performance.getEndDate(), formatter))
+                .endDate(LocalDate.parse(performance.getEndDate(), formatter))
                 .venue(venue)
                 .build();
     }
