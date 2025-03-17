@@ -5,7 +5,8 @@ on:
     branches:
       - main
       - develop
-      - ci-cd-test
+      - feature/**
+      - bug/**
   pull_request:
     branches:
       - main
@@ -45,6 +46,7 @@ jobs:
           path: build/libs/viewith-server-0.0.1-SNAPSHOT.jar
 
   deploy:
+    if: ${{ github.ref_name == 'develop'}}
     needs: build
     runs-on: ubuntu-latest
 
