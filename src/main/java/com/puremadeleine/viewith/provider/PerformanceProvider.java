@@ -24,8 +24,8 @@ public class PerformanceProvider {
         return performanceRepository.findTopPerformancesPerVenue(limit);
     }
 
-    public void saveAll(List<PerformanceEntity> performances) {
-        performanceRepository.saveAll(performances);
+    public List<PerformanceEntity> saveAll(List<PerformanceEntity> performances) {
+        return performanceRepository.saveAll(performances);
     }
 
     public List<String> getExistKopisIds(List<String> kopisIds) {

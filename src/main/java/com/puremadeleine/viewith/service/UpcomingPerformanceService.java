@@ -29,7 +29,7 @@ public class UpcomingPerformanceService {
     final PerformanceProvider performanceProvider;
     final VenueProvider venueProvider;
 
-    public void saveUpcomingPerformances(String startDate, String endDate, int page, int size) {
+    public List<PerformanceEntity> saveUpcomingPerformances(String startDate, String endDate, int page, int size) {
 
         List<VenueEntity> venues = venueProvider.getVenues();
         List<PerformanceEntity> allPerformances = getAllPerformances(venues, startDate, endDate, page, size);
@@ -37,7 +37,7 @@ public class UpcomingPerformanceService {
         List<String> kospisIds = allPerformances.stream().map(PerformanceEntity::getKospisId).toList();
         List<String> existKopisIds = getExistKopisIds(kospisIds);
         excludeExistData(allPerformances, existKopisIds);
-        saveAllPerformances(allPerformances);
+        return saveAllPerformances(allPerformances);
     }
 
     private List<PerformanceEntity> getAllPerformances(List<VenueEntity> venues, String startDate, String endDate, int page, int size) {
@@ -54,10 +54,9 @@ public class UpcomingPerformanceService {
         return performanceEntityList;
     }
 
-    private void saveAllPerformances(List<PerformanceEntity> allPerformances) {
-        if (!allPerformances.isEmpty()) {
-            performanceProvider.saveAll(allPerformances);
-        }
+    private List<PerformanceEntity> saveAllPerformances(List<PerformanceEntity> allPerformances) {
+        if (allPerformances.isEmpty()) return Collections.emptyList();
+        return performanceProvider.saveAll(allPerformances);
     }
 
     private List<PerformanceDetailResDto> getPerformances(VenueEntity venue, String startDate, String endDate, int page, int size) {
