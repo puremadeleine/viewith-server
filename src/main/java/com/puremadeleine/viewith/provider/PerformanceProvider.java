@@ -27,4 +27,8 @@ public class PerformanceProvider {
     public void saveAll(List<PerformanceEntity> performances) {
         performanceRepository.saveAll(performances);
     }
+
+    public List<String> getExistKopisIds(List<String> kopisIds) {
+        return performanceRepository.findByKospisIds(kopisIds);
+    }
 }

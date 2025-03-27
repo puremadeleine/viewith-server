@@ -20,6 +20,8 @@ public class PerformanceEntity {
     @Column(name = "performance_id")
     Long id;
 
+    @Column(name = "kospis_id", unique = true)
+    String kospisId;
     String title;
     String artist;
     LocalDate startDate;

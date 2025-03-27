@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.puremadeleine.viewith.converter.performance.UpcomingPerformanceServiceConverter.toPerformance;
@@ -33,7 +34,10 @@ public class UpcomingPerformanceService {
         List<VenueEntity> venues = venueProvider.getVenues();
         List<PerformanceEntity> allPerformances = getAllPerformances(venues, startDate, endDate, page, size);
 
-        performanceProvider.saveAll(allPerformances);
+        List<String> kospisIds = allPerformances.stream().map(PerformanceEntity::getKospisId).toList();
+        List<String> existKopisIds = getExistKopisIds(kospisIds);
+        excludeExistData(allPerformances, existKopisIds);
+        saveAllPerformances(allPerformances);
     }
 
     private List<PerformanceEntity> getAllPerformances(List<VenueEntity> venues, String startDate, String endDate, int page, int size) {
@@ -48,6 +52,12 @@ public class UpcomingPerformanceService {
         });
 
         return performanceEntityList;
+    }
+
+    private void saveAllPerformances(List<PerformanceEntity> allPerformances) {
+        if (!allPerformances.isEmpty()) {
+            performanceProvider.saveAll(allPerformances);
+        }
     }
 
     private List<PerformanceDetailResDto> getPerformances(VenueEntity venue, String startDate, String endDate, int page, int size) {
@@ -69,5 +79,15 @@ public class UpcomingPerformanceService {
 
     public List<PerformanceDetailResDto> getPerformanceDetails(String performanceId) {
         return kopisProvider.getPerformanceDetails(performanceId);
+    }
+
+    private void excludeExistData(List<PerformanceEntity> allPerformances, List<String> existsIds) {
+        if (existsIds.isEmpty()) return ;
+        allPerformances.removeIf(p -> existsIds.contains(p.getKospisId()));
+    }
+
+    private List<String> getExistKopisIds(List<String> kospisIds) {
+        if (kospisIds.isEmpty()) return Collections.emptyList();
+        return performanceProvider.getExistKopisIds(kospisIds);
     }
 }

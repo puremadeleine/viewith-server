@@ -36,4 +36,7 @@ public interface PerformanceRepository extends JpaRepository<PerformanceEntity, 
                 WHERE row_num <= :limit
             """, nativeQuery = true)
     List<PerformanceEntity> findTopPerformancesPerVenue(@Param("limit") int limit);
+
+    @Query("SELECT p.kospisId FROM PerformanceEntity p WHERE p.kospisId IN :kospisIds")
+    List<String> findByKospisIds(@Param("kospisIds") List<String> kospisIds);
 }

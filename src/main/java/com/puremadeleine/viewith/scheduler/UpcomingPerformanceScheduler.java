@@ -26,13 +26,16 @@ public class UpcomingPerformanceScheduler {
 //    @Scheduled(cron = "0 0 2 ? * MON")      // 매주 월요일 새벽 두시
     public void process() {
 
-        log.info("fetch upcoming performances job start");
+        log.info("[UpcomingPerformanceScheduler] fetch upcoming performances job start");
 
         String startDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String endDate = LocalDate.now().plusDays(SCHEDULE_INTERVAL_DAYS).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        try {
+            upcomingPerformanceService.saveUpcomingPerformances(startDate, endDate, PAGE, SIZE);
+        } catch (Exception e) {
+            log.error("[UpcomingPerformanceScheduler] job failed", e);
+        }
 
-        upcomingPerformanceService.saveUpcomingPerformances(startDate, endDate, SIZE, PAGE);
-
-        log.info("fetch upcoming performances job end");
+        log.info("[UpcomingPerformanceScheduler] fetch upcoming performances job end");
     }
 }
