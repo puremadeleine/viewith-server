@@ -78,7 +78,11 @@ public class ReviewServiceConverter {
 
     private static ReviewInfoResDto.SeatBookmarkInfo toSeatBookmarkInfo(SeatEntity seat, Boolean bookmarked) {
         return ReviewInfoResDto.SeatBookmarkInfo.builder()
-                .seatId(seat.getId())
+                .floor(seat.getFloor())
+                .section(seat.getSection())
+                .seatRow(seat.getSeatRow())
+                .seatColumn(seat.getSeatColumn())
+                .block(seat.getBlock())
                 .bookmarked(bookmarked)
                 .build();
     }
