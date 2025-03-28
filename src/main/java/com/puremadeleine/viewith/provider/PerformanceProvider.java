@@ -23,4 +23,12 @@ public class PerformanceProvider {
     public List<PerformanceEntity> findTopPerformancesPerVenue(int limit) {
         return performanceRepository.findTopPerformancesPerVenue(limit);
     }
+
+    public List<PerformanceEntity> saveAll(List<PerformanceEntity> performances) {
+        return performanceRepository.saveAll(performances);
+    }
+
+    public List<String> getExistKopisIds(List<String> kopisIds) {
+        return performanceRepository.findByKopisIds(kopisIds);
+    }
 }

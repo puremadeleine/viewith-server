@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ class PerformanceRepositoryTest {
     void find() {
         // given
         VenueEntity venue = venueRepository.save(makeDummyVenueEntity());
-        PerformanceEntity performance = performanceRepository.save(makePerformanceEntity(venue, LocalDateTime.now().minusDays(1), LocalDateTime.now()));
+        PerformanceEntity performance = performanceRepository.save(makePerformanceEntity(venue, LocalDate.now().minusDays(1), LocalDate.now()));
 
         // when
         Optional<PerformanceEntity> actual = performanceRepository.findById(performance.getId());
@@ -50,9 +50,9 @@ class PerformanceRepositoryTest {
         VenueEntity venue2 = venueRepository.saveAndFlush(makeDummyVenueEntity());
         VenueEntity venue3 = venueRepository.saveAndFlush(makeDummyVenueEntity());
 
-        LocalDateTime fiveDaysAgo = LocalDateTime.now().minusDays(5);
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
-        LocalDateTime threeDaysLater = LocalDateTime.now().plusDays(3);
+        LocalDate fiveDaysAgo = LocalDate.now().minusDays(5);
+        LocalDate threeDaysAgo = LocalDate.now().minusDays(3);
+        LocalDate threeDaysLater = LocalDate.now().plusDays(3);
 
         // 미노출, 5일 전 시작하여 3일 전 끝남
         PerformanceEntity performance_venue = performanceRepository.saveAndFlush(makePerformanceEntity(venue, fiveDaysAgo, threeDaysAgo));
@@ -90,7 +90,7 @@ class PerformanceRepositoryTest {
 
     }
 
-    private PerformanceEntity makePerformanceEntity(VenueEntity venue, LocalDateTime startDate, LocalDateTime endDate) {
+    private PerformanceEntity makePerformanceEntity(VenueEntity venue, LocalDate startDate, LocalDate endDate) {
         return Instancio.of(PerformanceEntity.class)
                 .ignore(field(PerformanceEntity::getId))
                 .set(field(PerformanceEntity::getVenue), venue)
