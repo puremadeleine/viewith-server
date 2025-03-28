@@ -34,8 +34,8 @@ public class UpcomingPerformanceService {
         List<VenueEntity> venues = venueProvider.getVenues();
         List<PerformanceEntity> allPerformances = getAllPerformances(venues, startDate, endDate, page, size);
 
-        List<String> kospisIds = allPerformances.stream().map(PerformanceEntity::getKospisId).toList();
-        List<String> existKopisIds = getExistKopisIds(kospisIds);
+        List<String> kopisIds = allPerformances.stream().map(PerformanceEntity::getKopisId).toList();
+        List<String> existKopisIds = getExistKopisIds(kopisIds);
         excludeExistData(allPerformances, existKopisIds);
         return saveAllPerformances(allPerformances);
     }
@@ -82,11 +82,11 @@ public class UpcomingPerformanceService {
 
     private void excludeExistData(List<PerformanceEntity> allPerformances, List<String> existsIds) {
         if (existsIds.isEmpty()) return ;
-        allPerformances.removeIf(p -> existsIds.contains(p.getKospisId()));
+        allPerformances.removeIf(p -> existsIds.contains(p.getKopisId()));
     }
 
-    private List<String> getExistKopisIds(List<String> kospisIds) {
-        if (kospisIds.isEmpty()) return Collections.emptyList();
-        return performanceProvider.getExistKopisIds(kospisIds);
+    private List<String> getExistKopisIds(List<String> kopisIds) {
+        if (kopisIds.isEmpty()) return Collections.emptyList();
+        return performanceProvider.getExistKopisIds(kopisIds);
     }
 }

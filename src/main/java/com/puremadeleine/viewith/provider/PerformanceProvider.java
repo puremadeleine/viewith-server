@@ -29,6 +29,6 @@ public class PerformanceProvider {
     }
 
     public List<String> getExistKopisIds(List<String> kopisIds) {
-        return performanceRepository.findByKospisIds(kopisIds);
+        return performanceRepository.findByKopisIds(kopisIds);
     }
 }

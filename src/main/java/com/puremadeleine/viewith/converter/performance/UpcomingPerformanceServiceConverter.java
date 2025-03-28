@@ -14,7 +14,7 @@ public class UpcomingPerformanceServiceConverter {
     public static PerformanceEntity toPerformance(PerformanceDetailResDto performance, VenueEntity venue) {
 
         return PerformanceEntity.builder()
-                .kospisId(performance.getId())
+                .kopisId(performance.getId())
                 .title(performance.getTitle())
                 .artist(performance.getArtist())
                 .imageUrl(performance.getImgUrl())

@@ -44,8 +44,8 @@ class UpcomingPerformanceServiceTest {
         when(kopisProvider.getPerformanceList(anyString(),anyString(), anyString(),anyString(), anyInt(), anyInt()))
                 .thenReturn(performanceInfoResDtos);
 
-        List<String> allKospisIds = performanceInfoResDtos.stream().map(PerformanceInfoResDto::getId).toList();
-        allKospisIds.forEach(
+        List<String> allKopisIds = performanceInfoResDtos.stream().map(PerformanceInfoResDto::getId).toList();
+        allKopisIds.forEach(
                 id -> when(kopisProvider.getPerformanceDetails(eq(id)))
                         .thenReturn(List.of(makePerformanceDetail(id)))
         );
@@ -74,9 +74,9 @@ class UpcomingPerformanceServiceTest {
                 .create();
     }
 
-    private PerformanceDetailResDto makePerformanceDetail(String kospisId) {
+    private PerformanceDetailResDto makePerformanceDetail(String kopisId) {
         return Instancio.of(PerformanceDetailResDto.class)
-                .set(field(PerformanceDetailResDto::getId), kospisId)
+                .set(field(PerformanceDetailResDto::getId), kopisId)
                 .set(field(PerformanceDetailResDto::getStartDate),
                         LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                 .set(field(PerformanceDetailResDto::getEndDate),
