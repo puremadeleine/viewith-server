@@ -88,10 +88,9 @@ class ReviewCustomRepositoryTest {
 
         // then
         assertThat(actual).isNotEmpty()
-                .hasSize(3);
+                .hasSize(2);
         assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(review5);
-        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(review2);
-        assertThat(actual.get(2)).usingRecursiveComparison().isEqualTo(review1);
+        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(review1);
     }
 
     @DisplayName("DEFAULT findMyReviewList")
@@ -139,15 +138,13 @@ class ReviewCustomRepositoryTest {
 
         // then
         assertThat(actual).isNotEmpty()
-                .hasSize(4);
+                .hasSize(2);
 
-        List<ReviewEntity> photoReviews = sorted(List.of(review1, review6), memberId);
+        List<ReviewEntity> photoReviews = sorted(List.of(review1), memberId);
         List<ReviewEntity> noPhotoReviews = sorted(List.of(review5, review2), memberId);
 
         assertThat(actual.get(0)).usingRecursiveComparison().isEqualTo(photoReviews.get(0));
-        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(photoReviews.get(1));
-        assertThat(actual.get(2)).usingRecursiveComparison().isEqualTo(noPhotoReviews.get(0));
-        assertThat(actual.get(3)).usingRecursiveComparison().isEqualTo(noPhotoReviews.get(1));
+        assertThat(actual.get(1)).usingRecursiveComparison().isEqualTo(noPhotoReviews.get(0));
     }
 
     private MemberEntity makeDummyMemberEntity() {

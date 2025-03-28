@@ -52,7 +52,7 @@ public class ReviewCustomRepository {
                 .join(reviewEntity.seat, seatEntity)
                 .where(
                         memberIdEq(memberNo),
-                        isNotDeleted()
+                        isNormal()
                 )
                 .orderBy(
                         getOrder(req.getSortType()),
@@ -72,7 +72,7 @@ public class ReviewCustomRepository {
                 .on(reviewEntity.id.eq(imageEntity.sourceId))
                 .where(
                         memberIdEq(memberNo),
-                        isNotDeleted()
+                        isNormal()
                 )
                 .orderBy(
                         getPrioritizingMediaDesc(),
@@ -119,7 +119,7 @@ public class ReviewCustomRepository {
                 .join(reviewEntity.seat, seatEntity)
                 .where(
                         memberIdEq(memberNo),
-                        isNotDeleted()
+                        isNormal()
                 )
                 .fetch().size();
     }
@@ -160,8 +160,8 @@ public class ReviewCustomRepository {
         return reviewEntity.member.id.eq(memberId);
     }
 
-    private BooleanExpression isNotDeleted() {
-        return reviewEntity.status.ne(Status.DELETED);
+    private BooleanExpression isNormal() {
+        return reviewEntity.status.eq(Status.NORMAL);
     }
 
     private OrderSpecifier<?> getOrder(SortType sortType) {
