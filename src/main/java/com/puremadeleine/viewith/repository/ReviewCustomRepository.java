@@ -67,7 +67,6 @@ public class ReviewCustomRepository {
         return queryFactory
                 .select(reviewEntity)
                 .from(reviewEntity)
-                .join(reviewEntity.seat, seatEntity)
                 .leftJoin(imageEntity)
                 .on(reviewEntity.id.eq(imageEntity.sourceId))
                 .where(
@@ -116,7 +115,6 @@ public class ReviewCustomRepository {
         return queryFactory
                 .select(reviewEntity.id)
                 .from(reviewEntity)
-                .join(reviewEntity.seat, seatEntity)
                 .where(
                         memberIdEq(memberNo),
                         isNormal()
