@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.config.web;
 
+import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.member.OAuthType;
 import com.puremadeleine.viewith.resolver.MemberInfoArgumentResolver;
 import lombok.AccessLevel;
@@ -27,6 +28,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(OAuthType.OAuthTypeConverter.INSTANCE);
-        registry.addConverter(new SortTypeConverter());
+        registry.addConverter(SortType.SortTypeConverter.INSTANCE);
     }
 }

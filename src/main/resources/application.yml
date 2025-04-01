@@ -17,6 +17,10 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+  task:
+    scheduling:
+      time-zone: Asia/Seoul
+
 logging:
   level:
     org.hibernate.SQL: debug
@@ -29,6 +33,10 @@ kakao:
     uri: https://kauth.kakao.com
   api:
     uri: https://kapi.kakao.com
+
+kopis:
+  api:
+    uri: https://www.kopis.or.kr/openApi/restful/pblprfr
 
 security:
   exclude-uris:
