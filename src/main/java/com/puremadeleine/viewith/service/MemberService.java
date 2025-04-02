@@ -5,9 +5,11 @@ import com.puremadeleine.viewith.constants.NicknameConstants;
 import com.puremadeleine.viewith.converter.CommonConverter;
 import com.puremadeleine.viewith.domain.bookmark.BookmarkEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
+import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.client.UpdateTokenResDto;
 import com.puremadeleine.viewith.dto.client.UserInfoResDto;
+import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.member.BookmarkResDto;
 import com.puremadeleine.viewith.dto.member.JoinResDto;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
@@ -17,6 +19,8 @@ import com.puremadeleine.viewith.dto.member.RefreshReqDto;
 import com.puremadeleine.viewith.dto.member.RefreshResDto;
 import com.puremadeleine.viewith.dto.member.ValidateNicknameResDto;
 import com.puremadeleine.viewith.dto.review.ReviewWithSeatIdDto;
+import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
+import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.BookmarkProvider;
@@ -28,6 +32,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,6 +44,7 @@ import java.util.stream.Collectors;
 
 import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
 import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_STRING;
+import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
 import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMember;
 import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 
@@ -47,11 +53,12 @@ import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MemberService extends SpringProxyAware<MemberService> {
 
+    KakaoService kakaoService;
+    JwtService jwtService;
+    ImageService imageService;
     MemberProvider memberProvider;
     BookmarkProvider bookmarkProvider;
     ReviewProvider reviewProvider;
-    KakaoService kakaoService;
-    JwtService jwtService;
     VenueProvider venueProvider;
 
     public JoinResDto login(OAuthType authType, String accessToken, String refreshToken) {
@@ -274,5 +281,16 @@ public class MemberService extends SpringProxyAware<MemberService> {
                                 .collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList()); // 최종 결과 리스트로 수집
+    }
+
+    public ReviewListResDto getMyReviews(MemberInfo memberInfo, ReviewListReqDto req, Boolean isSummary) {
+        Long memberNo = memberInfo.getMemberId();
+        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.getSortType()))
+                ? reviewProvider.getMyReviewListPrioritizingMedia(memberNo, req)
+                : reviewProvider.getMyReviewList(memberNo, req);
+
+        List<Long> reviewIds = reviewList.getContent().stream().map(ReviewEntity::getId).toList();
+        Map<Long, List<String>> reviewImageUrlMap = imageService.getReviewImageUrlMap(reviewIds);
+        return toReviewListResDto(isSummary, reviewList, reviewImageUrlMap);
     }
 }

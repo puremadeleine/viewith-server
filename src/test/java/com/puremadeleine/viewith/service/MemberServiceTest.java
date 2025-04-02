@@ -23,8 +23,9 @@ class MemberServiceTest {
     BookmarkProvider bookmarkProvider = mock(BookmarkProvider.class);
     ReviewProvider reviewProvider = mock(ReviewProvider.class);
     VenueProvider venueProvider = mock(VenueProvider.class);
+    ImageService imageService = mock(ImageService.class);
 
-    MemberService memberService = new MemberService(memberProvider, bookmarkProvider, reviewProvider, kakaoService, jwtService, venueProvider);
+    MemberService memberService = new MemberService(kakaoService, jwtService, imageService, memberProvider, bookmarkProvider, reviewProvider, venueProvider);
 
     @ParameterizedTest
     @ValueSource(strings = {"한글만", "asd", "숫자1포함", "123", "공 백 포 함", "공백    포함", "딱15글자6789012345", "한asd123한"})

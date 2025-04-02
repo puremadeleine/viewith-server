@@ -1,6 +1,8 @@
 package com.puremadeleine.viewith.repository;
 
+import com.puremadeleine.viewith.domain.image.SourceType;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
+import com.puremadeleine.viewith.domain.review.Status;
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
 import com.querydsl.core.types.OrderSpecifier;
@@ -43,13 +45,50 @@ public class ReviewCustomRepository {
                 .fetch();
     }
 
+    public List<ReviewEntity> findMyReviewList(Long memberNo, ReviewListReqDto req) {
+        return queryFactory
+                .select(reviewEntity)
+                .from(reviewEntity)
+                .join(reviewEntity.seat, seatEntity)
+                .where(
+                        memberIdEq(memberNo),
+                        isNormal()
+                )
+                .orderBy(
+                        getOrder(req.getSortType()),
+                        reviewEntity.id.desc()
+                )
+                .offset(getOffset(req))
+                .limit(req.getSize())
+                .fetch();
+    }
+
+    public List<ReviewEntity> findMyReviewListPrioritizingMedia(Long memberNo, ReviewListReqDto req) {
+        return queryFactory
+                .select(reviewEntity)
+                .from(reviewEntity)
+                .leftJoin(imageEntity)
+                .on(reviewEntity.id.eq(imageEntity.sourceId))
+                .where(
+                        memberIdEq(memberNo),
+                        isNormal()
+                )
+                .orderBy(
+                        getPrioritizingMediaDesc(),
+                        reviewEntity.id.desc()
+                )
+                .offset(getOffset(req))
+                .limit(req.getSize())
+                .fetch();
+    }
+
     public List<ReviewEntity> findReviewListPrioritizingMedia(ReviewListReqDto req) {
         return queryFactory
                 .select(reviewEntity)
                 .from(reviewEntity)
                 .join(reviewEntity.seat, seatEntity)
                 .leftJoin(imageEntity)
-                .on(reviewEntity.id.eq(imageEntity.sourceId) )
+                .on(reviewEntity.id.eq(imageEntity.sourceId))
                 .where(
                         floorEq(req.getFloor()),
                         sectionEq(req.getSection()),
@@ -65,9 +104,22 @@ public class ReviewCustomRepository {
 
     private static OrderSpecifier<Integer> getPrioritizingMediaDesc() {
         return new CaseBuilder()
-                .when(imageEntity.id.isNotNull()).then(1)
+                .when(imageEntity.id.isNotNull()
+                        .and(imageEntity.sourceType.eq(SourceType.REVIEW))
+                ).then(1)
                 .otherwise(0)
                 .desc();
+    }
+
+    public int countReviewTotal(Long memberNo) {
+        return queryFactory
+                .select(reviewEntity.id)
+                .from(reviewEntity)
+                .where(
+                        memberIdEq(memberNo),
+                        isNormal()
+                )
+                .fetch().size();
     }
 
     public int countReviewTotal(ReviewListReqDto req) {
@@ -99,6 +151,15 @@ public class ReviewCustomRepository {
     private BooleanExpression seatRowEq(Integer seatRow) {
         if (Objects.isNull(seatRow)) return null;
         return seatEntity.seatRow.eq(seatRow);
+    }
+
+    private BooleanExpression memberIdEq(Long memberId) {
+        if (Objects.isNull(memberId)) return null;
+        return reviewEntity.member.id.eq(memberId);
+    }
+
+    private BooleanExpression isNormal() {
+        return reviewEntity.status.eq(Status.NORMAL);
     }
 
     private OrderSpecifier<?> getOrder(SortType sortType) {
