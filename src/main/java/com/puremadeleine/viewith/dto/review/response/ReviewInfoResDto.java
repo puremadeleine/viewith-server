@@ -17,7 +17,7 @@ public class ReviewInfoResDto {
     Long reviewId;
     String content;
     Float rating;
-    LocalDateTime createTime;
+    Long createTime;
     List<String> imageList;
     ReviewerInfoResDto userInfo;
     SeatInfoResDto seatInfo;
@@ -28,6 +28,7 @@ public class ReviewInfoResDto {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class SeatBookmarkInfo {
 
+        Long seatId;
         String floor;
         String section;
         Integer seatRow;

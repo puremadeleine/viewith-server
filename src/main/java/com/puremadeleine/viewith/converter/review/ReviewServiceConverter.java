@@ -11,6 +11,7 @@ import com.puremadeleine.viewith.dto.review.response.SeatInfoResDto;
 import com.puremadeleine.viewith.util.HtmlUtils;
 import org.springframework.data.domain.Page;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -61,14 +62,17 @@ public class ReviewServiceConverter {
                 .build();
     }
 
+    // todo : converter 수정
     public static ReviewInfoResDto toReviewInfoResDto(ReviewEntity review,
                                                       Boolean bookmarked,
                                                       List<String> imageList) {
+
         return ReviewInfoResDto.builder()
                 .reviewId(review.getId())
                 .content(review.getContent())
                 .rating(review.getRating())
-                .createTime(review.getCreateTime())
+                .createTime((review.getCreateTime() != null) ?
+                        review.getCreateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() : 0L)
                 .imageList(imageList)
                 .userInfo(toReviewerInfoResDto(review.getMember()))
                 .seatInfo(toSeatInfoDto(review.getSeat()))
@@ -78,6 +82,7 @@ public class ReviewServiceConverter {
 
     private static ReviewInfoResDto.SeatBookmarkInfo toSeatBookmarkInfo(SeatEntity seat, Boolean bookmarked) {
         return ReviewInfoResDto.SeatBookmarkInfo.builder()
+                .seatId(seat.getId())
                 .floor(seat.getFloor())
                 .section(seat.getSection())
                 .seatRow(seat.getSeatRow())
@@ -96,6 +101,7 @@ public class ReviewServiceConverter {
 
     private static SeatInfoResDto toSeatInfoDto(SeatEntity seat) {
         return SeatInfoResDto.builder()
+                .seatId(seat.getId())
                 .floor(seat.getFloor())
                 .section(seat.getSection())
                 .seatRow(seat.getSeatRow())
