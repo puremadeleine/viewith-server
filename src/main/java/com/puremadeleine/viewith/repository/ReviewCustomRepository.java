@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.repository;
 
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
+import com.puremadeleine.viewith.domain.review.Status;
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
 import com.querydsl.core.types.OrderSpecifier;
@@ -32,6 +33,7 @@ public class ReviewCustomRepository {
                 .from(reviewEntity)
                 .join(reviewEntity.seat, seatEntity)
                 .where(
+                        reviewEntity.status.eq(Status.NORMAL),
                         floorEq(req.getFloor()),
                         sectionEq(req.getSection()),
                         seatRowEq(req.getSeatRow()))
@@ -51,6 +53,7 @@ public class ReviewCustomRepository {
                 .leftJoin(imageEntity)
                 .on(reviewEntity.id.eq(imageEntity.sourceId) )
                 .where(
+                        reviewEntity.status.eq(Status.NORMAL),
                         floorEq(req.getFloor()),
                         sectionEq(req.getSection()),
                         seatRowEq(req.getSeatRow()))
