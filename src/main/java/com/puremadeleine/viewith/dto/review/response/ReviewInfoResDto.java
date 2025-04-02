@@ -28,6 +28,7 @@ public class ReviewInfoResDto {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class SeatBookmarkInfo {
 
+        Long seatId;
         String floor;
         String section;
         Integer seatRow;

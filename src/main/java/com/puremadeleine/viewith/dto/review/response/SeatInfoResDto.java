@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SeatInfoResDto {
 
+    Long seatId;
     String floor;
     String section;
     Integer seatRow;
