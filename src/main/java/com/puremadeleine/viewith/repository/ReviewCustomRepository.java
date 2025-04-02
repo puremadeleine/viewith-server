@@ -79,6 +79,7 @@ public class ReviewCustomRepository {
                 .from(reviewEntity)
                 .join(reviewEntity.seat, seatEntity)
                 .where(
+                        reviewEntity.status.eq(Status.NORMAL),
                         floorEq(req.getFloor()),
                         sectionEq(req.getSection()),
                         seatRowEq(req.getSeatRow()))
