@@ -71,7 +71,7 @@ public class VenueController {
     }
 
     @GetMapping("/search")
-    public List<VenueSearchResDto> searchVenue(@RequestParam String keyword, MemberInfo memberInfo) {
+    public List<VenueSearchResDto> searchVenue(@RequestParam String keyword) {
         return venueService.searchVenue(keyword);
     }
 }
