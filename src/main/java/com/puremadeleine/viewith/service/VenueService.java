@@ -9,12 +9,7 @@ import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
-import com.puremadeleine.viewith.dto.venue.FloorRowDto;
-import com.puremadeleine.viewith.dto.venue.VenueFilterResDto;
-import com.puremadeleine.viewith.dto.venue.VenueListResDto;
-import com.puremadeleine.viewith.dto.venue.VenueResDto;
-import com.puremadeleine.viewith.dto.venue.VenueSearchResDto;
-import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
+import com.puremadeleine.viewith.dto.venue.*;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.BookmarkProvider;
@@ -187,9 +182,10 @@ public class VenueService {
                 .build();
     }
 
-    public List<VenueSearchResDto> searchVenue(String keyword) {
+    public VenueSearchListResDto searchVenue(String keyword) {
         List<VenueEntity> searchList = venueProvider.search(keyword);
-        return venueServiceMapper.toVenueSearchResDtoList(searchList);
+        var venues = venueServiceMapper.toVenueSearchResDtos(searchList);
+        return VenueSearchListResDto.builder().venues(venues).build();
     }
 
     public VenueSeatResDto getVenueSeatInfo(long venueId) {
@@ -265,11 +261,11 @@ public class VenueService {
                                   List<VenueResDto.Stage> stages,
                                   List<VenueResDto.VenueReviewInfo> venueReviewInfos);
 
-        List<VenueSearchResDto> toVenueSearchResDtoList(List<VenueEntity> venues);
+        List<VenueSearchListResDto.VenueSearchResDto> toVenueSearchResDtos(List<VenueEntity> venues);
 
         @Mapping(source = "id", target = "venueId")
         @Mapping(source = "name", target = "venueName")
         @Mapping(source = "location", target = "venueLocation")
-        VenueSearchResDto toVenueSearchResDto(VenueEntity venue);
+        VenueSearchListResDto.VenueSearchResDto toVenueSearchResDto(VenueEntity venue);
     }
 }
