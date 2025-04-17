@@ -2,7 +2,7 @@ package com.puremadeleine.viewith.service;
 
 import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
-import com.puremadeleine.viewith.dto.performance.PerformanceSearchResDto;
+import com.puremadeleine.viewith.dto.performance.PerformanceSearchListResDto;
 import com.puremadeleine.viewith.provider.PerformanceProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +31,11 @@ public class PerformanceServiceTest {
         when(performanceProvider.search(anyString())).thenReturn(List.of(performance));
 
         // when
-        List<PerformanceSearchResDto> result = performanceService.searchPerformance(keyword);
+        PerformanceSearchListResDto result = performanceService.searchPerformance(keyword);
 
         // then
-        assertThat(result).hasSize(1);
-        assertThat(result.getFirst().getPerformanceTitle()).isEqualTo("더보이즈 공연");
+        assertThat(result.getPerformances()).hasSize(1);
+        assertThat(result.getPerformances().getFirst().getPerformanceTitle()).isEqualTo("더보이즈 공연");
     }
 
     VenueEntity getVenue() {
