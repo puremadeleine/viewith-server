@@ -19,7 +19,7 @@ public class VenueSearchListResDto {
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class VenueSearchResDto {
 
-        String venueId;
+        Long venueId;
         String venueName;
         String venueLocation;
     }
