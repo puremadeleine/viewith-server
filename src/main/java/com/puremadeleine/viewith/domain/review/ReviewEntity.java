@@ -11,6 +11,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import static com.puremadeleine.viewith.constants.CommonConstants.REPORT_THRESHOLD;
+
 @Entity
 @Table(name = "tb_review")
 @Getter
@@ -75,9 +77,8 @@ public class ReviewEntity extends BaseTimeEntity {
     }
 
     public void reportReview() {
-        // todo : report count final 변수로 수정
         reportCount += 1;
-        if (reportCount >= 5) {
+        if (reportCount >= REPORT_THRESHOLD) {
             this.setStatus(Status.REPORTED);
         }
     }
