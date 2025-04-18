@@ -7,11 +7,13 @@ import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.review.request.CreateReviewReqDto;
 import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
+import com.puremadeleine.viewith.exception.ViewithException;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import static com.puremadeleine.viewith.constants.CommonConstants.REPORT_THRESHOLD;
+import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 
 @Entity
 @Table(name = "tb_review")
@@ -67,19 +69,34 @@ public class ReviewEntity extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateReview(UpdateReviewReqDto reqDto) {
+    public void updateReview(UpdateReviewReqDto reqDto, Long reqMemberId) {
+        validateEditable(reqMemberId);
         this.setContent(reqDto.getContent());
         this.setRating(reqDto.getRating());
     }
 
-    public void deleteReview() {
+    public void deleteReview(Long reqMemberId) {
+        validateEditable(reqMemberId);
         this.setStatus(Status.DELETED);
     }
 
-    public void reportReview() {
+    public void reportReview(Long reqMemberId) {
+        validateReportable(reqMemberId);
         reportCount += 1;
         if (reportCount >= REPORT_THRESHOLD) {
             this.setStatus(Status.REPORTED);
+        }
+    }
+
+    private void validateEditable(Long reqMemberId) {
+        if (!member.getId().equals(reqMemberId)) {
+            throw new ViewithException(PERMISSION_DENIED_FOR_REVIEW);
+        }
+    }
+
+    public void validateReportable(Long reqMemberId) {
+        if (member.getId().equals(reqMemberId)) {
+            throw new ViewithException(PERMISSION_DENIED_FOR_REVIEW);
         }
     }
 }
