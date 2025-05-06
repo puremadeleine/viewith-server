@@ -10,6 +10,7 @@ import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.service.ReviewService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
@@ -29,9 +30,10 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping("")
-    public CreateReviewResDto createReview(@RequestPart(value = "CreateReviewReqDto") CreateReviewReqDto createReviewReqDto,
-                                           @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        return reviewService.createReview(createReviewReqDto, images, 1L);
+    public CreateReviewResDto createReview(@Valid @RequestPart(value = "CreateReviewReqDto") CreateReviewReqDto createReviewReqDto,
+                                           @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                           MemberInfo memberInfo) {
+        return reviewService.createReview(createReviewReqDto, images, memberInfo.getMemberId());
     }
 
     @GetMapping("/{review_id}")

@@ -45,8 +45,8 @@ public class ReviewService {
     @Transactional
     public CreateReviewResDto createReview(CreateReviewReqDto reqDto, List<MultipartFile> images, Long memberId) {
         MemberEntity activeMember = memberProvider.getActiveMember(memberId);
-        VenueEntity venue = venueProvider.getVenue(reqDto.getVenueId());
-        SeatEntity seat = seatProvider.getSeat(reqDto.getSection(), reqDto.getSeatRow(), reqDto.getSeatColumn());
+        VenueEntity venue = venueProvider.getVenue(reqDto.venueId());
+        SeatEntity seat = seatProvider.getSeat(reqDto.section(), reqDto.seatRow(), reqDto.seatColumn());
 
         ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, activeMember);
         ReviewEntity savedReview = reviewProvider.saveReview(review);

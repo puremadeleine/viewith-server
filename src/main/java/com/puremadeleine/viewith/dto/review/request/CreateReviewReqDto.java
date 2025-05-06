@@ -1,21 +1,14 @@
 package com.puremadeleine.viewith.dto.review.request;
 
-import lombok.AccessLevel;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.jackson.Jacksonized;
 
-@Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-@Jacksonized
-public class CreateReviewReqDto {
-
-    Long venueId;
-    String section;
-    Integer seatRow;
-    Integer seatColumn;
-    String content;
-    Float rating;
-}
+public record CreateReviewReqDto(
+        @NotNull Long venueId,
+        @NotBlank String section,
+        @NotNull @Min(1) Integer seatRow,
+        @Min(1) Integer seatColumn,
+        @NotBlank String content,
+        @NotNull @DecimalMin("0.0") @DecimalMax("5.0") Float rating
+) {}

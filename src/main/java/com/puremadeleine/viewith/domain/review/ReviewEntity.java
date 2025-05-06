@@ -59,8 +59,8 @@ public class ReviewEntity extends BaseTimeEntity {
     public static ReviewEntity createReview(CreateReviewReqDto reqDto, VenueEntity venue,
                                             SeatEntity seat, MemberEntity member) {
         return ReviewEntity.builder()
-                .content(reqDto.getContent())
-                .rating(reqDto.getRating())
+                .content(reqDto.content())
+                .rating(reqDto.rating())
                 .status(Status.NORMAL)
                 .reportCount(0)
                 .venue(venue)
