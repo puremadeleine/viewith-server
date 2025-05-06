@@ -12,4 +12,5 @@ public record ReviewListResDto(
     Long total,
     Boolean hasNext,
     List<ReviewInfoSummaryResDto> list
-) {}
+) {
+}

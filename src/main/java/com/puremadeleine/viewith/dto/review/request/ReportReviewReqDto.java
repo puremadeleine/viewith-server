@@ -8,4 +8,5 @@ import lombok.Builder;
 public record ReportReviewReqDto(
     @NotNull ReportReason reportReason,
     String reportReasonDetail
-) {}
+) {
+}

@@ -11,4 +11,5 @@ public record CreateReviewReqDto(
     @Min(1) Integer seatColumn,
     @NotBlank String content,
     @NotNull @DecimalMin("0.0") @DecimalMax("5.0") Float rating
-) {}
+) {
+}

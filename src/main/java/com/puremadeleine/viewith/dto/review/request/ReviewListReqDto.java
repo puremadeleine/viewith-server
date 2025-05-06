@@ -11,4 +11,5 @@ public record ReviewListReqDto(
     String floor,
     String section,
     Integer seatRow
-) {}
+) {
+}
