@@ -79,7 +79,7 @@ class ReviewServiceTest {
             CreateReviewResDto result = reviewService.createReview(req, null, member.getId());
 
             // then
-            assertThat(result.getReviewId()).isEqualTo(1L);
+            assertThat(result.reviewId()).isEqualTo(1L);
         }
     }
 
@@ -211,11 +211,11 @@ class ReviewServiceTest {
             ReviewListResDto result = reviewService.getReviewList(req, false);
 
             // then
-            assertThat(result.getList().size()).isEqualTo(1);
-            assertThat(result.getPage()).isEqualTo(1);
-            assertThat(result.getTotal()).isEqualTo(20);
-            assertThat(result.getList().getFirst().getContent()).isEqualTo("후기");
-            assertThat(result.getList().getFirst().getSummary()).isNull();
+            assertThat(result.list().size()).isEqualTo(1);
+            assertThat(result.page()).isEqualTo(1);
+            assertThat(result.total()).isEqualTo(20);
+            assertThat(result.list().getFirst().getContent()).isEqualTo("후기");
+            assertThat(result.list().getFirst().getSummary()).isNull();
         }
 
         @DisplayName("get review list when sort type is not default")
@@ -241,9 +241,9 @@ class ReviewServiceTest {
             ReviewListResDto result = reviewService.getReviewList(req, false);
 
             // then
-            assertThat(result.getList().size()).isEqualTo(1);
-            assertThat(result.getPage()).isEqualTo(1);
-            assertThat(result.getTotal()).isEqualTo(20);
+            assertThat(result.list().size()).isEqualTo(1);
+            assertThat(result.page()).isEqualTo(1);
+            assertThat(result.total()).isEqualTo(20);
         }
 
         @DisplayName("get review summary list when sort type is not default")
@@ -269,11 +269,11 @@ class ReviewServiceTest {
             ReviewListResDto result = reviewService.getReviewList(req, true);
 
             // then
-            assertThat(result.getList().size()).isEqualTo(1);
-            assertThat(result.getPage()).isEqualTo(1);
-            assertThat(result.getTotal()).isEqualTo(20);
-            assertThat(result.getList().getFirst().getSummary()).isEqualTo("후기");
-            assertThat(result.getList().getFirst().getContent()).isNull();
+            assertThat(result.list().size()).isEqualTo(1);
+            assertThat(result.page()).isEqualTo(1);
+            assertThat(result.total()).isEqualTo(20);
+            assertThat(result.list().getFirst().getSummary()).isEqualTo("후기");
+            assertThat(result.list().getFirst().getContent()).isNull();
         }
     }
 

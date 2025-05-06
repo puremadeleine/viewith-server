@@ -285,7 +285,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
     public ReviewListResDto getMyReviews(MemberInfo memberInfo, ReviewListReqDto req, Boolean isSummary) {
         Long memberNo = memberInfo.getMemberId();
-        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.getSortType()))
+        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.sortType()))
                 ? reviewProvider.getMyReviewListPrioritizingMedia(memberNo, req)
                 : reviewProvider.getMyReviewList(memberNo, req);
 

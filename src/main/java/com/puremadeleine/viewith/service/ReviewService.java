@@ -75,7 +75,7 @@ public class ReviewService {
     }
 
     public ReviewListResDto getReviewList(ReviewListReqDto req, boolean isSummary) {
-        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.getSortType()))
+        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.sortType()))
                 ? reviewProvider.getReviewListPrioritizingMedia(req)
                 : reviewProvider.getReviewList(req);
         List<Long> reviewIds = reviewList.getContent().stream().map(ReviewEntity::getId).toList();

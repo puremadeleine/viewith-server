@@ -6,6 +6,6 @@ import lombok.Builder;
 
 @Builder
 public record ReportReviewReqDto(
-        @NotNull ReportReason reportReason,
-        String reportReasonDetail
+    @NotNull ReportReason reportReason,
+    String reportReasonDetail
 ) {}
