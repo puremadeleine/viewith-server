@@ -10,4 +10,5 @@ import lombok.Builder;
 public record UpdateReviewReqDto(
     @NotBlank String content,
     @NotNull @DecimalMin("0.0") @DecimalMax("5.0") Float rating
-) {}
+) {
+}
