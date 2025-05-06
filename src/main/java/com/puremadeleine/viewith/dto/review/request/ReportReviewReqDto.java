@@ -1,18 +1,11 @@
 package com.puremadeleine.viewith.dto.review.request;
 
 import com.puremadeleine.viewith.domain.review.ReportReason;
-import lombok.AccessLevel;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.jackson.Jacksonized;
 
-@Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-@Jacksonized
-public class ReportReviewReqDto {
-
-    ReportReason reportReason;
-    String reportReasonDetail;
-}
+public record ReportReviewReqDto(
+        @NotNull ReportReason reportReason,
+        String reportReasonDetail
+) {}

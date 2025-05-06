@@ -71,8 +71,8 @@ public class ReviewEntity extends BaseTimeEntity {
 
     public void updateReview(UpdateReviewReqDto reqDto, Long reqMemberId) {
         validateEditable(reqMemberId);
-        this.setContent(reqDto.getContent());
-        this.setRating(reqDto.getRating());
+        this.setContent(reqDto.content());
+        this.setRating(reqDto.rating());
     }
 
     public void deleteReview(Long reqMemberId) {

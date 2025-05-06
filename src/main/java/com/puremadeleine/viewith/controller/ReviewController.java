@@ -43,7 +43,7 @@ public class ReviewController {
 
     @PutMapping("/{review_id}")
     public void updateReview(@PathVariable("review_id") Long reviewId,
-                             @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
+                             @Valid @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
         reviewService.updateReview(reviewId, reqDto, memberInfo.getMemberId());
     }
 
@@ -74,7 +74,7 @@ public class ReviewController {
 
     @PostMapping("/{review_id}/report")
     public void reportReview(@PathVariable("review_id") Long reviewId,
-                             @RequestBody ReportReviewReqDto req,
+                             @Valid @RequestBody ReportReviewReqDto req,
                              MemberInfo memberInfo) {
         reviewService.reportReview(reviewId, req, memberInfo.getMemberId());
     }

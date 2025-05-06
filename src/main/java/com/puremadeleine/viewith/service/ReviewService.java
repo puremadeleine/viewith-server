@@ -87,7 +87,7 @@ public class ReviewService {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
         review.reportReview(memberId);
         ReviewReportEntity reviewReport =
-                ReviewReportEntity.createReviewReport(review, req.getReportReason(), req.getReportReasonDetail());
+                ReviewReportEntity.createReviewReport(review, req.reportReason(), req.reportReasonDetail());
         reviewReportProvider.saveReviewReport(reviewReport);
     }
 }
