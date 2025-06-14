@@ -59,7 +59,7 @@ public class ReviewController {
             @RequestParam(value = "sort_type", required = false, defaultValue = "LATEST") SortType sortType,
             @RequestParam(value = "floor", required = false) String floor,
             @RequestParam(value = "section", required = false) String section,
-            @RequestParam(value = "seat_row", required = false) Integer seatRow,
+            @RequestParam(value = "seat_row", required = false) String seatRow,
             @RequestParam(value = "is_summary", required = false, defaultValue = "false") Boolean isSummary) {
         ReviewListReqDto req = ReviewListReqDto.builder()
                 .page(page)

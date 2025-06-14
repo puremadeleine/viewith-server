@@ -42,7 +42,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
 import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_STRING;
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
 import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMember;
@@ -268,13 +267,13 @@ public class MemberService extends SpringProxyAware<MemberService> {
                         .bookmarkSeats(entry.getValue().stream() // 해당 그룹의 각 엔티티를 BookmarkSeatDto로 변환
                                 .map(entity -> {
                                     String section = entity.getSeat().getSection();
-                                    Integer row = entity.getSeat().getSeatRow();
+                                    String row = entity.getSeat().getSeatRow();
 
                                     LocalDateTime lastUpdateDate = reviewLastCreateTimeBySeatId.get(entity.getSeat().getId());
                                     return BookmarkResDto.BookmarkSeatDto.builder()
                                             .bookmarkId(entity.getId())
                                             .bookmarkSection(StringUtils.equals(section, UNSELECTED_STRING) ? null : section)
-                                            .bookmarkRow(row == UNSELECTED_NUMBER ? null : row)
+                                            .bookmarkRow(row == UNSELECTED_STRING ? null : row)
                                             .lastUpdateDate(CommonConverter.toNullableTimestamp(lastUpdateDate))
                                             .build();
                                 })
