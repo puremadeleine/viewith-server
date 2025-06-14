@@ -10,6 +10,7 @@ import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.service.ReviewService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
@@ -29,9 +30,10 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping("")
-    public CreateReviewResDto createReview(@RequestPart(value = "CreateReviewReqDto") CreateReviewReqDto createReviewReqDto,
-                                           @RequestPart(value = "images", required = false) List<MultipartFile> images) {
-        return reviewService.createReview(createReviewReqDto, images, 1L);
+    public CreateReviewResDto createReview(@Valid @RequestPart(value = "CreateReviewReqDto") CreateReviewReqDto createReviewReqDto,
+                                           @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                           MemberInfo memberInfo) {
+        return reviewService.createReview(createReviewReqDto, images, memberInfo.getMemberId());
     }
 
     @GetMapping("/{review_id}")
@@ -41,7 +43,7 @@ public class ReviewController {
 
     @PutMapping("/{review_id}")
     public void updateReview(@PathVariable("review_id") Long reviewId,
-                             @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
+                             @Valid @RequestBody UpdateReviewReqDto reqDto, MemberInfo memberInfo) {
         reviewService.updateReview(reviewId, reqDto, memberInfo.getMemberId());
     }
 
@@ -72,7 +74,7 @@ public class ReviewController {
 
     @PostMapping("/{review_id}/report")
     public void reportReview(@PathVariable("review_id") Long reviewId,
-                             @RequestBody ReportReviewReqDto req,
+                             @Valid @RequestBody ReportReviewReqDto req,
                              MemberInfo memberInfo) {
         reviewService.reportReview(reviewId, req, memberInfo.getMemberId());
     }
