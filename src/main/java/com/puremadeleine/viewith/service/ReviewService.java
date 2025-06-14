@@ -14,7 +14,6 @@ import com.puremadeleine.viewith.dto.review.request.UpdateReviewReqDto;
 import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
-import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import java.util.Map;
 
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewInfoResDto;
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
-import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 
 @Service
 @RequiredArgsConstructor
@@ -47,8 +45,8 @@ public class ReviewService {
     @Transactional
     public CreateReviewResDto createReview(CreateReviewReqDto reqDto, List<MultipartFile> images, Long memberId) {
         MemberEntity activeMember = memberProvider.getActiveMember(memberId);
-        VenueEntity venue = venueProvider.getVenue(reqDto.getVenueId());
-        SeatEntity seat = seatProvider.getSeat(reqDto.getSection(), reqDto.getSeatRow(), reqDto.getSeatColumn());
+        VenueEntity venue = venueProvider.getVenue(reqDto.venueId());
+        SeatEntity seat = seatProvider.getSeat(reqDto.section(), reqDto.seatRow(), reqDto.seatColumn());
 
         ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, activeMember);
         ReviewEntity savedReview = reviewProvider.saveReview(review);
@@ -60,15 +58,13 @@ public class ReviewService {
     @Transactional
     public void updateReview(Long reviewId, UpdateReviewReqDto reqDto, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
-        checkPermission(review.getMember().getId(), memberId);
-        review.updateReview(reqDto);
+        review.updateReview(reqDto, memberId);
     }
 
     @Transactional
     public void deleteReview(Long reviewId, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
-        checkPermission(review.getMember().getId(), memberId);
-        review.deleteReview();
+        review.deleteReview(memberId);
     }
 
     public ReviewInfoResDto getReviewInfo(Long reviewId, Long memberId) {
@@ -79,7 +75,7 @@ public class ReviewService {
     }
 
     public ReviewListResDto getReviewList(ReviewListReqDto req, boolean isSummary) {
-        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.getSortType()))
+        Page<ReviewEntity> reviewList = (SortType.DEFAULT.equals(req.sortType()))
                 ? reviewProvider.getReviewListPrioritizingMedia(req)
                 : reviewProvider.getReviewList(req);
         List<Long> reviewIds = reviewList.getContent().stream().map(ReviewEntity::getId).toList();
@@ -89,17 +85,9 @@ public class ReviewService {
 
     public void reportReview(Long reviewId, ReportReviewReqDto req, Long memberId) {
         ReviewEntity review = reviewProvider.getNormalReview(reviewId);
-        if (review.getMember().getId().equals(memberId)) throw new ViewithException(PERMISSION_DENIED_FOR_REVIEW);
-        review.reportReview();
+        review.reportReview(memberId);
         ReviewReportEntity reviewReport =
-                ReviewReportEntity.createReviewReport(review, req.getReportReason(), req.getReportReasonDetail());
+                ReviewReportEntity.createReviewReport(review, req.reportReason(), req.reportReasonDetail());
         reviewReportProvider.saveReviewReport(reviewReport);
-    }
-
-
-    private void checkPermission(Long reviewWriterId, Long reqMemberId) {
-        if (!reviewWriterId.equals(reqMemberId)) {
-            throw new ViewithException(PERMISSION_DENIED_FOR_REVIEW);
-        }
     }
 }

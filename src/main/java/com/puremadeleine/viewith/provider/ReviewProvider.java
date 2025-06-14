@@ -41,26 +41,26 @@ public class ReviewProvider {
     public Page<ReviewEntity> getMyReviewList(Long memberNo, ReviewListReqDto req) {
         List<ReviewEntity> reviewList = reviewCustomRepository.findMyReviewList(memberNo, req);
         int total = reviewCustomRepository.countReviewTotal(memberNo);
-        return new PageImpl<>(reviewList, PageRequest.of(req.getPage() - 1, req.getSize()), total);
+        return new PageImpl<>(reviewList, PageRequest.of(req.page() - 1, req.size()), total);
     }
 
     public Page<ReviewEntity> getReviewList(ReviewListReqDto req) {
         List<ReviewEntity> reviewList = reviewCustomRepository.findReviewList(req);
         int total = reviewCustomRepository.countReviewTotal(req);
-        return new PageImpl<>(reviewList, PageRequest.of(req.getPage() - 1, req.getSize()), total);
+        return new PageImpl<>(reviewList, PageRequest.of(req.page() - 1, req.size()), total);
     }
 
     public Page<ReviewEntity> getMyReviewListPrioritizingMedia(Long memberNo, ReviewListReqDto req) {
         List<ReviewEntity> reviewList = reviewCustomRepository.findMyReviewListPrioritizingMedia(memberNo, req);
         int total = reviewCustomRepository.countReviewTotal(memberNo);
-        return new PageImpl<>(reviewList, PageRequest.of(req.getPage() - 1, req.getSize()), total);
+        return new PageImpl<>(reviewList, PageRequest.of(req.page() - 1, req.size()), total);
     }
 
 
     public Page<ReviewEntity> getReviewListPrioritizingMedia(ReviewListReqDto req) {
         List<ReviewEntity> reviewList = reviewCustomRepository.findReviewListPrioritizingMedia(req);
         int total = reviewCustomRepository.countReviewTotal(req);
-        return new PageImpl<>(reviewList, PageRequest.of(req.getPage() - 1, req.getSize()), total);
+        return new PageImpl<>(reviewList, PageRequest.of(req.page() - 1, req.size()), total);
     }
 
     public List<ReviewCntDto> countNormalReviewsByVenueAndSeat(Long venueId) {

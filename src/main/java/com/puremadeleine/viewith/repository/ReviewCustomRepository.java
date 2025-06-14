@@ -35,14 +35,14 @@ public class ReviewCustomRepository {
                 .join(reviewEntity.seat, seatEntity)
                 .where(
                         reviewEntity.status.eq(Status.NORMAL),
-                        floorEq(req.getFloor()),
-                        sectionEq(req.getSection()),
-                        seatRowEq(req.getSeatRow()))
+                        floorEq(req.floor()),
+                        sectionEq(req.section()),
+                        seatRowEq(req.seatRow()))
                 .orderBy(
-                        getOrder(req.getSortType()),
+                        getOrder(req.sortType()),
                         reviewEntity.id.desc())
                 .offset(getOffset(req))
-                .limit(req.getSize())
+                .limit(req.size())
                 .fetch();
     }
 
@@ -56,11 +56,11 @@ public class ReviewCustomRepository {
                         isNormal()
                 )
                 .orderBy(
-                        getOrder(req.getSortType()),
+                        getOrder(req.sortType()),
                         reviewEntity.id.desc()
                 )
                 .offset(getOffset(req))
-                .limit(req.getSize())
+                .limit(req.size())
                 .fetch();
     }
 
@@ -79,7 +79,7 @@ public class ReviewCustomRepository {
                         reviewEntity.id.desc()
                 )
                 .offset(getOffset(req))
-                .limit(req.getSize())
+                .limit(req.size())
                 .fetch();
     }
 
@@ -92,15 +92,15 @@ public class ReviewCustomRepository {
                 .on(reviewEntity.id.eq(imageEntity.sourceId))
                 .where(
                         reviewEntity.status.eq(Status.NORMAL),
-                        floorEq(req.getFloor()),
-                        sectionEq(req.getSection()),
-                        seatRowEq(req.getSeatRow()))
+                        floorEq(req.floor()),
+                        sectionEq(req.section()),
+                        seatRowEq(req.seatRow()))
                 .orderBy(
                         getPrioritizingMediaDesc(),
                         reviewEntity.id.desc()
                 )
                 .offset(getOffset(req))
-                .limit(req.getSize())
+                .limit(req.size())
                 .fetch();
     }
 
@@ -131,14 +131,14 @@ public class ReviewCustomRepository {
                 .join(reviewEntity.seat, seatEntity)
                 .where(
                         reviewEntity.status.eq(Status.NORMAL),
-                        floorEq(req.getFloor()),
-                        sectionEq(req.getSection()),
-                        seatRowEq(req.getSeatRow()))
+                        floorEq(req.floor()),
+                        sectionEq(req.section()),
+                        seatRowEq(req.seatRow()))
                 .fetch().size();
     }
 
     private int getOffset(ReviewListReqDto req) {
-        return (req.getPage() - 1) * req.getSize();
+        return (req.page() - 1) * req.size();
     }
 
     private BooleanExpression floorEq(String floor) {
