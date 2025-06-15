@@ -10,6 +10,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserInfoResDto {
+public class KakaoUserInfoResDto {
     Long id;
 }

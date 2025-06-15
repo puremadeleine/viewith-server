@@ -43,6 +43,11 @@ public class MemberProvider {
         return memberRepository.findByOauthTypeAndViewithOauthUserIdAndDeleteYn(OAuthType.KAKAO, kakaoId.toString(), false);
     }
 
+    public Optional<MemberEntity> findMemberByAppleId(String appleId) {
+        return memberRepository.findByOauthTypeAndViewithOauthUserIdAndDeleteYn(OAuthType.APPLE, appleId, false);
+    }
+
+
     public void delete(Long memberId) {
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ViewithException(ViewithErrorCode.INVALID_PARAM));

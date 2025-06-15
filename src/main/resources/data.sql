@@ -15,12 +15,12 @@ VALUES (1, 1, 1, 1, 'A', 1, null),
 
 -- tb_member
 INSERT
-INTO tb_member (member_id, oauth_user_id, viewith_oauth_user_id, delete_yn, nickname, oauth_type)
-VALUES (1, 3807529173, '3807529173', false, '분노한 예산 혜영', 'KAKAO');
+INTO tb_member (member_id, viewith_oauth_user_id, delete_yn, nickname, oauth_type)
+VALUES (1, '3807529173', false, '분노한 예산 혜영', 'KAKAO');
 
 -- tb_review
 INSERT INTO tb_review (rating, report_count, create_time, performance_id, review_id, seat_id, update_time, venue_id,
-                    content, status, member_id)
+                       content, status, member_id)
 VALUES (5.0, 0, '2024-10-22 00:56:11.607361', NULL, 1, 2, '2024-10-22 00:56:11.607361', 1, '내용', 'NORMAL', 1),
        (2.0, 0, '2024-10-22 00:56:13.811936', NULL, 2, 2, '2024-10-22 00:56:13.811936', 1, '내용', 'NORMAL', 1),
        (2.0, 0, '2024-10-22 00:56:38.082731', NULL, 3, 4, '2024-10-22 00:56:38.082731', 1, '내용', 'NORMAL', 1);
