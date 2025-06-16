@@ -200,8 +200,10 @@ public class MemberService extends SpringProxyAware<MemberService> {
         }
     }
 
+    @Transactional
     public void withdrawByApple(MemberInfo memberInfo) {
-
+        memberProvider.delete(memberInfo.getMemberId());
+        appleService.revoke(memberInfo.getRefreshToken());
     }
 
     @Transactional
@@ -245,8 +247,23 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .build();
     }
 
-    public RefreshResDto refreshByApple(MemberInfo memberInfo) {
-        return RefreshResDto.builder().build();
+    public RefreshResDto refreshByApple(MemberInfo member) {
+        UpdateTokenResDto newTokenInfo = appleService.updateAccessToken(member.getRefreshToken());
+
+        MemberInfo newMember = MemberInfo.builder()
+                .authType(APPLE)
+                .memberId(member.getMemberId())
+                .accessToken(newTokenInfo.getAccessToken())
+                .refreshToken(newTokenInfo.getRefreshToken())
+                .build();
+
+        String accessToken = jwtService.makeAccessToken(newMember);
+        String refreshToken = jwtService.makeRefreshToken(newMember);
+
+        return RefreshResDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public BookmarkResDto getBookmarks(MemberInfo memberInfo) {

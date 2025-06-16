@@ -44,6 +44,14 @@ public class AppleService {
         }
     }
 
+    public void revoke(String refreshToken) {
+        try {
+            appleAuthApiRepository.revoke(appleProperties.getClientId(), generateClientSecret(), refreshToken, GRANT_TYPE_VALUE);
+        } catch (FeignException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
+        }
+    }
+
     public String getAppleOAuthId(String idToken) {
         try {
             SignedJWT signedJWT = SignedJWT.parse(idToken);
@@ -67,5 +75,7 @@ public class AppleService {
                 .signWith(appleOAuthPrivateKey, SignatureAlgorithm.ES256)
                 .compact();
     }
+
+
 }
 

@@ -13,10 +13,17 @@ public interface AppleAuthApiRepository {
     String CLIENT_ID_KEY = "client_id";
     String CLIENT_SECRET_KEY = "client_secret";
     String REFRESH_TOKEN_KEY = "refresh_token";
+    String TOKEN_TYPE_HINT_KEY = "token_type_hint";
 
     @PostMapping(value = "/auth/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     UpdateTokenResDto refresh(@RequestParam(GRANT_TYPE_KEY) String grantType,
                               @RequestParam(CLIENT_ID_KEY) String clientId,
                               @RequestParam(CLIENT_SECRET_KEY) String clientSecret,
                               @RequestParam(REFRESH_TOKEN_KEY) String refreshToken);
+
+    @PostMapping(value = "/auth/revoke", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    void revoke(@RequestParam(CLIENT_ID_KEY) String clientId,
+                @RequestParam(CLIENT_SECRET_KEY) String clientSecret,
+                @RequestParam(REFRESH_TOKEN_KEY) String token,
+                @RequestParam(TOKEN_TYPE_HINT_KEY) String tokenTypeHint);
 }
