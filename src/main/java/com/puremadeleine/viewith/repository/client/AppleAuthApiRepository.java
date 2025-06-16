@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "apple-api", url = "${kakao.oauth.uri}", configuration = FeignLoggerConfig.class)
+@FeignClient(name = "apple-api", url = "${apple.oauth.uri}", configuration = FeignLoggerConfig.class)
 public interface AppleAuthApiRepository {
     String GRANT_TYPE_KEY = "grant_type";
     String CLIENT_ID_KEY = "client_id";
