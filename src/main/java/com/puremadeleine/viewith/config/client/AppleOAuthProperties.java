@@ -14,6 +14,6 @@ public class AppleOAuthProperties {
     String clientId;
     String loginKey;
     String teamId;
-    String keyPath;
+    String clientSecretKey;
     String audience;
 }
