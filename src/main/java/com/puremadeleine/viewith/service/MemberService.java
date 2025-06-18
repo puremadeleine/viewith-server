@@ -216,38 +216,15 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
         MemberInfo memberInfo = jwtService.getMemberInfoByRefreshToken(refreshReqDto.getRefreshToken());
 
-        return switch (memberInfo.getAuthType()) {
-            case KAKAO -> getProxy().refreshByKakao(memberInfo);
-            case APPLE -> getProxy().refreshByApple(memberInfo);
+        UpdateTokenResDto newTokenInfo = switch (memberInfo.getAuthType()) {
+            case KAKAO -> kakaoService.updateAccessToken(memberInfo.getRefreshToken());
+            case APPLE -> appleService.updateAccessToken(memberInfo.getRefreshToken());
             default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
         };
-    }
-
-    public RefreshResDto refreshByKakao(MemberInfo member) {
-        UpdateTokenResDto newTokenInfo = kakaoService.updateAccessToken(member.getRefreshToken());
 
         MemberInfo newMember = MemberInfo.builder()
-                .authType(KAKAO)
-                .memberId(member.getMemberId())
-                .accessToken(newTokenInfo.getAccessToken())
-                .refreshToken(newTokenInfo.getRefreshToken())
-                .build();
-
-        String accessToken = jwtService.makeAccessToken(newMember);
-        String refreshToken = jwtService.makeRefreshToken(newMember);
-
-        return RefreshResDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
-
-    public RefreshResDto refreshByApple(MemberInfo member) {
-        UpdateTokenResDto newTokenInfo = appleService.updateAccessToken(member.getRefreshToken());
-
-        MemberInfo newMember = MemberInfo.builder()
-                .authType(APPLE)
-                .memberId(member.getMemberId())
+                .authType(memberInfo.getAuthType())
+                .memberId(memberInfo.getMemberId())
                 .accessToken(newTokenInfo.getAccessToken())
                 .refreshToken(newTokenInfo.getRefreshToken())
                 .build();
