@@ -1,13 +1,14 @@
 package com.puremadeleine.viewith.service;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import com.puremadeleine.viewith.config.client.AppleOAuthProperties;
+import com.puremadeleine.viewith.dto.client.AppleJwtKeyDto;
 import com.puremadeleine.viewith.dto.client.UpdateTokenResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.repository.client.AppleAuthApiRepository;
+import com.puremadeleine.viewith.util.JwtUtil;
 import feign.FeignException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -30,15 +30,25 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AppleService {
 
-    static String GRANT_TYPE_VALUE = "refresh_token";
+    static String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
+    static String GRANT_TYPE_AUTH_KEY = "authorization_code";
 
     AppleAuthApiRepository appleAuthApiRepository;
     AppleOAuthProperties appleProperties;
     PrivateKey appleOAuthPrivateKey;
 
+    public UpdateTokenResDto validateAuthCode(String authCode) {
+        try {
+            return appleAuthApiRepository.generateAndValidationToken(GRANT_TYPE_AUTH_KEY, appleProperties.getClientId(), generateClientSecret(), authCode);
+        } catch (FeignException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
+        }
+    }
+
+
     public UpdateTokenResDto updateAccessToken(String refreshToken) {
         try {
-            return appleAuthApiRepository.refresh(GRANT_TYPE_VALUE, appleProperties.getClientId(), generateClientSecret(), refreshToken);
+            return appleAuthApiRepository.generateAndValidationToken(GRANT_TYPE_REFRESH_TOKEN, appleProperties.getClientId(), generateClientSecret(), refreshToken);
         } catch (FeignException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
         }
@@ -46,20 +56,23 @@ public class AppleService {
 
     public void revoke(String refreshToken) {
         try {
-            appleAuthApiRepository.revoke(appleProperties.getClientId(), generateClientSecret(), refreshToken, GRANT_TYPE_VALUE);
+            appleAuthApiRepository.revoke(appleProperties.getClientId(), generateClientSecret(), refreshToken, GRANT_TYPE_REFRESH_TOKEN);
         } catch (FeignException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
         }
     }
 
-    public String getAppleOAuthId(String idToken) {
+    public String validateAppleOAuthAndGetSub(String idToken) {
         try {
-            SignedJWT signedJWT = SignedJWT.parse(idToken);
-            JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
-            return claims.getSubject();
-        } catch (ParseException e) {
+            Claims claims = JwtUtil.getClaimsBy(getAppleJwtKey(), idToken);
+            return claims.getSubject(); // Apple OAuth ID (sub)
+        } catch (Exception e) {
             throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
         }
+    }
+
+    private AppleJwtKeyDto getAppleJwtKey() {
+        return appleAuthApiRepository.getKey();
     }
 
     private String generateClientSecret() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {

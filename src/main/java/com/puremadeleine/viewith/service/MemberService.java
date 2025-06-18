@@ -13,7 +13,6 @@ import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.member.BookmarkResDto;
 import com.puremadeleine.viewith.dto.member.JoinResDto;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
-import com.puremadeleine.viewith.dto.member.OAuthType;
 import com.puremadeleine.viewith.dto.member.ProfileResDto;
 import com.puremadeleine.viewith.dto.member.RefreshReqDto;
 import com.puremadeleine.viewith.dto.member.RefreshResDto;
@@ -64,14 +63,6 @@ public class MemberService extends SpringProxyAware<MemberService> {
     ReviewProvider reviewProvider;
     VenueProvider venueProvider;
 
-    public JoinResDto login(OAuthType authType, String accessToken, String refreshToken) {
-        return switch (authType) {
-            case KAKAO -> getProxy().loginByKakao(accessToken, refreshToken);
-            case APPLE -> loginByApple(refreshToken);
-            default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
-        };
-    }
-
     @Transactional
     public JoinResDto loginByKakao(String oauthAccessToken, String oauthRefreshToken) {
         // Kakao 인증 및 유저 정보 조회
@@ -98,22 +89,26 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .build();
     }
 
-    public JoinResDto loginByApple(String oauthRefreshToken) {
+    public JoinResDto loginByApple(String authCode, String idToken) {
         // Apple 인증 및 유저 정보 조회
-        UpdateTokenResDto tokenInfo = appleService.updateAccessToken(oauthRefreshToken);
+        String clientSub = appleService.validateAppleOAuthAndGetSub(idToken);
+        UpdateTokenResDto tokenInfo = appleService.validateAuthCode(authCode);
         // userId로 정보 조회해서 저장하기
-        String appleOauthId = appleService.getAppleOAuthId(tokenInfo.getIdToken());
+        String appleSub = appleService.validateAppleOAuthAndGetSub(tokenInfo.getIdToken());
+        if (!StringUtils.equals(clientSub, appleSub)) {
+            throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
+        }
 
         // DB 정보 조회 및 handle
-        Optional<MemberEntity> optionalMember = memberProvider.findMemberByAppleId(appleOauthId);
-        MemberEntity member = optionalMember.orElseGet(() -> createAndSaveAppleMember(appleOauthId));
+        Optional<MemberEntity> optionalMember = memberProvider.findMemberByAppleId(appleSub);
+        MemberEntity member = optionalMember.orElseGet(() -> createAndSaveAppleMember(appleSub));
 
         // token 생성
         MemberInfo memberInfo = MemberInfo.builder()
                 .authType(APPLE)
                 .memberId(member.getId())
                 .accessToken(tokenInfo.getAccessToken())
-                .refreshToken(oauthRefreshToken)
+                .refreshToken(tokenInfo.getRefreshToken())
                 .build();
         String accessToken = jwtService.makeAccessToken(memberInfo);
         String refreshToken = jwtService.makeRefreshToken(memberInfo);
