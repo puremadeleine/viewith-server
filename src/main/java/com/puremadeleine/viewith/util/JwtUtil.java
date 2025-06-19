@@ -8,18 +8,22 @@ import com.puremadeleine.viewith.exception.ViewithException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.UtilityClass;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
+import java.security.Security;
+import java.security.Signature;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import java.util.Date;
@@ -104,17 +108,44 @@ public class JwtUtil {
             throw new ViewithException(ViewithErrorCode.INVALID_TOKEN);
         }
     }
-
+    
     // RS256 서명 방식
     public Claims validateAndParseAppleToken(String idToken, PublicKey publicKey) {
         try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(publicKey)
-                    .deserializeJsonWith(new JacksonDeserializer<>()) // Jackson 기반
-                    .build()
-                    .parseClaimsJws(idToken)
-                    .getBody(); // 유효하면 claims 반환
-        } catch (JwtException e) {
+            // BouncyCastle 프로바이더 등록 (중복 등록 방지)
+            if (Security.getProvider("BC") == null) {
+                Security.addProvider(new BouncyCastleProvider());
+            }
+
+            String[] parts = idToken.split("\\.");
+            if (parts.length != 3) {
+                throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
+            }
+
+            String header = parts[0];
+            String payload = parts[1];
+            String signatureBase64 = parts[2];
+
+            byte[] signature = Base64.getUrlDecoder().decode(signatureBase64);
+            String signedData = header + "." + payload;
+            if (signature.length == 255) {
+                byte[] paddedSignature = new byte[256];
+                System.arraycopy(signature, 0, paddedSignature, 1, 255); // 앞에 0 채워넣기
+                signature = paddedSignature;
+            }
+            // BouncyCastle로 서명 검증
+            Signature sig = Signature.getInstance("SHA256withRSA", "BC");
+            sig.initVerify(publicKey);
+            sig.update(signedData.getBytes(StandardCharsets.UTF_8));
+            if (!sig.verify(signature)) {
+                throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
+            }
+
+            // payload JSON 파싱
+            String payloadJson = new String(Base64.getUrlDecoder().decode(payload), StandardCharsets.UTF_8);
+            return new DefaultClaims(new ObjectMapper().readValue(payloadJson, Map.class));
+
+        } catch (Exception e) {
             throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
         }
     }
