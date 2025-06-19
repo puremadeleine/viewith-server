@@ -24,14 +24,23 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AppleService {
 
-    static String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
-    static String GRANT_TYPE_AUTH_KEY = "authorization_code";
+    static String GRANT_TYPE_KEY = "grant_type";
+    static String GRANT_TYPE_VALUE_REFRESH_TOKEN = "refresh_token";
+    static String GRANT_TYPE_VALUE_AUTH_KEY = "authorization_code";
+
+    static String CLIENT_ID_KEY = "client_id";
+    static String CLIENT_SECRET_KEY = "client_secret";
+    static String AUTH_CODE_KEY = "code";
+    static String REFRESH_TOKEN_KEY = "refresh_token";
+    static String TOKEN_TYPE_HINT_KEY = "token_type_hint";
 
     AppleAuthApiRepository appleAuthApiRepository;
     AppleOAuthProperties appleProperties;
@@ -39,7 +48,12 @@ public class AppleService {
 
     public UpdateTokenResDto validateAuthCode(String authCode) {
         try {
-            return appleAuthApiRepository.generateAndValidationToken(GRANT_TYPE_AUTH_KEY, appleProperties.getClientId(), generateClientSecret(), authCode);
+            Map<String, String> form = new HashMap<>();
+            form.put(GRANT_TYPE_KEY, GRANT_TYPE_VALUE_AUTH_KEY);
+            form.put(CLIENT_ID_KEY, appleProperties.getClientId());
+            form.put(CLIENT_SECRET_KEY, generateClientSecret());
+            form.put(AUTH_CODE_KEY, authCode);
+            return appleAuthApiRepository.generateAndValidationToken(form);
         } catch (FeignException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
         }
@@ -48,7 +62,12 @@ public class AppleService {
 
     public UpdateTokenResDto updateAccessToken(String refreshToken) {
         try {
-            return appleAuthApiRepository.generateAndValidationToken(GRANT_TYPE_REFRESH_TOKEN, appleProperties.getClientId(), generateClientSecret(), refreshToken);
+            Map<String, String> form = new HashMap<>();
+            form.put(GRANT_TYPE_KEY, GRANT_TYPE_VALUE_REFRESH_TOKEN);
+            form.put(CLIENT_ID_KEY, appleProperties.getClientId());
+            form.put(CLIENT_SECRET_KEY, generateClientSecret());
+            form.put(REFRESH_TOKEN_KEY, refreshToken);
+            return appleAuthApiRepository.generateAndValidationToken(form);
         } catch (FeignException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
         }
@@ -56,7 +75,12 @@ public class AppleService {
 
     public void revoke(String refreshToken) {
         try {
-            appleAuthApiRepository.revoke(appleProperties.getClientId(), generateClientSecret(), refreshToken, GRANT_TYPE_REFRESH_TOKEN);
+            Map<String, String> form = new HashMap<>();
+            form.put(CLIENT_ID_KEY, appleProperties.getClientId());
+            form.put(CLIENT_SECRET_KEY, generateClientSecret());
+            form.put(REFRESH_TOKEN_KEY, refreshToken);
+            form.put(TOKEN_TYPE_HINT_KEY, GRANT_TYPE_VALUE_REFRESH_TOKEN);
+            appleAuthApiRepository.revoke(form);
         } catch (FeignException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
         }
