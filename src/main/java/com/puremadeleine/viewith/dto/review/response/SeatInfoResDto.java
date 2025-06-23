@@ -14,7 +14,7 @@ public class SeatInfoResDto {
     Long seatId;
     String floor;
     String section;
-    Integer seatRow;
-    Integer seatColumn;
+    String seatRow;
+    String seatColumn;
     Block block;
 }

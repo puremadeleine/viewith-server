@@ -10,6 +10,6 @@ public record ReviewListReqDto(
     SortType sortType,
     String floor,
     String section,
-    Integer seatRow
+    String seatRow
 ) {
 }

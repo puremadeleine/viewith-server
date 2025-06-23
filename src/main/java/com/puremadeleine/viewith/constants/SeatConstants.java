@@ -8,5 +8,4 @@ public class SeatConstants {
     public static final String SEAT = "SEAT";
     public static final String SEPARATOR = "_";
     public static final String UNSELECTED_STRING = "0";
-    public static final int UNSELECTED_NUMBER = 0;
 }

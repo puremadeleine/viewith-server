@@ -7,8 +7,8 @@ import lombok.Builder;
 public record CreateReviewReqDto(
     @NotNull Long venueId,
     @NotBlank String section,
-    @NotNull @Min(1) Integer seatRow,
-    @Min(1) Integer seatColumn,
+    @NotNull String seatRow,
+    String seatColumn,
     @NotBlank String content,
     @NotNull @DecimalMin("0.0") @DecimalMax("5.0") Float rating
 ) {

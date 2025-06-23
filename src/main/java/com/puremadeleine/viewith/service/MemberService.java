@@ -7,13 +7,12 @@ import com.puremadeleine.viewith.domain.bookmark.BookmarkEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
+import com.puremadeleine.viewith.dto.client.KakaoUserInfoResDto;
 import com.puremadeleine.viewith.dto.client.UpdateTokenResDto;
-import com.puremadeleine.viewith.dto.client.UserInfoResDto;
 import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.member.BookmarkResDto;
 import com.puremadeleine.viewith.dto.member.JoinResDto;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
-import com.puremadeleine.viewith.dto.member.OAuthType;
 import com.puremadeleine.viewith.dto.member.ProfileResDto;
 import com.puremadeleine.viewith.dto.member.RefreshReqDto;
 import com.puremadeleine.viewith.dto.member.RefreshResDto;
@@ -42,10 +41,11 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
 import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_STRING;
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
+import static com.puremadeleine.viewith.domain.member.MemberEntity.createAppleMember;
 import static com.puremadeleine.viewith.domain.member.MemberEntity.createKakaoMember;
+import static com.puremadeleine.viewith.dto.member.OAuthType.APPLE;
 import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 
 @Service
@@ -54,6 +54,7 @@ import static com.puremadeleine.viewith.dto.member.OAuthType.KAKAO;
 public class MemberService extends SpringProxyAware<MemberService> {
 
     KakaoService kakaoService;
+    AppleService appleService;
     JwtService jwtService;
     ImageService imageService;
     MemberProvider memberProvider;
@@ -61,18 +62,10 @@ public class MemberService extends SpringProxyAware<MemberService> {
     ReviewProvider reviewProvider;
     VenueProvider venueProvider;
 
-    public JoinResDto login(OAuthType authType, String accessToken, String refreshToken) {
-        return switch (authType) {
-            case KAKAO -> getProxy().loginByKakao(accessToken, refreshToken);
-            case APPLE -> loginByApple(accessToken, refreshToken);
-            default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
-        };
-    }
-
     @Transactional
     public JoinResDto loginByKakao(String oauthAccessToken, String oauthRefreshToken) {
         // Kakao 인증 및 유저 정보 조회
-        UserInfoResDto tokenInfo = kakaoService.getAccessTokenInfo(oauthAccessToken);
+        KakaoUserInfoResDto tokenInfo = kakaoService.getAccessTokenInfo(oauthAccessToken);
 
         // DB 정보 조회 및 handle
         Optional<MemberEntity> optionalMember = memberProvider.findMemberByKakaoId(tokenInfo.getId());
@@ -95,8 +88,35 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .build();
     }
 
-    public JoinResDto loginByApple(String accessToken, String refreshToken) {
-        return JoinResDto.builder().build();
+    public JoinResDto loginByApple(String authCode, String idToken) {
+        // Apple 인증 및 유저 정보 조회
+        String clientSub = appleService.validateAppleOAuthAndGetSub(idToken);
+        UpdateTokenResDto tokenInfo = appleService.validateAuthCode(authCode);
+        // userId로 정보 조회해서 저장하기
+        String appleSub = appleService.validateAppleOAuthAndGetSub(tokenInfo.getIdToken());
+        if (!StringUtils.equals(clientSub, appleSub)) {
+            throw new ViewithException(ViewithErrorCode.INVALID_OAUTH_TOKEN);
+        }
+
+        // DB 정보 조회 및 handle
+        Optional<MemberEntity> optionalMember = memberProvider.findMemberByAppleId(appleSub);
+        MemberEntity member = optionalMember.orElseGet(() -> createAndSaveAppleMember(appleSub));
+
+        // token 생성
+        MemberInfo memberInfo = MemberInfo.builder()
+                .authType(APPLE)
+                .memberId(member.getId())
+                .accessToken(tokenInfo.getAccessToken())
+                .refreshToken(tokenInfo.getRefreshToken())
+                .build();
+        String accessToken = jwtService.makeAccessToken(memberInfo);
+        String refreshToken = jwtService.makeRefreshToken(memberInfo);
+
+        return JoinResDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .nickname(member.getNickname())
+                .build();
     }
 
     public ProfileResDto getProfile(Long memberId) {
@@ -138,6 +158,11 @@ public class MemberService extends SpringProxyAware<MemberService> {
         return memberProvider.save(newMember);
     }
 
+    private MemberEntity createAndSaveAppleMember(String oauthMemberId) {
+        MemberEntity newMember = createAppleMember(oauthMemberId, makeRandomNickname());
+        return memberProvider.save(newMember);
+    }
+
     private String makeRandomNickname() {
         String nickname = makeNickname();
         while (!memberProvider.isNicknameUnique(nickname)) {
@@ -169,8 +194,10 @@ public class MemberService extends SpringProxyAware<MemberService> {
         }
     }
 
+    @Transactional
     public void withdrawByApple(MemberInfo memberInfo) {
-
+        memberProvider.delete(memberInfo.getMemberId());
+        appleService.revoke(memberInfo.getRefreshToken());
     }
 
     @Transactional
@@ -188,19 +215,15 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
         MemberInfo memberInfo = jwtService.getMemberInfoByRefreshToken(refreshReqDto.getRefreshToken());
 
-        return switch (memberInfo.getAuthType()) {
-            case KAKAO -> getProxy().refreshByKakao(memberInfo);
-            case APPLE -> getProxy().refreshByApple(memberInfo);
+        UpdateTokenResDto newTokenInfo = switch (memberInfo.getAuthType()) {
+            case KAKAO -> kakaoService.updateAccessToken(memberInfo.getRefreshToken());
+            case APPLE -> appleService.updateAccessToken(memberInfo.getRefreshToken());
             default -> throw new ViewithException(ViewithErrorCode.INVALID_PARAM);
         };
-    }
-
-    public RefreshResDto refreshByKakao(MemberInfo member) {
-        UpdateTokenResDto newTokenInfo = kakaoService.updateAccessToken(member.getRefreshToken());
 
         MemberInfo newMember = MemberInfo.builder()
-                .authType(KAKAO)
-                .memberId(member.getMemberId())
+                .authType(memberInfo.getAuthType())
+                .memberId(memberInfo.getMemberId())
                 .accessToken(newTokenInfo.getAccessToken())
                 .refreshToken(newTokenInfo.getRefreshToken())
                 .build();
@@ -212,10 +235,6 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-    }
-
-    public RefreshResDto refreshByApple(MemberInfo memberInfo) {
-        return RefreshResDto.builder().build();
     }
 
     public BookmarkResDto getBookmarks(MemberInfo memberInfo) {
@@ -268,13 +287,13 @@ public class MemberService extends SpringProxyAware<MemberService> {
                         .bookmarkSeats(entry.getValue().stream() // 해당 그룹의 각 엔티티를 BookmarkSeatDto로 변환
                                 .map(entity -> {
                                     String section = entity.getSeat().getSection();
-                                    Integer row = entity.getSeat().getSeatRow();
+                                    String row = entity.getSeat().getSeatRow();
 
                                     LocalDateTime lastUpdateDate = reviewLastCreateTimeBySeatId.get(entity.getSeat().getId());
                                     return BookmarkResDto.BookmarkSeatDto.builder()
                                             .bookmarkId(entity.getId())
                                             .bookmarkSection(StringUtils.equals(section, UNSELECTED_STRING) ? null : section)
-                                            .bookmarkRow(row == UNSELECTED_NUMBER ? null : row)
+                                            .bookmarkRow(row == UNSELECTED_STRING ? null : row)
                                             .lastUpdateDate(CommonConverter.toNullableTimestamp(lastUpdateDate))
                                             .build();
                                 })

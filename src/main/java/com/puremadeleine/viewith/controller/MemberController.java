@@ -4,7 +4,6 @@ import com.puremadeleine.viewith.dto.common.SortType;
 import com.puremadeleine.viewith.dto.member.BookmarkResDto;
 import com.puremadeleine.viewith.dto.member.JoinResDto;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
-import com.puremadeleine.viewith.dto.member.OAuthType;
 import com.puremadeleine.viewith.dto.member.ProfileResDto;
 import com.puremadeleine.viewith.dto.member.RefreshReqDto;
 import com.puremadeleine.viewith.dto.member.RefreshResDto;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,11 +34,16 @@ public class MemberController {
 
     MemberService memberService;
 
-    @PostMapping(path = "/login/{auth_type}")
-    public JoinResDto login(@PathVariable(name = "auth_type") OAuthType oAuthType,
-                            @RequestParam(name = "access_token") String accessToken,
-                            @RequestParam(name = "refresh_token") String refreshToken) {
-        return memberService.login(oAuthType, accessToken, refreshToken);
+    @PostMapping(path = "/login/KAKAO")
+    public JoinResDto loginByKakao(@RequestParam(name = "access_token") String accessToken,
+                                   @RequestParam(name = "refresh_token") String refreshToken) {
+        return memberService.loginByKakao(accessToken, refreshToken);
+    }
+
+    @PostMapping(path = "/login/APPLE")
+    public JoinResDto loginByApple(@RequestParam(name = "auth_code") String authCode,
+                                   @RequestParam(name = "id_token") String idToken) {
+        return memberService.loginByApple(authCode, idToken);
     }
 
     @PutMapping(path = "/refresh")

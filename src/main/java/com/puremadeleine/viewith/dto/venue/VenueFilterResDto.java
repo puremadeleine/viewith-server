@@ -20,6 +20,6 @@ public class VenueFilterResDto {
     public static class FilterInfoDto {
         String floor;
         @Nullable
-        List<Integer> rows;
+        List<String> rows;
     }
 }

@@ -2,8 +2,21 @@ package com.puremadeleine.viewith.domain.member;
 
 import com.puremadeleine.viewith.domain.BaseTimeEntity;
 import com.puremadeleine.viewith.dto.member.OAuthType;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.UUID;
@@ -43,18 +56,22 @@ public class MemberEntity extends BaseTimeEntity {
     String viewithOauthUserId;
 
     @Setter(value = AccessLevel.PRIVATE)
-    @Column(nullable = false)
-    Long oauthUserId;
-
-    @Setter(value = AccessLevel.PRIVATE)
     @Column(name = "delete_yn", nullable = false)
     Boolean deleteYn;
+
+    public static MemberEntity createAppleMember(String oauthUserId, String nickname) {
+        return MemberEntity.builder()
+                .nickname(nickname)
+                .oauthType(OAuthType.APPLE)
+                .viewithOauthUserId(oauthUserId)
+                .deleteYn(false)
+                .build();
+    }
 
     public static MemberEntity createKakaoMember(long oauthUserId, String nickname) {
         return MemberEntity.builder()
                 .nickname(nickname)
                 .oauthType(OAuthType.KAKAO)
-                .oauthUserId(oauthUserId)
                 .viewithOauthUserId(String.valueOf(oauthUserId))
                 .deleteYn(false)
                 .build();

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -31,8 +30,8 @@ public class ReviewInfoResDto {
         Long seatId;
         String floor;
         String section;
-        Integer seatRow;
-        Integer seatColumn;
+        String seatRow;
+        String seatColumn;
         Block block;
         Boolean bookmarked;
     }

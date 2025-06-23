@@ -26,7 +26,7 @@ public class VenueSeatResDto {
     @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class RowInfoDto {
-        Integer row;
+        String row;
         List<ColumnInfoDto> columns;
     }
 
@@ -34,7 +34,7 @@ public class VenueSeatResDto {
     @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class ColumnInfoDto {
-        Integer column;
+        String column;
         Block block;
     }
 }

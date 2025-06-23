@@ -24,8 +24,8 @@ public class SeatEntity {
 
     String floor;
     String section;
-    Integer seatRow;
-    Integer seatColumn;
+    String seatRow;
+    String seatColumn;
 
     @Enumerated(EnumType.STRING)
     Block block;
