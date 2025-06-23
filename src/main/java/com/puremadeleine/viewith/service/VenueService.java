@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import static com.puremadeleine.viewith.constants.SeatConstants.FLOOR;
 import static com.puremadeleine.viewith.constants.SeatConstants.SEAT;
 import static com.puremadeleine.viewith.constants.SeatConstants.SEPARATOR;
-import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_NUMBER;
 import static com.puremadeleine.viewith.constants.SeatConstants.UNSELECTED_STRING;
 
 @Service
@@ -172,12 +171,12 @@ public class VenueService {
                 .toList();
     }
 
-    private VenueFilterResDto.FilterInfoDto mapToFilterInfoDto(Map.Entry<String, List<Integer>> rowsByFloor) {
+    private VenueFilterResDto.FilterInfoDto mapToFilterInfoDto(Map.Entry<String, List<String>> rowsByFloor) {
         return VenueFilterResDto.FilterInfoDto.builder()
                 .floor(rowsByFloor.getKey())
                 .rows(rowsByFloor.getValue()
                         .stream()
-                        .filter(r -> r != UNSELECTED_NUMBER)
+                        .filter(r -> !UNSELECTED_STRING.equals(r))
                         .toList())
                 .build();
     }
@@ -190,7 +189,7 @@ public class VenueService {
 
     public VenueSeatResDto getVenueSeatInfo(long venueId) {
         List<SeatEntity> seats = seatProvider.getSeats(venueId);
-        Map<String, Map<Integer, List<SeatEntity>>> groupedSeats = groupSeats(seats);
+        Map<String, Map<String, List<SeatEntity>>> groupedSeats = groupSeats(seats);
 
         List<VenueSeatResDto.SeatInfoDto> seatInfos = groupedSeats.entrySet()
                 .stream()
@@ -203,7 +202,7 @@ public class VenueService {
     }
 
     // <Section, <Row, SeatEntity>>
-    private Map<String, Map<Integer, List<SeatEntity>>> groupSeats(List<SeatEntity> seats) {
+    private Map<String, Map<String, List<SeatEntity>>> groupSeats(List<SeatEntity> seats) {
         return seats.stream()
                 .filter(seat -> !StringUtils.equals(UNSELECTED_STRING, seat.getSection()))
                 .collect(Collectors.groupingBy(
@@ -212,10 +211,10 @@ public class VenueService {
                 ));
     }
 
-    private VenueSeatResDto.SeatInfoDto buildSeatInfo(String section, Map<Integer, List<SeatEntity>> rowMap) {
+    private VenueSeatResDto.SeatInfoDto buildSeatInfo(String section, Map<String, List<SeatEntity>> rowMap) {
         List<VenueSeatResDto.RowInfoDto> rows = rowMap.entrySet()
                 .stream()
-                .filter(rowGroup -> UNSELECTED_NUMBER != rowGroup.getKey())
+                .filter(rowGroup -> !UNSELECTED_STRING.equals(rowGroup.getKey()))
                 .map(rowGroup -> buildRowInfo(rowGroup.getKey(), rowGroup.getValue()))
                 .collect(Collectors.toList());
 
@@ -225,9 +224,9 @@ public class VenueService {
                 .build();
     }
 
-    private VenueSeatResDto.RowInfoDto buildRowInfo(Integer row, List<SeatEntity> seats) {
+    private VenueSeatResDto.RowInfoDto buildRowInfo(String row, List<SeatEntity> seats) {
         List<VenueSeatResDto.ColumnInfoDto> columns = seats.stream()
-                .filter(seat -> UNSELECTED_NUMBER != seat.getSeatColumn())
+                .filter(seat -> !UNSELECTED_STRING.equals(seat.getSeatColumn()))
                 .filter(seat -> Block.NONE != seat.getBlock())
                 .map(seat -> VenueSeatResDto.ColumnInfoDto.builder()
                         .column(seat.getSeatColumn())

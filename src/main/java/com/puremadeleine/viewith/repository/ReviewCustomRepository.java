@@ -151,7 +151,7 @@ public class ReviewCustomRepository {
         return seatEntity.section.eq(section);
     }
 
-    private BooleanExpression seatRowEq(Integer seatRow) {
+    private BooleanExpression seatRowEq(String seatRow) {
         if (Objects.isNull(seatRow)) return null;
         return seatEntity.seatRow.eq(seatRow);
     }

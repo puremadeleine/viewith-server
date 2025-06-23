@@ -57,8 +57,8 @@ class ReviewServiceTest {
             var req = CreateReviewReqDto.builder()
                     .venueId(1L)
                     .section("A")
-                    .seatRow(1)
-                    .seatColumn(1)
+                    .seatRow("1")
+                    .seatColumn("1")
                     .rating(5.0F)
                     .content("후기")
                     .build();
@@ -72,7 +72,7 @@ class ReviewServiceTest {
             ReviewEntity review = getReview();
 
             when(venueProvider.getVenue(anyLong())).thenReturn(venue);
-            when(seatProvider.getSeat(anyString(), anyInt(), anyInt())).thenReturn(seat);
+            when(seatProvider.getSeat(anyString(), anyString(), anyString())).thenReturn(seat);
             when(reviewProvider.saveReview(any(ReviewEntity.class))).thenReturn(review);
 
             // when
@@ -342,8 +342,8 @@ class ReviewServiceTest {
         return SeatEntity.builder()
                 .id(1L)
                 .section("A")
-                .seatRow(1)
-                .seatColumn(1)
+                .seatRow("1")
+                .seatColumn("1")
                 .build();
     }
 

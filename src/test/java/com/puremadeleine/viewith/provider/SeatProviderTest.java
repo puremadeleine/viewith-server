@@ -30,15 +30,15 @@ class SeatProviderTest {
         SeatEntity seat = SeatEntity.builder()
                 .id(1L)
                 .section("A")
-                .seatRow(1)
-                .seatColumn(1)
+                .seatRow("1")
+                .seatColumn("1")
                 .build();
 
-        when(seatRepository.findBySectionAndSeatRowAndSeatColumn(anyString(), anyInt(), anyInt()))
+        when(seatRepository.findBySectionAndSeatRowAndSeatColumn(anyString(), anyString(), anyString()))
                 .thenReturn(Optional.ofNullable(seat));
 
         // when
-        SeatEntity result = seatProvider.getSeat("A", 1, 1);
+        SeatEntity result = seatProvider.getSeat("A", "1", "1");
 
         // then
         assertThat(result.getId()).isEqualTo(1L);
@@ -51,7 +51,7 @@ class SeatProviderTest {
         when(seatRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when
-        ViewithException result = assertThrows(ViewithException.class, () -> seatProvider.getSeat("A", 1, 1));
+        ViewithException result = assertThrows(ViewithException.class, () -> seatProvider.getSeat("A", "1", "1"));
 
         // then
         assertThat(result.getErrorCode().getCode()).isEqualTo(NO_SEAT.getCode());

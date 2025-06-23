@@ -25,7 +25,7 @@ public class SeatProvider {
                 .orElseThrow(() -> new ViewithException(NO_SEAT));
     }
 
-    public SeatEntity getSeat(String section, Integer seatRow, Integer seatColumn) {
+    public SeatEntity getSeat(String section, String seatRow, String seatColumn) {
         return seatRepository.findBySectionAndSeatRowAndSeatColumn(section, seatRow, seatColumn)
                 .orElseThrow(() ->
                         new ViewithException(NO_SEAT, "The seat with section: " + section + ", seat_row: " + seatRow +

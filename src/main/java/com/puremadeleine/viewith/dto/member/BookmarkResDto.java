@@ -43,7 +43,7 @@ public class BookmarkResDto {
         @Nullable
         String bookmarkSection;
         @Nullable
-        Integer bookmarkRow;
+        String bookmarkRow;
         @Nullable
         Long lastUpdateDate;
     }
