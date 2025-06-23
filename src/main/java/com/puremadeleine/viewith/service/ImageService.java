@@ -10,10 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +22,7 @@ public class ImageService {
     ImageProvider imageProvider;
 
     public void saveImages(List<MultipartFile> images, Long sourceId, SourceType sourceType) {
+        if (Objects.isNull(images) || images.isEmpty()) return;
         List<ImageEntity> imageEntities = new ArrayList<>();
         for (MultipartFile image : images) {
             String imageUrl = s3Uploader.uploadFile(image);
