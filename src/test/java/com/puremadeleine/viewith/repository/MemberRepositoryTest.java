@@ -69,7 +69,7 @@ class MemberRepositoryTest {
         member = memberRepository.save(member);
 
         // when
-        Optional<MemberEntity> actual = memberRepository.findByOauthTypeAndViewithOauthUserIdAndDeleteYn(OAuthType.KAKAO, member.getOauthUserId().toString(), member.getDeleteYn());
+        Optional<MemberEntity> actual = memberRepository.findByOauthTypeAndViewithOauthUserIdAndDeleteYn(OAuthType.KAKAO, member.getViewithOauthUserId(), member.getDeleteYn());
 
         // then
         if (OAuthType.KAKAO.equals(oauthType)) {
@@ -86,7 +86,6 @@ class MemberRepositoryTest {
                 .ignore(field(MemberEntity::getId))
                 .set(field(MemberEntity::getOauthType), oAuthType)
                 .set(field(MemberEntity::getDeleteYn), isDeleted)
-                .set(field(MemberEntity::getOauthUserId), oauthId)
                 .set(field(MemberEntity::getViewithOauthUserId), oauthId.toString())
                 .create();
     }

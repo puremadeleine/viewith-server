@@ -89,7 +89,6 @@ class BookmarkRepositoryTest {
                 .ignore(field(MemberEntity::getId))
                 .set(field(MemberEntity::getOauthType), KAKAO)
                 .set(field(MemberEntity::getDeleteYn), false)
-                .set(field(MemberEntity::getOauthUserId), oauthId)
                 .set(field(MemberEntity::getViewithOauthUserId), oauthId.toString())
                 .create();
     }
