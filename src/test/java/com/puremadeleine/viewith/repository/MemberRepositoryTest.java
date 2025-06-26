@@ -84,6 +84,7 @@ class MemberRepositoryTest {
         Long oauthId = new Random().nextLong();
         return Instancio.of(MemberEntity.class)
                 .ignore(field(MemberEntity::getId))
+                .ignore(field(MemberEntity::getProfileImage))
                 .set(field(MemberEntity::getOauthType), oAuthType)
                 .set(field(MemberEntity::getDeleteYn), isDeleted)
                 .set(field(MemberEntity::getViewithOauthUserId), oauthId.toString())

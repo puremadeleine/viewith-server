@@ -87,6 +87,7 @@ class BookmarkRepositoryTest {
         Long oauthId = new Random().nextLong();
         return Instancio.of(MemberEntity.class)
                 .ignore(field(MemberEntity::getId))
+                .ignore(field(MemberEntity::getProfileImage))
                 .set(field(MemberEntity::getOauthType), KAKAO)
                 .set(field(MemberEntity::getDeleteYn), false)
                 .set(field(MemberEntity::getViewithOauthUserId), oauthId.toString())
