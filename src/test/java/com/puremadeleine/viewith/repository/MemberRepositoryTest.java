@@ -1,6 +1,7 @@
 package com.puremadeleine.viewith.repository;
 
 import com.puremadeleine.viewith.config.jpa.JpaConfig;
+import com.puremadeleine.viewith.domain.image.ProfileImageEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.dto.member.OAuthType;
 import org.instancio.Instancio;
@@ -27,11 +28,14 @@ import static org.instancio.Select.field;
 class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private ProfileImageRepository profileImageRepository;
 
     @Test
     void find() {
         // given
-        MemberEntity member = makeDummyMemberEntity(OAuthType.KAKAO, false);
+        ProfileImageEntity profileImageEntity = profileImageRepository.save(makeDummyProfileImageEntity());
+        MemberEntity member = makeDummyMemberEntity(OAuthType.KAKAO, false, profileImageEntity);
         member = memberRepository.save(member);
 
         // when
@@ -46,7 +50,8 @@ class MemberRepositoryTest {
     @ValueSource(booleans = {false, true})
     void findByIdAndDeleteYn(boolean isDeleted) {
         // given
-        MemberEntity member = makeDummyMemberEntity(OAuthType.KAKAO, isDeleted);
+        ProfileImageEntity profileImageEntity = profileImageRepository.save(makeDummyProfileImageEntity());
+        MemberEntity member = makeDummyMemberEntity(OAuthType.KAKAO, isDeleted, profileImageEntity);
         member = memberRepository.save(member);
 
         // when
@@ -58,6 +63,8 @@ class MemberRepositoryTest {
         } else {
             assertThat(actual).isPresent();
             assertThat(actual.get()).usingRecursiveComparison().isEqualTo(member);
+            assertThat(actual.get().getProfileImage().getImageUrl())
+                    .isEqualTo(profileImageEntity.getImageUrl());
         }
     }
 
@@ -65,7 +72,8 @@ class MemberRepositoryTest {
     @EnumSource(value = OAuthType.class, names = {"KAKAO", "APPLE"})
     void findByOauthTypeAndOauthUserIdAndDeleteYn(OAuthType oauthType) {
         // given
-        MemberEntity member = makeDummyMemberEntity(oauthType, false);
+        ProfileImageEntity profileImageEntity = profileImageRepository.save(makeDummyProfileImageEntity());
+        MemberEntity member = makeDummyMemberEntity(oauthType, false, profileImageEntity);
         member = memberRepository.save(member);
 
         // when
@@ -80,14 +88,20 @@ class MemberRepositoryTest {
         }
     }
 
-    private MemberEntity makeDummyMemberEntity(OAuthType oAuthType, boolean isDeleted) {
+    private MemberEntity makeDummyMemberEntity(OAuthType oAuthType, boolean isDeleted, ProfileImageEntity profileImageEntity) {
         Long oauthId = new Random().nextLong();
         return Instancio.of(MemberEntity.class)
                 .ignore(field(MemberEntity::getId))
-                .ignore(field(MemberEntity::getProfileImage))
+                .set(field(MemberEntity::getProfileImage), profileImageEntity)
                 .set(field(MemberEntity::getOauthType), oAuthType)
                 .set(field(MemberEntity::getDeleteYn), isDeleted)
                 .set(field(MemberEntity::getViewithOauthUserId), oauthId.toString())
+                .create();
+    }
+
+    private ProfileImageEntity makeDummyProfileImageEntity() {
+        return Instancio.of(ProfileImageEntity.class)
+                .ignore(field(ProfileImageEntity::getId))
                 .create();
     }
 }

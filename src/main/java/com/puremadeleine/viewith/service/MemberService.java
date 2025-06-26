@@ -130,6 +130,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .nickname(member.getNickname())
                 .bookmarksCount(bookmarksCnt)
                 .writtenReviewsCount(reviewsCnt)
+                .profileImageUrl(member.getProfileImage().getImageUrl())
                 .build();
     }
 
