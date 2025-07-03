@@ -96,6 +96,7 @@ public class ReviewServiceConverter {
         return ReviewerInfoResDto.builder()
                 .userId(member.getId())
                 .userNickname(member.getNickname())
+                .profileImageUrl(member.getProfileImage().getImageUrl())
                 .build();
     }
 
