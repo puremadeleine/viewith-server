@@ -16,4 +16,5 @@ public class ProfileResDto {
     String nickname;
     Long writtenReviewsCount;
     Long bookmarksCount;
+    String profileImageUrl;
 }

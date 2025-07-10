@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.domain.image.ProfileImageEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReportReason;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
@@ -15,7 +16,12 @@ import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.exception.ViewithException;
-import com.puremadeleine.viewith.provider.*;
+import com.puremadeleine.viewith.provider.BookmarkProvider;
+import com.puremadeleine.viewith.provider.MemberProvider;
+import com.puremadeleine.viewith.provider.ReviewProvider;
+import com.puremadeleine.viewith.provider.ReviewReportProvider;
+import com.puremadeleine.viewith.provider.SeatProvider;
+import com.puremadeleine.viewith.provider.VenueProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,8 +34,13 @@ import java.util.List;
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ReviewServiceTest {
 
@@ -42,7 +53,7 @@ class ReviewServiceTest {
     ImageService imageService = mock(ImageService.class);
 
     ReviewService reviewService = new ReviewService(
-            reviewProvider, venueProvider, seatProvider,reviewReportProvider,
+            reviewProvider, venueProvider, seatProvider, reviewReportProvider,
             memberProvider, bookmarkProvider, imageService);
 
 
@@ -361,6 +372,7 @@ class ReviewServiceTest {
         return MemberEntity.builder()
                 .id(id)
                 .nickname("닉네임")
+                .profileImage(getProfile(123L))
                 .build();
     }
 
@@ -368,6 +380,14 @@ class ReviewServiceTest {
     Page<ReviewEntity> getReviewList(Integer page, Integer size, Long total) {
         List<ReviewEntity> reviewList = List.of(getReview());
         return new PageImpl<>(reviewList, PageRequest.of(page - 1, size), total);
+    }
+
+    private ProfileImageEntity getProfile(Long id) {
+        return ProfileImageEntity.builder()
+                .id(id)
+                .imageUrl("imageUrl")
+                .adminDescription("adminDescription")
+                .build();
     }
 
 }
