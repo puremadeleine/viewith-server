@@ -35,9 +35,6 @@ import java.util.UUID;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "UN_OAUTH", columnNames = {"oauth_type", "viewith_oauth_user_id"}
-                ),
-                @UniqueConstraint(
-                        name = "UN_NICKNAME", columnNames = {"nickname"}
                 )
         }
 )
@@ -48,7 +45,7 @@ public class MemberEntity extends BaseTimeEntity {
     Long id;
 
     @Setter(value = AccessLevel.PRIVATE)
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 50)
     String nickname;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -60,7 +57,7 @@ public class MemberEntity extends BaseTimeEntity {
     OAuthType oauthType;
 
     @Setter(value = AccessLevel.PRIVATE)
-    @Column(nullable = false, unique = true, length = 40)
+    @Column(nullable = false, length = 100)
     String viewithOauthUserId;
 
     @Setter(value = AccessLevel.PRIVATE)

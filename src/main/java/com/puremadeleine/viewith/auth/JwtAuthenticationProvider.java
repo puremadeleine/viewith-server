@@ -4,10 +4,11 @@ import com.puremadeleine.viewith.service.JwtService;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,12 +17,18 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
-public class JwtAuthenticationProvider implements AuthenticationManager {
+public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final JwtService jwtService;
 
     public JwtAuthenticationProvider(JwtService jwtService) {
         this.jwtService = jwtService;
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        // PreAuthenticatedAuthenticationToken 타입만 지원
+        return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
     @Nullable

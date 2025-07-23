@@ -93,6 +93,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
         // Apple 인증 및 유저 정보 조회
         String clientSub = appleService.validateAppleOAuthAndGetSub(idToken);
         UpdateTokenResDto tokenInfo = appleService.validateAuthCode(authCode);
+
         // userId로 정보 조회해서 저장하기
         String appleSub = appleService.validateAppleOAuthAndGetSub(tokenInfo.getIdToken());
         if (!StringUtils.equals(clientSub, appleSub)) {

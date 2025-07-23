@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -60,7 +62,14 @@ public class SecurityConfig {
         return source;
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        // Spring Security 표준 패턴: ProviderManager 사용
+        return new ProviderManager(List.of(jwtAuthenticationProvider));
+    }
+
+    @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtAuthenticationProvider);
+        return new JwtAuthenticationFilter(authenticationManager());
     }
 }

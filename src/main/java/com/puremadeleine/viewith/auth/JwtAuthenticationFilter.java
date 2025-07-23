@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -20,8 +21,8 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
 
-    public JwtAuthenticationFilter(JwtAuthenticationProvider jwtAuthenticationProvider) {
-        setAuthenticationManager(jwtAuthenticationProvider);
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+        setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler(((request, response, authentication) -> {
             if (log.isInfoEnabled()) {
                 log.info("Found account {} from JWT Token: {}",
