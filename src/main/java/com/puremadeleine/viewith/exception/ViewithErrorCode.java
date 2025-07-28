@@ -34,6 +34,8 @@ public enum ViewithErrorCode {
     // image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, 60001, "image upload failed"),
 
+    // performance
+    NO_PERFORMANCE(HttpStatus.NOT_FOUND, 80001, "no performance"),
 
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, 99999, "unknown exception occured");
 
