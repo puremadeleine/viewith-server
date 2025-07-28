@@ -16,12 +16,7 @@ import com.puremadeleine.viewith.dto.review.response.CreateReviewResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewInfoResDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.exception.ViewithException;
-import com.puremadeleine.viewith.provider.BookmarkProvider;
-import com.puremadeleine.viewith.provider.MemberProvider;
-import com.puremadeleine.viewith.provider.ReviewProvider;
-import com.puremadeleine.viewith.provider.ReviewReportProvider;
-import com.puremadeleine.viewith.provider.SeatProvider;
-import com.puremadeleine.viewith.provider.VenueProvider;
+import com.puremadeleine.viewith.provider.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,6 +41,7 @@ class ReviewServiceTest {
 
     ReviewProvider reviewProvider = mock(ReviewProvider.class);
     VenueProvider venueProvider = mock(VenueProvider.class);
+    PerformanceProvider performanceProvider = mock(PerformanceProvider.class);
     SeatProvider seatProvider = mock(SeatProvider.class);
     ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
     MemberProvider memberProvider = mock(MemberProvider.class);
@@ -53,7 +49,7 @@ class ReviewServiceTest {
     ImageService imageService = mock(ImageService.class);
 
     ReviewService reviewService = new ReviewService(
-            reviewProvider, venueProvider, seatProvider, reviewReportProvider,
+            reviewProvider, venueProvider, performanceProvider, seatProvider, reviewReportProvider,
             memberProvider, bookmarkProvider, imageService);
 
 
