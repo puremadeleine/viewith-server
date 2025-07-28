@@ -4,6 +4,7 @@ import com.puremadeleine.viewith.domain.image.SourceType;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
 import com.puremadeleine.viewith.domain.review.ReviewReportEntity;
+import com.puremadeleine.viewith.domain.venue.PerformanceEntity;
 import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.common.SortType;
@@ -36,6 +37,7 @@ public class ReviewService {
 
     ReviewProvider reviewProvider;
     VenueProvider venueProvider;
+    PerformanceProvider performanceProvider;
     SeatProvider seatProvider;
     ReviewReportProvider reviewReportProvider;
     MemberProvider memberProvider;
@@ -47,8 +49,9 @@ public class ReviewService {
         MemberEntity activeMember = memberProvider.getActiveMember(memberId);
         VenueEntity venue = venueProvider.getVenue(reqDto.venueId());
         SeatEntity seat = seatProvider.getSeat(reqDto.section(), reqDto.seatRow(), reqDto.seatColumn());
+        PerformanceEntity performance = performanceProvider.getPerformance(reqDto.performanceId());
 
-        ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, activeMember);
+        ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, performance, activeMember);
         ReviewEntity savedReview = reviewProvider.saveReview(review);
         imageService.saveImages(images, review.getId(), SourceType.REVIEW);
 
