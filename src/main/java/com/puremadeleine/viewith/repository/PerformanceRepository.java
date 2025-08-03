@@ -30,7 +30,7 @@ public interface PerformanceRepository extends JpaRepository<PerformanceEntity, 
                         ) AS row_num
                     FROM tb_performance p
                     JOIN tb_venue v ON p.venue_id = v.venue_id
-                    WHERE p.end_date >= CURRENT_TIMESTAMP()
+                    WHERE p.end_date >= CURRENT_TIMESTAMP() 
                 )
                 SELECT rp.performance_id, rp.kopis_id, rp.title, rp.artist, rp.start_date, rp.end_date, rp.venue_id, rp.image_url
                 FROM RecentPerformance rp
