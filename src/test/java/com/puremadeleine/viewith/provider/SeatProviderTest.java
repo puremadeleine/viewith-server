@@ -35,7 +35,7 @@ class SeatProviderTest {
                 .seatColumn("1")
                 .build();
 
-        when(seatRepository.findBySectionAndSeatRowAndSeatColumn(anyString(), anyString(), anyString()))
+        when(seatCustomRepository.findSeat(anyLong(), anyString(), anyString(), anyString()))
                 .thenReturn(Optional.ofNullable(seat));
 
         // when
