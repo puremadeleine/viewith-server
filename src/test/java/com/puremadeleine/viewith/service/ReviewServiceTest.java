@@ -79,7 +79,7 @@ class ReviewServiceTest {
             ReviewEntity review = getReview();
 
             when(venueProvider.getVenue(anyLong())).thenReturn(venue);
-            when(seatProvider.getSeat(anyString(), anyString(), anyString())).thenReturn(seat);
+            when(seatProvider.getSeat(anyLong(), anyString(), anyString(), anyString())).thenReturn(seat);
             when(reviewProvider.saveReview(any(ReviewEntity.class))).thenReturn(review);
 
             // when
