@@ -53,7 +53,7 @@ public class ReviewService {
 
         PerformanceEntity performance = null;
         if (Objects.nonNull(reqDto.performanceId())) {
-            performanceProvider.getPerformance(reqDto.performanceId());
+            performance = performanceProvider.getPerformance(reqDto.performanceId());
         }
 
         ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, performance, activeMember);
