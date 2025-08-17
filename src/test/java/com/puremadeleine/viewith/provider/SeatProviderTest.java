@@ -50,7 +50,7 @@ class SeatProviderTest {
     void throw_exception_when_return_null() {
         // given
         Long venueId = 1L;
-        when(seatRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(seatCustomRepository.findSeat(anyLong(), anyString(), anyString(), anyString())).thenReturn(Optional.empty());
 
         // when
         ViewithException result = assertThrows(ViewithException.class, () -> seatProvider.getSeat(venueId, "A", "1", "1"));
