@@ -48,7 +48,7 @@ public class ReviewService {
     public CreateReviewResDto createReview(CreateReviewReqDto reqDto, List<MultipartFile> images, Long memberId) {
         MemberEntity activeMember = memberProvider.getActiveMember(memberId);
         VenueEntity venue = venueProvider.getVenue(reqDto.venueId());
-        SeatEntity seat = seatProvider.getSeat(reqDto.section(), reqDto.seatRow(), reqDto.seatColumn());
+        SeatEntity seat = seatProvider.getSeat(venue.getId(), reqDto.section(), reqDto.seatRow(), reqDto.seatColumn());
         PerformanceEntity performance = performanceProvider.getPerformance(reqDto.performanceId());
 
         ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, performance, activeMember);
