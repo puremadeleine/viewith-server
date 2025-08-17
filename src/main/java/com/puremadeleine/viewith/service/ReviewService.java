@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewInfoResDto;
 import static com.puremadeleine.viewith.converter.review.ReviewServiceConverter.toReviewListResDto;
@@ -48,8 +49,12 @@ public class ReviewService {
     public CreateReviewResDto createReview(CreateReviewReqDto reqDto, List<MultipartFile> images, Long memberId) {
         MemberEntity activeMember = memberProvider.getActiveMember(memberId);
         VenueEntity venue = venueProvider.getVenue(reqDto.venueId());
-        SeatEntity seat = seatProvider.getSeat(reqDto.section(), reqDto.seatRow(), reqDto.seatColumn());
-        PerformanceEntity performance = performanceProvider.getPerformance(reqDto.performanceId());
+        SeatEntity seat = seatProvider.getSeat(venue.getId(), reqDto.section(), reqDto.seatRow(), reqDto.seatColumn());
+
+        PerformanceEntity performance = null;
+        if (Objects.nonNull(reqDto.performanceId())) {
+            performanceProvider.getPerformance(reqDto.performanceId());
+        }
 
         ReviewEntity review = ReviewEntity.createReview(reqDto, venue, seat, performance, activeMember);
         ReviewEntity savedReview = reviewProvider.saveReview(review);
