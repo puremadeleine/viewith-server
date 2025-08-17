@@ -1,5 +1,6 @@
 package com.puremadeleine.viewith.service;
 
+import com.puremadeleine.viewith.domain.image.ProfileImageEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReportReason;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
@@ -28,13 +29,19 @@ import java.util.List;
 import static com.puremadeleine.viewith.exception.ViewithErrorCode.PERMISSION_DENIED_FOR_REVIEW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ReviewServiceTest {
 
     ReviewProvider reviewProvider = mock(ReviewProvider.class);
     VenueProvider venueProvider = mock(VenueProvider.class);
+    PerformanceProvider performanceProvider = mock(PerformanceProvider.class);
     SeatProvider seatProvider = mock(SeatProvider.class);
     ReviewReportProvider reviewReportProvider = mock(ReviewReportProvider.class);
     MemberProvider memberProvider = mock(MemberProvider.class);
@@ -42,7 +49,7 @@ class ReviewServiceTest {
     ImageService imageService = mock(ImageService.class);
 
     ReviewService reviewService = new ReviewService(
-            reviewProvider, venueProvider, seatProvider,reviewReportProvider,
+            reviewProvider, venueProvider, performanceProvider, seatProvider, reviewReportProvider,
             memberProvider, bookmarkProvider, imageService);
 
 
@@ -361,6 +368,7 @@ class ReviewServiceTest {
         return MemberEntity.builder()
                 .id(id)
                 .nickname("닉네임")
+                .profileImage(getProfile(123L))
                 .build();
     }
 
@@ -368,6 +376,14 @@ class ReviewServiceTest {
     Page<ReviewEntity> getReviewList(Integer page, Integer size, Long total) {
         List<ReviewEntity> reviewList = List.of(getReview());
         return new PageImpl<>(reviewList, PageRequest.of(page - 1, size), total);
+    }
+
+    private ProfileImageEntity getProfile(Long id) {
+        return ProfileImageEntity.builder()
+                .id(id)
+                .imageUrl("imageUrl")
+                .adminDescription("adminDescription")
+                .build();
     }
 
 }

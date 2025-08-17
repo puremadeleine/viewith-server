@@ -57,7 +57,8 @@ public class ReviewEntity extends BaseTimeEntity {
     MemberEntity member;
 
     public static ReviewEntity createReview(CreateReviewReqDto reqDto, VenueEntity venue,
-                                            SeatEntity seat, MemberEntity member) {
+                                            SeatEntity seat, PerformanceEntity performance,
+                                            MemberEntity member) {
         return ReviewEntity.builder()
                 .content(reqDto.content())
                 .rating(reqDto.rating())
@@ -65,6 +66,7 @@ public class ReviewEntity extends BaseTimeEntity {
                 .reportCount(0)
                 .venue(venue)
                 .seat(seat)
+                .performance(performance)
                 .member(member)
                 .build();
     }

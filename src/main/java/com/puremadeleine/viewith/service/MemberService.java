@@ -57,6 +57,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
     AppleService appleService;
     JwtService jwtService;
     ImageService imageService;
+    ProfileImageService profileImageService;
     MemberProvider memberProvider;
     BookmarkProvider bookmarkProvider;
     ReviewProvider reviewProvider;
@@ -92,6 +93,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
         // Apple 인증 및 유저 정보 조회
         String clientSub = appleService.validateAppleOAuthAndGetSub(idToken);
         UpdateTokenResDto tokenInfo = appleService.validateAuthCode(authCode);
+
         // userId로 정보 조회해서 저장하기
         String appleSub = appleService.validateAppleOAuthAndGetSub(tokenInfo.getIdToken());
         if (!StringUtils.equals(clientSub, appleSub)) {
@@ -129,6 +131,7 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .nickname(member.getNickname())
                 .bookmarksCount(bookmarksCnt)
                 .writtenReviewsCount(reviewsCnt)
+                .profileImageUrl(member.getProfileImage().getImageUrl())
                 .build();
     }
 
@@ -154,12 +157,12 @@ public class MemberService extends SpringProxyAware<MemberService> {
     }
 
     private MemberEntity createAndSaveKakaoMember(long oauthMemberId) {
-        MemberEntity newMember = createKakaoMember(oauthMemberId, makeRandomNickname());
+        MemberEntity newMember = createKakaoMember(oauthMemberId, makeRandomNickname(), profileImageService.getRandom());
         return memberProvider.save(newMember);
     }
 
     private MemberEntity createAndSaveAppleMember(String oauthMemberId) {
-        MemberEntity newMember = createAppleMember(oauthMemberId, makeRandomNickname());
+        MemberEntity newMember = createAppleMember(oauthMemberId, makeRandomNickname(), profileImageService.getRandom());
         return memberProvider.save(newMember);
     }
 

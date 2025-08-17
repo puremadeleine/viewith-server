@@ -9,7 +9,12 @@ import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.domain.venue.VenueStageEntity;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.review.ReviewCntDto;
-import com.puremadeleine.viewith.dto.venue.*;
+import com.puremadeleine.viewith.dto.venue.FloorRowDto;
+import com.puremadeleine.viewith.dto.venue.VenueFilterResDto;
+import com.puremadeleine.viewith.dto.venue.VenueListResDto;
+import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSearchListResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
 import com.puremadeleine.viewith.exception.ViewithException;
 import com.puremadeleine.viewith.provider.BookmarkProvider;
@@ -71,7 +76,7 @@ public class VenueService {
                 .collect(Collectors.groupingBy(
                         performance -> performance.getVenue().getId(),
                         Collectors.mapping(
-                                venueServiceMapper::toPerformance,
+                                p -> venueServiceMapper.toPerformance(p).of(),
                                 Collectors.toList()
                         )
                 ));

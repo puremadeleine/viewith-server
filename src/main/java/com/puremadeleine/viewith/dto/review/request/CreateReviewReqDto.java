@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record CreateReviewReqDto(
     @NotNull Long venueId,
+    Long performanceId,
     @NotBlank String section,
     @NotNull String seatRow,
     String seatColumn,

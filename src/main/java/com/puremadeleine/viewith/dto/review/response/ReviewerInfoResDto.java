@@ -12,4 +12,5 @@ public class ReviewerInfoResDto {
 
     Long userId;
     String userNickname;
+    String profileImageUrl;
 }

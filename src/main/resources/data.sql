@@ -15,8 +15,8 @@ VALUES (1, 1, 1, 1, 'A', 1, null),
 
 -- tb_member
 INSERT
-INTO tb_member (member_id, viewith_oauth_user_id, delete_yn, nickname, oauth_type)
-VALUES (1, '3807529173', false, '분노한 예산 혜영', 'KAKAO');
+INTO tb_member (viewith_oauth_user_id, delete_yn, nickname, oauth_type)
+VALUES ('3807529173', false, '분노한 예산 혜영', 'KAKAO');
 
 -- tb_review
 INSERT INTO tb_review (rating, report_count, create_time, performance_id, review_id, seat_id, update_time, venue_id,
@@ -50,3 +50,8 @@ INSERT INTO tb_performance (performance_id, kopis_id, title, artist, start_date,
 VALUES (1, '1', '첫번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
        (2, '2', '두번째 더보이즈 콘서트', '더보이즈', now(), now(), 1),
        (3, '3', '스키즈 콘서트', '더보이즈', now(), now(), 1);
+
+
+-- tb_profile_image
+INSERT INTO `tb_profile_image`(`profile_image_id`, `image_url`, `admin_description`, `create_time`, `update_time`)
+VALUES (1, 'naver', '테스트', now(), now());
