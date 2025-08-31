@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface PerformanceRepository extends JpaRepository<PerformanceEntity, Long> {
 
-    List<PerformanceEntity> findByTitleContainsIgnoreCase(String keyword);
+    List<PerformanceEntity> findByVenue_IdAndTitleContainingIgnoreCase(Long venueId, String keyword);
 
     @Query(value = """
                 WITH RecentPerformance AS (
