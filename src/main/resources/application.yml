@@ -16,6 +16,11 @@ spring:
     defer-datasource-initialization: true
   jackson:
     property-naming-strategy: SNAKE_CASE
+  servlet:
+    multipart:
+      max-file-size: 10MB         # 단일 파일 한도
+      max-request-size: 40MB      # 요청 전체 한도 (파일 여러 개 포함 시)
+      enabled: true
 
   task:
     scheduling:
