@@ -52,7 +52,7 @@ security:
     - /
     - /health
     - /v1
-    - /v1/members/login/*
+    - /v1/members/login/**
     - /v1/members/refresh
     - /v1/reviews/list
     - /v1/help/**
