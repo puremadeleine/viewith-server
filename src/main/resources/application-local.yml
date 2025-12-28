@@ -1,7 +1,8 @@
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/viewith-db;MODE=MySQL
+    #    url: jdbc:h2:tcp://localhost/~/viewith-db;MODE=MySQL
+    url: jdbc:h2:mem:viewith-db;MODE=MYSQL;DB_CLOSE_DELAY=-1
     username: sa
     password:
   sql:
