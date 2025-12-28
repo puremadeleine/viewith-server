@@ -340,6 +340,6 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 )
                 .findFirst()
                 .map(BookmarkSeatInfo::getLastCreatedAt)
-                .orElseGet(null);
+                .orElse(null);
     }
 }
