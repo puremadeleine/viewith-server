@@ -17,10 +17,10 @@ public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> 
     List<BookmarkEntity> findByMemberId(Long memberId);
 
     @Query(value = """
-            SELECT b.* FROM tb_bookmark b
-            JOIN (SELECT s.seat_id FROM tb_seat s WHERE s.venue_id = :venueId) s ON b.seat_id = s.seat_id
-            WHERE b.member_id = :memberId
-            """, nativeQuery = true)
+            SELECT b
+            FROM BookmarkEntity b JOIN FETCH SeatEntity s ON s.id = b.seat.id
+            WHERE b.member.id = :memberId AND s.venue.id = :venueId
+            """)
     List<BookmarkEntity> findBookmarksByVenueIdAndMemberId(@Param("venueId") Long venueId, @Param("memberId") Long memberId);
 
     Optional<BookmarkEntity> findByMember_IdAndSeat_Id(Long memberId, Long seatId);

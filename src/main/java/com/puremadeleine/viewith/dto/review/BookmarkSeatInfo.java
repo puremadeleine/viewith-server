@@ -1,18 +1,21 @@
 package com.puremadeleine.viewith.dto.review;
 
+import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ReviewWithSeatIdDto {
-    Long seatId;
-    LocalDateTime createTime;
+public class BookmarkSeatInfo {
+    Long venueId;
+    String floor;
+    String section;
+    String row;
+    @Nullable
+    LocalDateTime lastCreatedAt;
 }

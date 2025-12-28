@@ -6,6 +6,7 @@ import com.puremadeleine.viewith.converter.CommonConverter;
 import com.puremadeleine.viewith.domain.bookmark.BookmarkEntity;
 import com.puremadeleine.viewith.domain.member.MemberEntity;
 import com.puremadeleine.viewith.domain.review.ReviewEntity;
+import com.puremadeleine.viewith.domain.venue.SeatEntity;
 import com.puremadeleine.viewith.domain.venue.VenueEntity;
 import com.puremadeleine.viewith.dto.client.KakaoUserInfoResDto;
 import com.puremadeleine.viewith.dto.client.UpdateTokenResDto;
@@ -17,7 +18,7 @@ import com.puremadeleine.viewith.dto.member.ProfileResDto;
 import com.puremadeleine.viewith.dto.member.RefreshReqDto;
 import com.puremadeleine.viewith.dto.member.RefreshResDto;
 import com.puremadeleine.viewith.dto.member.ValidateNicknameResDto;
-import com.puremadeleine.viewith.dto.review.ReviewWithSeatIdDto;
+import com.puremadeleine.viewith.dto.review.BookmarkSeatInfo;
 import com.puremadeleine.viewith.dto.review.request.ReviewListReqDto;
 import com.puremadeleine.viewith.dto.review.response.ReviewListResDto;
 import com.puremadeleine.viewith.exception.ViewithErrorCode;
@@ -26,6 +27,7 @@ import com.puremadeleine.viewith.provider.BookmarkProvider;
 import com.puremadeleine.viewith.provider.MemberProvider;
 import com.puremadeleine.viewith.provider.ReviewProvider;
 import com.puremadeleine.viewith.provider.VenueProvider;
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -255,10 +258,10 @@ public class MemberService extends SpringProxyAware<MemberService> {
 
     private BookmarkResDto.BookmarkDto getBookmarkDto(VenueEntity v, Long memberId) {
         List<BookmarkEntity> bookmarks = bookmarkProvider.getBookmarksByVenueIdAndMemberId(v.getId(), memberId);
-        List<Long> bookmarkSeatIds = bookmarks.stream()
-                .map(b -> b.getSeat().getId())
+        List<SeatEntity> seats = bookmarks.stream()
+                .map(BookmarkEntity::getSeat)
                 .toList();
-        Map<Long, LocalDateTime> reviewLastCreateTimeBySeatId = getReviewLastCreateTimeBySeatIds(bookmarkSeatIds);
+        List<BookmarkSeatInfo> reviewLastCreateTimeBySeatId = getReviewLastCreateTimeByBookmarkSeats(seats);
 
         List<BookmarkResDto.BookmarkFloorDto> bookmarkFloorDtos = mapToBookmarkFloorDto(bookmarks, reviewLastCreateTimeBySeatId);
         return BookmarkResDto.BookmarkDto.builder()
@@ -268,20 +271,30 @@ public class MemberService extends SpringProxyAware<MemberService> {
                 .build();
     }
 
-    private Map<Long, LocalDateTime> getReviewLastCreateTimeBySeatIds(List<Long> seatIds) {
-        return reviewProvider.findTopReviewsBySeatIdsAndStatus(seatIds)
-                .stream()
-                .collect(Collectors.collectingAndThen(
-                        Collectors.toMap(
-                                ReviewWithSeatIdDto::getSeatId,
-                                ReviewWithSeatIdDto::getCreateTime
-                        ),
-                        Map::copyOf  // 불변으로 변환
-                ));
+    private List<BookmarkSeatInfo> getReviewLastCreateTimeByBookmarkSeats(List<SeatEntity> seats) {
+        return seats.stream()
+                .map(s -> {
+                    /*x
+                     가능 케이스1: venueId, floor, section, row=0(UNSELECTED)
+                     가능 케이스2: venueId, floor, section, row
+                     */
+                    Long venueId = s.getVenue().getId();
+                    String floor = s.getFloor();
+                    String section = s.getSection();
+                    String row = StringUtils.equals(s.getSeatRow(), UNSELECTED_STRING) ? null : s.getSeatRow();
+                    LocalDateTime lastCreatedAt = reviewProvider.findTopReviewsBySeatInfoAndStatus(venueId, floor, section, row);
+                    return BookmarkSeatInfo.builder()
+                            .venueId(venueId)
+                            .floor(floor)
+                            .section(section)
+                            .row(row)
+                            .lastCreatedAt(lastCreatedAt)
+                            .build();
+                }).toList();
     }
 
     public List<BookmarkResDto.BookmarkFloorDto> mapToBookmarkFloorDto(List<BookmarkEntity> bookmarkEntities,
-                                                                       Map<Long, LocalDateTime> reviewLastCreateTimeBySeatId) {
+                                                                       List<BookmarkSeatInfo> lastCreatedDateInfo) {
         return bookmarkEntities.stream()
                 .collect(Collectors.groupingBy(entity -> entity.getSeat().getFloor())) // floor 기준 그룹화
                 .entrySet()
@@ -293,11 +306,11 @@ public class MemberService extends SpringProxyAware<MemberService> {
                                     String section = entity.getSeat().getSection();
                                     String row = entity.getSeat().getSeatRow();
 
-                                    LocalDateTime lastUpdateDate = reviewLastCreateTimeBySeatId.get(entity.getSeat().getId());
+                                    LocalDateTime lastUpdateDate = getLastCreatedAt(lastCreatedDateInfo, entity.getSeat());
                                     return BookmarkResDto.BookmarkSeatDto.builder()
                                             .bookmarkId(entity.getId())
                                             .bookmarkSection(StringUtils.equals(section, UNSELECTED_STRING) ? null : section)
-                                            .bookmarkRow(row == UNSELECTED_STRING ? null : row)
+                                            .bookmarkRow(StringUtils.equals(row, UNSELECTED_STRING) ? null : row)
                                             .lastUpdateDate(CommonConverter.toNullableTimestamp(lastUpdateDate))
                                             .build();
                                 })
@@ -315,5 +328,18 @@ public class MemberService extends SpringProxyAware<MemberService> {
         List<Long> reviewIds = reviewList.getContent().stream().map(ReviewEntity::getId).toList();
         Map<Long, List<String>> reviewImageUrlMap = imageService.getReviewImageUrlMap(reviewIds);
         return toReviewListResDto(isSummary, reviewList, reviewImageUrlMap);
+    }
+
+    @Nullable
+    private LocalDateTime getLastCreatedAt(List<BookmarkSeatInfo> lastCreatedDateInfo, SeatEntity seat) {
+        return lastCreatedDateInfo.stream()
+                .filter(info -> Objects.equals(info.getVenueId(), seat.getVenue().getId())
+                        && StringUtils.equals(info.getFloor(), seat.getFloor())
+                        && StringUtils.equals(info.getSection(), seat.getSection())
+                        && StringUtils.equals(info.getRow(), seat.getSeatRow())
+                )
+                .findFirst()
+                .map(BookmarkSeatInfo::getLastCreatedAt)
+                .orElseGet(null);
     }
 }
