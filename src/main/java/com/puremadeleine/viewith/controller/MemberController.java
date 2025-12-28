@@ -1,7 +1,6 @@
 package com.puremadeleine.viewith.controller;
 
 import com.puremadeleine.viewith.dto.common.SortType;
-import com.puremadeleine.viewith.dto.member.BookmarkResDto;
 import com.puremadeleine.viewith.dto.member.JoinResDto;
 import com.puremadeleine.viewith.dto.member.MemberInfo;
 import com.puremadeleine.viewith.dto.member.ProfileResDto;
@@ -70,12 +69,7 @@ public class MemberController {
     public ValidateNicknameResDto validateNickname(@RequestParam(name = "name") String nickname) {
         return memberService.validateNickname(nickname);
     }
-
-    @GetMapping(path = "/bookmarks")
-    public BookmarkResDto getBookmarks(MemberInfo memberInfo) {
-        return memberService.getBookmarks(memberInfo);
-    }
-
+    
     @GetMapping(path = "/reviews")
     public ReviewListResDto getMyReviews(MemberInfo memberInfo,
                                          @RequestParam(value = "page", required = false, defaultValue = "1") @Min(1) Integer page,

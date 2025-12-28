@@ -133,21 +133,43 @@ public class VenueService {
     }
 
     @Transactional
-    public void createBookmark(MemberInfo memberInfo, long seatId) {
-        Optional<BookmarkEntity> bookmark = bookmarkProvider.findBookmark(memberInfo.getMemberId(), seatId);
+    public void createBookmark(MemberInfo memberInfo, long seatId, boolean isSectionBookmark) {
+        SeatEntity seat = seatProvider.getSeat(seatId);
+        Long bookmarkVenueId = seat.getVenue().getId();
+        String bookmarkSection = seat.getSection();
+        String bookmarkRow = isSectionBookmark ? UNSELECTED_STRING : seat.getSeatRow();
+
+        createBookmark(memberInfo, bookmarkVenueId, bookmarkSection, bookmarkRow);
+    }
+
+    @Transactional
+    public void createBookmark(MemberInfo memberInfo, Long venueId, String section, String row) {
+        SeatEntity seat = seatProvider.getSeat(venueId, section, row, UNSELECTED_STRING);
+        Optional<BookmarkEntity> bookmark = bookmarkProvider.findBookmark(memberInfo.getMemberId(), seat.getId());
         bookmark.ifPresent(b -> {
             throw new ViewithException(ViewithErrorCode.DUPLICATED_BOOKMARK);
         });
 
         MemberEntity member = memberProvider.getActiveMember(memberInfo.getMemberId());
-        SeatEntity seat = seatProvider.getSeat(seatId);
+
         BookmarkEntity newBookmark = BookmarkEntity.createBookmark(member, seat);
         bookmarkProvider.save(newBookmark);
     }
 
     @Transactional
-    public void deleteBookmark(MemberInfo memberInfo, long seatId) {
-        BookmarkEntity bookmark = bookmarkProvider.getBookmark(memberInfo.getMemberId(), seatId);
+    public void deleteBookmark(MemberInfo memberInfo, long seatId, Boolean isSectionBookmark) {
+        SeatEntity seat = seatProvider.getSeat(seatId);
+        Long venueId = seat.getVenue().getId();
+        String section = seat.getSection();
+        String row = isSectionBookmark ? UNSELECTED_STRING : seat.getSeatRow();
+        
+        deleteBookmark(memberInfo, venueId, section, row);
+    }
+
+    @Transactional
+    public void deleteBookmark(MemberInfo memberInfo, Long venueId, String section, String row) {
+        SeatEntity bookmarkSeat = seatProvider.getSeat(venueId, section, row, UNSELECTED_STRING);
+        BookmarkEntity bookmark = bookmarkProvider.getBookmark(memberInfo.getMemberId(), bookmarkSeat.getId());
         bookmarkProvider.deleteBookmark(bookmark);
     }
 

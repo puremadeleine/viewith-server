@@ -1,20 +1,19 @@
 package com.puremadeleine.viewith.controller;
 
-import com.puremadeleine.viewith.dto.member.MemberInfo;
-import com.puremadeleine.viewith.dto.venue.*;
+import com.puremadeleine.viewith.dto.venue.VenueFilterResDto;
+import com.puremadeleine.viewith.dto.venue.VenueListResDto;
+import com.puremadeleine.viewith.dto.venue.VenueResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSearchListResDto;
+import com.puremadeleine.viewith.dto.venue.VenueSeatResDto;
 import com.puremadeleine.viewith.service.VenueService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/venues")
@@ -43,27 +42,6 @@ public class VenueController {
     @GetMapping("/{venue_id}/seats")
     public VenueSeatResDto getVenueSeatInfo(@PathVariable(value = "venue_id") long venueId) {
         return venueService.getVenueSeatInfo(venueId);
-    }
-
-    @PostMapping("/{venue_id}/seats/{seat_id}/bookmarks")
-    public void createBookmark(MemberInfo memberInfo,
-                               @PathVariable(value = "venue_id") long venueId,
-                               @PathVariable(value = "seat_id") long seatId) {
-        venueService.createBookmark(memberInfo, seatId);
-    }
-
-    @DeleteMapping("/{venue_id}/seats/{seat_id}/bookmarks")
-    public void deleteBookmark(MemberInfo memberInfo,
-                               @PathVariable(value = "venue_id") long venueId,
-                               @PathVariable(value = "seat_id") long seatId) {
-        venueService.deleteBookmark(memberInfo, seatId);
-    }
-
-    @DeleteMapping("/{venue_id}/seats/bookmarks")
-    public void deleteBookmarks(MemberInfo memberInfo,
-                                @PathVariable(value = "venue_id") long venueId,
-                                @RequestParam(value = "bookmark_ids") List<Long> bookmarkIds) {
-        venueService.deleteBookmarks(memberInfo, bookmarkIds);
     }
 
     @GetMapping("/search")
